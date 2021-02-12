@@ -9,55 +9,49 @@ import {
   NewUser,
   UserRegistration
 } from '../generated/EasyAuction/EasyAuction'
-import { ExampleEntity } from '../generated/schema'
+import { Auction, AuctionBid, AuctionToken } from '../generated/schema'
+import { AUCTION_ADDRESS, fetchTokenName, fetchTokenSymbol, fetchTokenDecimals } from './helpers'
 
-export function handleAuctionCleared(event: AuctionCleared): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+export function handleNewAuction(event: NewAuction): void {
+  let auction = Auction.load(AUCTION_ADDRESS)
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  auction.id = event.params.auctionId.toHexString()
+  auction.createdAt = event.block.timestamp.toI32()
+  auction.updatedAt = event.block.timestamp.toI32()
+  auction.status = 'open'
+  auction.startTime = event.block.timestamp.toI32() // ToDo: Add  to contract event
+  auction.endTime = event.params.auctionEndDate.toI32()
+  auction.gracePeriod = 0 //ToDo: Add to contract event
+  auction.tokenAmount = event.params._auctionedSellAmount.toI32()
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
+  let tokenIn = AuctionToken.load(event.params._biddingToken.toHexString())
+  tokenIn.name = fetchTokenName(event.params._biddingToken)
+  tokenIn.address = event.params._biddingToken.toString()
+  tokenIn.symbol = fetchTokenSymbol(event.params._biddingToken)
+  tokenIn.decimals = fetchTokenDecimals(event.params._biddingToken).toI32()
+  // ToDo: tokenIn.icon = ''
 
-  // BigInt and BigDecimal math are supported
-  entity.count = BigInt.fromI32(1).plus(entity.count)
+  let tokenOut = AuctionToken.load(event.params._auctioningToken.toHexString())
 
-  // Entity fields can be set based on event parameters
-  entity.auctionId = event.params.auctionId
-  entity.priceNumerator = event.params.priceNumerator
+  tokenIn.name = fetchTokenName(event.params._auctioningToken)
+  tokenIn.address = event.params._auctioningToken.toString()
+  tokenIn.symbol = fetchTokenSymbol(event.params._auctioningToken)
+  tokenIn.decimals = fetchTokenDecimals(event.params._auctioningToken).toI32()
+  // ToDo: tokenIn.icon = ''
 
-  // Entities can be written to the store with `.save()`
-  entity.save()
+  auction.tokenIn = tokenIn.id
+  auction.tokenOut = tokenOut.id
 
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // None
+  tokenIn.save()
+  tokenOut.save()
+  auction.save()
 }
+
+export function handleAuctionCleared(event: AuctionCleared): void {}
 
 export function handleCancellationSellOrder(event: CancellationSellOrder): void {}
 
 export function handleClaimedFromOrder(event: ClaimedFromOrder): void {}
-
-export function handleNewAuction(event: NewAuction): void {}
 
 export function handleNewSellOrder(event: NewSellOrder): void {}
 
