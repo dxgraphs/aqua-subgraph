@@ -1,6 +1,33 @@
-type ExampleEntity @entity {
+type Auction @entity {
+  id: ID! # Contract address (Using Factory pattern)
+  createdAt: Int # The UTC timestamp at which the auction was placed
+  updatedAt: Int # The UTC timestamp at which the auction was updated
+  deletedAt: Int # The UTC timestamp at which the auction was deleted
+  status: String # open/ended/settled/upcoming
+  startTime: Int # Open block
+  endTime: Int # Close auction
+  gracePeriod: Int # Int of seconds after the endTime of the auction
+  tokenAmount: Int #
+  tokenIn: AuctionToken
+  tokenOut: AuctionToken
+  bids: [AuctionBid]!
+}
+
+type AuctionBid @entity {
   id: ID!
-  count: BigInt!
-  auctionId: BigInt! # uint256
-  priceNumerator: BigInt! # uint96
+  createdAt: Int # The UTC timestamp at which the bid was placed
+  updatedAt: Int # The UTC timestamp at which the bid was updated
+  deletedAt: Int # The UTC timestamp at which the bid was deleted
+  tokenInAmount: Int # Int of tokens the investor wants to buy
+  tokenOutAmount: Int # Int of tokens the investor wants to buy
+  address: String # The bidder's Ethereum address
+}
+
+type AuctionToken @entity {
+  id: ID!
+  name: String # Token name, from the smart contract ERC20.name()
+  icon: String # Token icon, preferably are URL on the IPFS
+  address: String # ERC20 Token's contract address
+  symbol: String # Symbol, from ERC20.symbol()
+  decimals: Int # Decimal, from ERC.decimals()
 }
