@@ -1,0 +1,41 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: EasyAuction
+    network: rinkeby
+    source:
+      address: "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4"
+      abi: EasyAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - AuctionCleared
+        - CancellationSellOrder
+        - ClaimedFromOrder
+        - NewAuction
+        - NewSellOrder
+        - NewUser
+        - UserRegistration
+      abis:
+        - name: EasyAuction
+          file: ./abis/EasyAuction.json
+      eventHandlers:
+        - event: AuctionCleared(indexed uint256,uint96,uint96)
+          handler: handleAuctionCleared
+        - event: CancellationSellOrder(indexed uint256,indexed uint64,uint96,uint96)
+          handler: handleCancellationSellOrder
+        - event: ClaimedFromOrder(indexed uint256,indexed uint64,uint96,uint96)
+          handler: handleClaimedFromOrder
+        - event: NewAuction(indexed uint256,indexed address,indexed address,uint256,uint256,uint96,uint96,uint256,uint256)
+          handler: handleNewAuction
+        - event: NewSellOrder(indexed uint256,indexed uint64,uint96,uint96)
+          handler: handleNewSellOrder
+        - event: NewUser(indexed uint64,indexed address)
+          handler: handleNewUser
+        - event: UserRegistration(indexed address,uint64)
+          handler: handleUserRegistration
+      file: ./src/mapping.ts
