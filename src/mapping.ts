@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
   EasyAuction,
   AuctionCleared,
@@ -8,8 +8,8 @@ import {
   NewSellOrder,
   NewUser,
   UserRegistration
-} from "../generated/EasyAuction/EasyAuction"
-import { ExampleEntity } from "../generated/schema"
+} from '../generated/EasyAuction/EasyAuction'
+import { ExampleEntity } from '../generated/schema'
 
 export function handleAuctionCleared(event: AuctionCleared): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -26,7 +26,7 @@ export function handleAuctionCleared(event: AuctionCleared): void {
   }
 
   // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
+  entity.count = BigInt.fromI32(1).plus(entity.count)
 
   // Entity fields can be set based on event parameters
   entity.auctionId = event.params.auctionId
@@ -53,9 +53,7 @@ export function handleAuctionCleared(event: AuctionCleared): void {
   // None
 }
 
-export function handleCancellationSellOrder(
-  event: CancellationSellOrder
-): void {}
+export function handleCancellationSellOrder(event: CancellationSellOrder): void {}
 
 export function handleClaimedFromOrder(event: ClaimedFromOrder): void {}
 
