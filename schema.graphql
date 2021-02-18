@@ -7,14 +7,16 @@ type Auction @entity {
   startTime: Int # Open block
   endTime: Int # Close auction
   gracePeriod: Int # Int of seconds after the endTime of the auction
-  tokenAmount: Int #
+  tokenAmount: Int # Total amount of tokens available for auctioning
   tokenIn: AuctionToken
   tokenOut: AuctionToken
-  bids: [AuctionBid]!
+  bids: [AuctionBid!] @derivedFrom(field: "auction")
 }
 
 type AuctionBid @entity {
   id: ID!
+  status: String # submitted/settled/cancelled/claimed
+  auction: Auction
   createdAt: Int # The UTC timestamp at which the bid was placed
   updatedAt: Int # The UTC timestamp at which the bid was updated
   deletedAt: Int # The UTC timestamp at which the bid was deleted
@@ -25,9 +27,15 @@ type AuctionBid @entity {
 
 type AuctionToken @entity {
   id: ID!
+  auction: Auction #references the auction
   name: String # Token name, from the smart contract ERC20.name()
   icon: String # Token icon, preferably are URL on the IPFS
   address: String # ERC20 Token's contract address
   symbol: String # Symbol, from ERC20.symbol()
   decimals: Int # Decimal, from ERC.decimals()
+}
+
+type AuctionUser @entity {
+  id: ID!
+  address: String # The bidder's Ethereum address
 }
