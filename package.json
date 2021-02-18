@@ -4,13 +4,17 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cryptonative-ch/mesa-subgraph",
-    "create-local": "graph create --node http://localhost:8020/ cryptonative-ch/mesa-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ cryptonative-ch/mesa-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cryptonative-ch/mesa-subgraph"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/mesa",
+    "create-local": "graph create --node http://localhost:8020/ adamazad/mesa",
+    "remove-local": "graph remove --node http://localhost:8020/ adamazad/mesa",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adamazad/mesa",
+    "typechain-build": "typechain --target ethers-v5 --outDir src/contracts abis/*.json"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.19.0",
-    "@graphprotocol/graph-ts": "0.19.0"
+    "@graphprotocol/graph-cli": "^0.19.0",
+    "@graphprotocol/graph-ts": "0.19.0",
+    "@typechain/ethers-v5": "^5.0.0",
+    "ethers": "^5.0.31",
+    "typechain": "^4.0.1"
   }
 }
