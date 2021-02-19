@@ -6,8 +6,9 @@ dataSources:
     name: EasyAuction
     network: rinkeby
     source:
-      address: "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4"
+      address: '0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4'
       abi: EasyAuction
+      startBlock: 7900000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -23,6 +24,12 @@ dataSources:
       abis:
         - name: EasyAuction
           file: ./abis/EasyAuction.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
       eventHandlers:
         - event: AuctionCleared(indexed uint256,uint96,uint96)
           handler: handleAuctionCleared
