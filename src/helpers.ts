@@ -1,5 +1,6 @@
-import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
-import { ERC20 } from '../generated/EasyAuction/ERC20'
+// Externals
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+
 import { ERC20SymbolBytes } from '../generated/EasyAuction/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../generated/EasyAuction/ERC20NameBytes'
 
