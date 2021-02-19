@@ -5,7 +5,8 @@ import { ERC20SymbolBytes } from '../generated/EasyAuction/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../generated/EasyAuction/ERC20NameBytes'
 import { ERC20 } from '../generated/EasyAuction/ERC20'
 
-export const AUCTION_FACTORY_ADDRESS = '0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4'
+// Created on Rinkeby
+export const AUCTION_ADDRESS = '0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4'
 
 export enum AUCTION_STATUS {
   UPCOMING = 'upcoming',
