@@ -9,15 +9,22 @@ import {
   UserRegistration
 } from '../generated/EasyAuction/EasyAuction'
 import { Auction, AuctionBid, AuctionToken } from '../generated/schema'
-import { AUCTION_ADDRESS, fetchTokenName, fetchTokenSymbol, fetchTokenDecimals } from './helpers'
+import {
+  AUCTION_FACTORY_ADDRESS,
+  AUCTION_STATUS,
+  BID_STATUS,
+  fetchTokenName,
+  fetchTokenSymbol,
+  fetchTokenDecimals
+} from './helpers'
 
 export function handleNewAuction(event: NewAuction): void {
-  let auction = Auction.load(AUCTION_ADDRESS)
+  let auction = Auction.load(AUCTION_FACTORY_ADDRESS)
 
   auction.id = event.params.auctionId.toHexString()
   auction.createdAt = event.block.timestamp.toI32()
   auction.updatedAt = event.block.timestamp.toI32()
-  auction.status = 'open'
+  auction.status = AUCTION_STATUS.UPCOMING
   auction.startTime = event.block.timestamp.toI32() // ToDo: Add  to contract event
   auction.endTime = event.params.auctionEndDate.toI32()
   auction.gracePeriod = 0 //ToDo: Add to contract event
@@ -46,14 +53,38 @@ export function handleNewAuction(event: NewAuction): void {
   auction.save()
 }
 
-export function handleAuctionCleared(event: AuctionCleared): void {}
+export function handleAuctionCleared(event: AuctionCleared): void {
+  let auction = Auction.load(event.params.auctionId.toHexString())
+  auction.updatedAt = event.block.timestamp.toI32()
+  auction.status = AUCTION_STATUS.OPEN
+}
 
-export function handleCancellationSellOrder(event: CancellationSellOrder): void {}
+export function handleCancellationSellOrder(event: CancellationSellOrder): void {
+  // ToDo: concatenate unique id
+  let bid = AuctionBid.load(event.transaction.hash.toHexString())
+  bid.updatedAt = event.block.timestamp.toI32()
+  bid.deletedAt = event.block.timestamp.toI32()
+  bid.status = BID_STATUS.CANCELLED
+  bid.save()
+}
 
-export function handleClaimedFromOrder(event: ClaimedFromOrder): void {}
+export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
+  // ToDo: concatenate unique id
+  let bid = AuctionBid.load(event.transaction.hash.toHexString())
+  bid.updatedAt = event.block.timestamp.toI32()
+  bid.status = BID_STATUS.CLAIMED
+  bid.save()
+}
 
-export function handleNewSellOrder(event: NewSellOrder): void {}
-
-export function handleNewUser(event: NewUser): void {}
-
-export function handleUserRegistration(event: UserRegistration): void {}
+export function handleNewSellOrder(event: NewSellOrder): void {
+  // ToDo: concatenate unique id
+  let bid = AuctionBid.load(event.transaction.hash.toHexString())
+  bid.auction = event.address.toHexString()
+  bid.createdAt = event.block.timestamp.toI32()
+  bid.updatedAt = event.block.timestamp.toI32()
+  bid.tokenInAmount = event.params.buyAmount.toI32()
+  bid.tokenOutAmount = event.params.sellAmount.toI32()
+  bid.address = event.transaction.from.toHexString()
+  bid.status = BID_STATUS.SUBMITTED
+  bid.save()
+}
