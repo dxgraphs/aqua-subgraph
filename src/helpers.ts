@@ -8,18 +8,18 @@ import { ERC20 } from '../generated/EasyAuction/ERC20'
 // Created on Rinkeby
 export const AUCTION_ADDRESS = '0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4'
 
-export enum AUCTION_STATUS {
-  UPCOMING = 'upcoming',
-  SETTLED = 'settled',
-  ENDED = 'ended',
-  OPEN = 'open'
+export class AUCTION_STATUS {
+  static UPCOMING: string = 'upcoming'
+  static SETTLED: string = 'settled'
+  static ENDED: string = 'ended'
+  static OPEN: string = 'open'
 }
 
-export enum BID_STATUS {
-  SUBMITTED = 'submitted',
-  CANCELLED = 'cancelled',
-  SETTLED = 'settled',
-  CLAIMED = 'claimed'
+export class BID_STATUS {
+  static SUBMITTED: string = 'submitted'
+  static CANCELLED: string = 'cancelled'
+  static SETTLED: string = 'settled'
+  static CLAIMED: string = 'claimed'
 }
 
 export function isNullEthValue(value: string): boolean {
