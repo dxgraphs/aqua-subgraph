@@ -23,8 +23,7 @@ import {
  * @todo Fetch token icon for `tokenIn` and `tokenOut`
  */
 export function handleNewAuction(event: NewAuction): void {
-  let auction = Auction.load(AUCTION_ADDRESS)
-  auction.id = event.params.auctionId.toHexString()
+  let auction = new Auction(AUCTION_ADDRESS)
   auction.createdAt = event.block.timestamp.toI32()
   auction.updatedAt = event.block.timestamp.toI32()
   auction.status = AUCTION_STATUS.UPCOMING
@@ -33,14 +32,14 @@ export function handleNewAuction(event: NewAuction): void {
   auction.gracePeriod = 0 //ToDo: Add to contract event
   auction.tokenAmount = event.params._auctionedSellAmount.toI32()
 
-  let tokenIn = AuctionToken.load(event.params._biddingToken.toHexString())
+  let tokenIn = new AuctionToken(event.params._biddingToken.toHexString())
   tokenIn.name = fetchTokenName(event.params._biddingToken)
   tokenIn.address = event.params._biddingToken.toString()
   tokenIn.symbol = fetchTokenSymbol(event.params._biddingToken)
   tokenIn.decimals = fetchTokenDecimals(event.params._biddingToken).toI32()
   // ToDo: tokenIn.icon = ''
 
-  let tokenOut = AuctionToken.load(event.params._auctioningToken.toHexString())
+  let tokenOut = new AuctionToken(event.params._auctioningToken.toHexString())
 
   tokenIn.name = fetchTokenName(event.params._auctioningToken)
   tokenIn.address = event.params._auctioningToken.toString()
