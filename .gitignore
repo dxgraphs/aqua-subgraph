@@ -26,3 +26,6 @@ yarn.lock
 
 # dependencies
 .vscode
+
+# package-lock
+package-lock.json
