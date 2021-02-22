@@ -8,14 +8,14 @@ import { ERC20 } from '../generated/EasyAuction/ERC20'
 // Created on Rinkeby
 export const AUCTION_ADDRESS = '0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4'
 
-export class AUCTION_STATUS {
+export abstract class AUCTION_STATUS {
   static UPCOMING: string = 'upcoming'
   static SETTLED: string = 'settled'
   static ENDED: string = 'ended'
   static OPEN: string = 'open'
 }
 
-export class BID_STATUS {
+export abstract class BID_STATUS {
   static SUBMITTED: string = 'submitted'
   static CANCELLED: string = 'cancelled'
   static SETTLED: string = 'settled'
