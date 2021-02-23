@@ -10,6 +10,7 @@
 
 # production
 /build
+/generated
 
 # misc
 .DS_Store
@@ -26,3 +27,6 @@ yarn.lock
 
 # dependencies
 .vscode
+
+# package-lock
+package-lock.json

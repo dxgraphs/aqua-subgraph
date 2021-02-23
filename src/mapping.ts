@@ -10,7 +10,7 @@ import {
 } from '../generated/EasyAuction/EasyAuction'
 import { Auction, AuctionBid, AuctionToken } from '../generated/schema'
 import {
-  AUCTION_FACTORY_ADDRESS,
+  AUCTION_ADDRESS,
   AUCTION_STATUS,
   BID_STATUS,
   fetchTokenName,
@@ -18,10 +18,12 @@ import {
   fetchTokenDecimals
 } from './helpers'
 
+/**
+ * @todo replace `AUCTION_ADDRESS` with `event.params.auctionId` when `EasyAuction` implement Factory pattern
+ * @todo Fetch token icon for `tokenIn` and `tokenOut`
+ */
 export function handleNewAuction(event: NewAuction): void {
-  let auction = Auction.load(AUCTION_FACTORY_ADDRESS)
-
-  auction.id = event.params.auctionId.toHexString()
+  let auction = new Auction(AUCTION_ADDRESS)
   auction.createdAt = event.block.timestamp.toI32()
   auction.updatedAt = event.block.timestamp.toI32()
   auction.status = AUCTION_STATUS.UPCOMING
@@ -30,14 +32,14 @@ export function handleNewAuction(event: NewAuction): void {
   auction.gracePeriod = 0 //ToDo: Add to contract event
   auction.tokenAmount = event.params._auctionedSellAmount.toI32()
 
-  let tokenIn = AuctionToken.load(event.params._biddingToken.toHexString())
+  let tokenIn = getAuctionToken(event.params._biddingToken.toHexString())
   tokenIn.name = fetchTokenName(event.params._biddingToken)
   tokenIn.address = event.params._biddingToken.toString()
   tokenIn.symbol = fetchTokenSymbol(event.params._biddingToken)
   tokenIn.decimals = fetchTokenDecimals(event.params._biddingToken).toI32()
   // ToDo: tokenIn.icon = ''
 
-  let tokenOut = AuctionToken.load(event.params._auctioningToken.toHexString())
+  let tokenOut = getAuctionToken(event.params._auctioningToken.toHexString())
 
   tokenIn.name = fetchTokenName(event.params._auctioningToken)
   tokenIn.address = event.params._auctioningToken.toString()
@@ -87,4 +89,21 @@ export function handleNewSellOrder(event: NewSellOrder): void {
   bid.address = event.transaction.from.toHexString()
   bid.status = BID_STATUS.SUBMITTED
   bid.save()
+}
+
+/**
+ * Returns an existing AuctionToken instance if exists.
+ * Creates a new instance if it does not
+ * @param tokenContractAddress
+ */
+export function getAuctionToken(tokenContractAddress: string): AuctionToken {
+  // Try to fetch existing token
+  let auctionToken = AuctionToken.load(tokenContractAddress)
+
+  // Token does not exist, create new record
+  if (auctionToken == null) {
+    auctionToken = new AuctionToken(tokenContractAddress)
+  }
+
+  return auctionToken
 }
