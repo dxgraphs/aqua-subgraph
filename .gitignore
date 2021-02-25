@@ -30,3 +30,7 @@ yarn.lock
 
 # package-lock
 package-lock.json
+
+# Data
+data/ipfs
+data/postgres
