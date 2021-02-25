@@ -1,0 +1,22 @@
+# This workflow publishes a the new subgraph to The Graph
+name: Test The Subgraph
+
+# Listen for pushes on the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MNEMONIC: ${{ secrets.GANACHE_MNEMONIC }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: yarn install
+      - name: Build Docker containers
+        run: docker-compose up -d
+      - name: Run tests
+      - run: yarn test
