@@ -19,4 +19,4 @@ jobs:
       - name: Build Docker containers
         run: docker-compose up -d
       - name: Run tests
-      - run: yarn test
+        run: yarn test
