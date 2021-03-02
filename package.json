@@ -2,6 +2,7 @@
   "name": "mesa-subgraph",
   "license": "UNLICENSED",
   "scripts": {
+    "compile": "hardhat compile",
     "test": "jest",
     "codegen": "graph codegen",
     "build": "graph build",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "hardhat": "^2.0.10",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.1"
   }
