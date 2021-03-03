@@ -105,5 +105,5 @@ export function getAuctionToken(tokenContractAddress: string): AuctionToken {
     auctionToken = new AuctionToken(tokenContractAddress)
   }
 
-  return auctionToken
+  return auctionToken as AuctionToken
 }
