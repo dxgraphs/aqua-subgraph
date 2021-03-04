@@ -9,21 +9,14 @@ import {
   UserRegistration
 } from '../generated/EasyAuction/EasyAuction'
 import { Auction, AuctionBid, AuctionToken } from '../generated/schema'
-import {
-  AUCTION_ADDRESS,
-  AUCTION_STATUS,
-  BID_STATUS,
-  fetchTokenName,
-  fetchTokenSymbol,
-  fetchTokenDecimals
-} from './helpers'
+import { AUCTION_STATUS, BID_STATUS, fetchTokenName, fetchTokenSymbol, fetchTokenDecimals } from './helpers'
 
 /**
  * @todo replace `AUCTION_ADDRESS` with `event.params.auctionId` when `EasyAuction` implement Factory pattern
  * @todo Fetch token icon for `tokenIn` and `tokenOut`
  */
 export function handleNewAuction(event: NewAuction): void {
-  let auction = new Auction(AUCTION_ADDRESS)
+  let auction = new Auction(event.address.toHexString())
   auction.createdAt = event.block.timestamp.toI32()
   auction.updatedAt = event.block.timestamp.toI32()
   auction.status = AUCTION_STATUS.UPCOMING
