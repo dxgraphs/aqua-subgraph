@@ -33,7 +33,6 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
-    volumes:
   ganache:
     image: trufflesuite/ganache-cli
     ports:
