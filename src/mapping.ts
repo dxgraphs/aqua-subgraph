@@ -73,7 +73,7 @@ export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
 
 export function handleNewSellOrder(event: NewSellOrder): void {
   // ToDo: concatenate unique id
-  let bid = AuctionBid.load(event.transaction.hash.toHexString())
+  let bid = new AuctionBid(event.transaction.hash.toHexString())
   bid.auction = event.address.toHexString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
