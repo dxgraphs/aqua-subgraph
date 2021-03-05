@@ -10,10 +10,7 @@ import EasyAuctionArtfacts from '../artifacts/contracts/EasyAuction.sol/EasyAuct
 // Interfaces
 import { EasyAuction } from '../src/contracts'
 
-describe('Auction', async () => {
-  // Wait for everything to fire up
-  await wait(30000)
-
+describe('Auction', () => {
   // Connect to local ganache instance
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
   let easyAuctionContract: EasyAuction
@@ -25,6 +22,9 @@ describe('Auction', async () => {
   })
 
   beforeEach(async () => {
+    // Wait for everything to fire up
+    await wait(10000)
+
     // Before each unit test, a new EasyAuction contract is deployed to ganache
     // then followed by deploying its subgraph to the Graph node
 
