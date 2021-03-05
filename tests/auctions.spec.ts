@@ -60,7 +60,7 @@ describe('Auction', async () => {
 
   test('should return the an array of auctions', async () => {
     // Create a new auction
-    const emitNewAuctionTx = await easyAuctionContract.emitNewAuction(
+    await easyAuctionContract.emitNewAuction(
       10,
       '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
       '0x7090363b7dA6d97Ed575F17900AeeE949c2B7Cf9',
@@ -111,7 +111,7 @@ describe('Auction', async () => {
 
   test('should return the an array of auction bids', async () => {
     // Create a new auction
-    const emitNewAuctionTx = await easyAuctionContract.emitNewAuction(
+    await easyAuctionContract.emitNewAuction(
       10,
       '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea',
       '0x7090363b7dA6d97Ed575F17900AeeE949c2B7Cf9',
@@ -124,7 +124,7 @@ describe('Auction', async () => {
     )
 
     // Create a bid
-    const emitNewSellOrderTx = await easyAuctionContract.emitNewSellOrder(10, 1, 100, 100)
+    await easyAuctionContract.emitNewSellOrder(10, 1, 100, 100)
 
     // Wait for subgraph to index the event
     await wait(10000)
