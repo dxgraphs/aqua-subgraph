@@ -9,21 +9,14 @@ import {
   UserRegistration
 } from '../generated/EasyAuction/EasyAuction'
 import { Auction, AuctionBid, AuctionToken } from '../generated/schema'
-import {
-  AUCTION_ADDRESS,
-  AUCTION_STATUS,
-  BID_STATUS,
-  fetchTokenName,
-  fetchTokenSymbol,
-  fetchTokenDecimals
-} from './helpers'
+import { AUCTION_STATUS, BID_STATUS, fetchTokenName, fetchTokenSymbol, fetchTokenDecimals } from './helpers'
 
 /**
  * @todo replace `AUCTION_ADDRESS` with `event.params.auctionId` when `EasyAuction` implement Factory pattern
  * @todo Fetch token icon for `tokenIn` and `tokenOut`
  */
 export function handleNewAuction(event: NewAuction): void {
-  let auction = new Auction(AUCTION_ADDRESS)
+  let auction = new Auction(event.address.toHexString())
   auction.createdAt = event.block.timestamp.toI32()
   auction.updatedAt = event.block.timestamp.toI32()
   auction.status = AUCTION_STATUS.UPCOMING
@@ -80,7 +73,7 @@ export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
 
 export function handleNewSellOrder(event: NewSellOrder): void {
   // ToDo: concatenate unique id
-  let bid = AuctionBid.load(event.transaction.hash.toHexString())
+  let bid = new AuctionBid(event.transaction.hash.toHexString())
   bid.auction = event.address.toHexString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
@@ -105,5 +98,5 @@ export function getAuctionToken(tokenContractAddress: string): AuctionToken {
     auctionToken = new AuctionToken(tokenContractAddress)
   }
 
-  return auctionToken
+  return auctionToken as AuctionToken
 }

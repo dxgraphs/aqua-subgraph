@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: EasyAuction
-    network: rinkeby
+    network: {{network}}
     source:
-      address: '0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4'
+      address: '{{address}}'
       abi: EasyAuction
-      startBlock: 7900000
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
