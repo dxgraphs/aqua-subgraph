@@ -20,6 +20,17 @@ Install dependencies using `yarn`
 $ yarn
 ```
 
+# Build ABIs
+
+ABIs are not included in the repo. Instead, they are extracted from the smart contract repo ([cryptonative-ch/mesa-smartcontracts](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
+
+```bash
+$ ./build-abis.sh`
+
+```
+
+Note that it requires [`jq`](https://stedolan.github.io/jq/) tool.
+
 Schema is available in [`schema.graphql`](schema.graphql)
 
 # Scripts
