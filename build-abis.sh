@@ -8,7 +8,7 @@ NC='\033[0m' # No Color
 MESA_SMART_CONTRACT_REPO='https://github.com/cryptonative-ch/mesa-smartcontracts'
 # Artifacts path
 ARTIFACT_PATHS=("MesaFactory.sol/MesaFactory.json" "auctions/AuctionLauncher.sol/AuctionLauncher.json" "auctions/FixedPriceAuction.sol/FixedPriceAuction.json" "auctions/EasyAuction.sol/EasyAuction.json" "templates/TemplateLauncher.sol/TemplateLauncher.json" "templates/EasyAuctionTemplate.sol/EasyAuctionTemplate.json")
-ARTIFACT_ABI_PATHS=("MesaFactory.json" "AuctionLauncher.json" "FixedPriceAuction.json" "EasyAuction.json" "TemplateLauncher.json" "EasyAuctionTemplate.json")
+ARTIFACT_NAMES=("MesaFactory.json" "AuctionLauncher.json" "FixedPriceAuction.json" "EasyAuction.json" "TemplateLauncher.json" "EasyAuctionTemplate.json")
 
 # Clean up
 rm -rf mesa-smartcontracts
@@ -17,17 +17,32 @@ rm -rf mesa-smartcontracts
 printf "Cloning ${Cyan}mesa-smartcontracts${NC} from ${Cyan}${MESA_SMART_CONTRACT_REPO}${NC}\r\n\r\n"
 git clone --single-branch --branch develop $MESA_SMART_CONTRACT_REPO -q
 
-# Extracting the ABIs
-printf "Extracting the ABIs\r\n\r\n"
+# Create artifacts & abis directory if missing
+mkdir -p artifacts
+mkdir -p abis
 
+# Extract artifacts
+printf "Extracting artifacts and ABIs\r\n\r\n"
 for i in ${!ARTIFACT_PATHS[@]};
 do
 
-  artifactPath="mesa-smartcontracts/artifacts/contracts/${ARTIFACT_PATHS[$i]}"
-  artifactAbiPath="abis/${ARTIFACT_ABI_PATHS[$i]}"
+  # source
+  artifactName=${ARTIFACT_NAMES[$i]}
+  artifactSourcePath="mesa-smartcontracts/artifacts/contracts/${ARTIFACT_PATHS[$i]}"
+  artifactOutputPath="artifacts/${ARTIFACT_NAMES[$i]}"
+  artifactABIPath="abis/${ARTIFACT_NAMES[$i]}"
 
-  printf "Extracting the ABI from ${Cyan}${artifactPath}${NC} to ${Cyan}${artifactAbiPath} ${NC}\r\n";
-  jq '.abi' $artifactPath > $artifactAbiPath;
+  # Copy the artifact
+  printf "Copying ${Cyan}${artifactSourcePath}${NC} to ${Cyan}${artifactOutputPath} ${NC}\r\n";
+  cp $artifactSourcePath $artifactOutputPath
+
+  # Extract the ABIs from the ABI
+  printf "Extracting ${Cyan}${artifactName}${NC} ABIs to ${Cyan}${artifactABIPath} ${NC}\r\n";
+  jq '.abi' $artifactSourcePath > $artifactABIPath;
 
 done
 
+# Clean up
+rm -rf mesa-smartcontracts
+
+printf "\r\n\r\nDone, happy graphing!"
