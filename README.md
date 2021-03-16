@@ -25,7 +25,7 @@ $ yarn
 ABIs are not included in the repo. Instead, they are extracted from the smart contract repo ([cryptonative-ch/mesa-smartcontracts](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
 
 ```bash
-$ ./build-abis.sh`
+$ ./build-abis.sh
 
 ```
 
