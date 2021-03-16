@@ -38,3 +38,7 @@ package-lock.json
 
 # Contract artifacts
 /artifacts
+
+# Mesa smart contracts
+/mesa-smartcontracts
+/mesa-smart-contracts
