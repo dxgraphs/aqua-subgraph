@@ -29,7 +29,6 @@ type AuctionToken @entity {
   id: ID!
   auction: Auction #references the auction
   name: String # Token name, from the smart contract ERC20.name()
-  icon: String # Token icon, preferably are URL on the IPFS
   address: String # ERC20 Token's contract address
   symbol: String # Symbol, from ERC20.symbol()
   decimals: Int # Decimal, from ERC.decimals()
