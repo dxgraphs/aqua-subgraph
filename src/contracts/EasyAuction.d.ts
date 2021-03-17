@@ -22,31 +22,100 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface EasyAuctionInterface extends ethers.utils.Interface {
   functions: {
-    "emitAuctionCleared(uint256,uint96,uint96)": FunctionFragment;
-    "emitCancellationSellOrder(uint256,uint64,uint96,uint96)": FunctionFragment;
-    "emitClaimedFromOrder(uint256,uint64,uint96,uint96)": FunctionFragment;
-    "emitNewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)": FunctionFragment;
-    "emitNewSellOrder(uint256,uint64,uint96,uint96)": FunctionFragment;
-    "emitNewUser(uint64,address)": FunctionFragment;
-    "emitUserRegistration(address,uint64)": FunctionFragment;
+    "FEE_DENOMINATOR()": FunctionFragment;
+    "auctionEndDate()": FunctionFragment;
+    "auctionStartedDate()": FunctionFragment;
+    "auctioningToken()": FunctionFragment;
+    "biddingToken()": FunctionFragment;
+    "cancelOrders(bytes32[])": FunctionFragment;
+    "claimFromParticipantOrder(bytes32[])": FunctionFragment;
+    "clearingPriceOrder()": FunctionFragment;
+    "containsOrder(bytes32)": FunctionFragment;
+    "feeNumerator()": FunctionFragment;
+    "feeReceiverUserId()": FunctionFragment;
+    "getSecondsRemainingInBatch()": FunctionFragment;
+    "getUserId(address)": FunctionFragment;
+    "gracePeriodEndDate()": FunctionFragment;
+    "gracePeriodStartDate()": FunctionFragment;
+    "initAuction(address,address,uint256,uint96,uint96,uint256,uint256,uint256,uint256,bool)": FunctionFragment;
+    "initialAuctionOrder()": FunctionFragment;
+    "interimOrder()": FunctionFragment;
+    "interimSumBidAmount()": FunctionFragment;
+    "isAtomicClosureAllowed()": FunctionFragment;
+    "minFundingThreshold()": FunctionFragment;
+    "minFundingThresholdNotReached()": FunctionFragment;
+    "minimumBiddingAmountPerOrder()": FunctionFragment;
+    "numUsers()": FunctionFragment;
+    "orderCancellationEndDate()": FunctionFragment;
+    "placeOrders(uint96[],uint96[],bytes32[])": FunctionFragment;
+    "precalculateSellAmountSum(uint256)": FunctionFragment;
+    "registerUser(address)": FunctionFragment;
+    "setAuctionEndDate(uint256)": FunctionFragment;
+    "settleAuction()": FunctionFragment;
+    "settleAuctionAtomically(uint96[],uint96[],bytes32[])": FunctionFragment;
+    "volumeClearingPriceOrder()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "emitAuctionCleared",
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    functionFragment: "FEE_DENOMINATOR",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "emitCancellationSellOrder",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    functionFragment: "auctionEndDate",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "emitClaimedFromOrder",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    functionFragment: "auctionStartedDate",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "emitNewAuction",
+    functionFragment: "auctioningToken",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "biddingToken",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "cancelOrders",
+    values: [BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimFromParticipantOrder",
+    values: [BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "clearingPriceOrder",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "containsOrder",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "feeNumerator",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "feeReceiverUserId",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getSecondsRemainingInBatch",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "getUserId", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "gracePeriodEndDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "gracePeriodStartDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initAuction",
     values: [
-      BigNumberish,
       string,
       string,
       BigNumberish,
@@ -54,66 +123,211 @@ interface EasyAuctionInterface extends ethers.utils.Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
-      BigNumberish
+      BigNumberish,
+      BigNumberish,
+      boolean
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "emitNewSellOrder",
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    functionFragment: "initialAuctionOrder",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "emitNewUser",
-    values: [BigNumberish, string]
+    functionFragment: "interimOrder",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "emitUserRegistration",
-    values: [string, BigNumberish]
+    functionFragment: "interimSumBidAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isAtomicClosureAllowed",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minFundingThreshold",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minFundingThresholdNotReached",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minimumBiddingAmountPerOrder",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "numUsers", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "orderCancellationEndDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "placeOrders",
+    values: [BigNumberish[], BigNumberish[], BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "precalculateSellAmountSum",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "registerUser",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAuctionEndDate",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "settleAuction",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "settleAuctionAtomically",
+    values: [BigNumberish[], BigNumberish[], BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "volumeClearingPriceOrder",
+    values?: undefined
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "emitAuctionCleared",
+    functionFragment: "FEE_DENOMINATOR",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "emitCancellationSellOrder",
+    functionFragment: "auctionEndDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "emitClaimedFromOrder",
+    functionFragment: "auctionStartedDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "emitNewAuction",
+    functionFragment: "auctioningToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "emitNewSellOrder",
+    functionFragment: "biddingToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "emitNewUser",
+    functionFragment: "cancelOrders",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "emitUserRegistration",
+    functionFragment: "claimFromParticipantOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "clearingPriceOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "containsOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "feeNumerator",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "feeReceiverUserId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSecondsRemainingInBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getUserId", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "gracePeriodEndDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "gracePeriodStartDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initAuction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initialAuctionOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "interimOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "interimSumBidAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isAtomicClosureAllowed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minFundingThreshold",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minFundingThresholdNotReached",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minimumBiddingAmountPerOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "numUsers", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "orderCancellationEndDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "placeOrders",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "precalculateSellAmountSum",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "registerUser",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAuctionEndDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settleAuction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "settleAuctionAtomically",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "volumeClearingPriceOrder",
     data: BytesLike
   ): Result;
 
   events: {
-    "AuctionCleared(uint256,uint96,uint96)": EventFragment;
-    "CancellationSellOrder(uint256,uint64,uint96,uint96)": EventFragment;
-    "ClaimedFromOrder(uint256,uint64,uint96,uint96)": EventFragment;
-    "NewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)": EventFragment;
-    "NewSellOrder(uint256,uint64,uint96,uint96)": EventFragment;
+    "AuctionCleared(uint96,uint96,bytes32)": EventFragment;
+    "CancellationOrder(uint64,uint96,uint96)": EventFragment;
+    "ClaimedFromOrder(uint64,uint96,uint96)": EventFragment;
+    "InitializedAuction(address,address,uint256,uint256,uint256,uint96,uint96,uint256,uint256)": EventFragment;
+    "NewOrder(uint64,uint96,uint96)": EventFragment;
     "NewUser(uint64,address)": EventFragment;
     "UserRegistration(address,uint64)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AuctionCleared"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "CancellationSellOrder"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CancellationOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimedFromOrder"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NewAuction"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NewSellOrder"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InitializedAuction"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewUser"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UserRegistration"): EventFragment;
 }
@@ -132,383 +346,708 @@ export class EasyAuction extends Contract {
   interface: EasyAuctionInterface;
 
   functions: {
-    emitAuctionCleared(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    auctionEndDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "auctionEndDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    auctionStartedDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "auctionStartedDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    auctioningToken(overrides?: CallOverrides): Promise<[string]>;
+
+    "auctioningToken()"(overrides?: CallOverrides): Promise<[string]>;
+
+    biddingToken(overrides?: CallOverrides): Promise<[string]>;
+
+    "biddingToken()"(overrides?: CallOverrides): Promise<[string]>;
+
+    cancelOrders(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitAuctionCleared(uint256,uint96,uint96)"(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    "cancelOrders(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    emitCancellationSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    claimFromParticipantOrder(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitCancellationSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "claimFromParticipantOrder(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    emitClaimedFromOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    clearingPriceOrder(overrides?: CallOverrides): Promise<[string]>;
+
+    "clearingPriceOrder()"(overrides?: CallOverrides): Promise<[string]>;
+
+    containsOrder(
+      _order: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "containsOrder(bytes32)"(
+      _order: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    feeNumerator(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "feeNumerator()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    feeReceiverUserId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "feeReceiverUserId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "getSecondsRemainingInBatch()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getUserId(
+      user: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitClaimedFromOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "getUserId(address)"(
+      user: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    emitNewAuction(
-      auctionId: BigNumberish,
+    gracePeriodEndDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "gracePeriodEndDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    gracePeriodStartDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "gracePeriodStartDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    initAuction(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitNewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)"(
-      auctionId: BigNumberish,
+    "initAuction(address,address,uint256,uint96,uint96,uint256,uint256,uint256,uint256,bool)"(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    emitNewSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    initialAuctionOrder(overrides?: CallOverrides): Promise<[string]>;
+
+    "initialAuctionOrder()"(overrides?: CallOverrides): Promise<[string]>;
+
+    interimOrder(overrides?: CallOverrides): Promise<[string]>;
+
+    "interimOrder()"(overrides?: CallOverrides): Promise<[string]>;
+
+    interimSumBidAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "interimSumBidAmount()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    isAtomicClosureAllowed(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<[boolean]>;
+
+    minFundingThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "minFundingThreshold()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    minFundingThresholdNotReached(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    "minFundingThresholdNotReached()"(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    minimumBiddingAmountPerOrder(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "minimumBiddingAmountPerOrder()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    numUsers(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "numUsers()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    orderCancellationEndDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "orderCancellationEndDate()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    placeOrders(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitNewSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "placeOrders(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    emitNewUser(
-      userId: BigNumberish,
-      userAddress: string,
+    precalculateSellAmountSum(
+      iterationSteps: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitNewUser(uint64,address)"(
-      userId: BigNumberish,
-      userAddress: string,
+    "precalculateSellAmountSum(uint256)"(
+      iterationSteps: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    emitUserRegistration(
+    registerUser(
       user: string,
-      userId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "emitUserRegistration(address,uint64)"(
+    "registerUser(address)"(
       user: string,
-      userId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
+
+    setAuctionEndDate(
+      _auctionEndDate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setAuctionEndDate(uint256)"(
+      _auctionEndDate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    settleAuction(overrides?: Overrides): Promise<ContractTransaction>;
+
+    "settleAuction()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+    settleAuctionAtomically(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    volumeClearingPriceOrder(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "volumeClearingPriceOrder()"(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
   };
 
-  emitAuctionCleared(
-    auctionId: BigNumberish,
-    priceNumerator: BigNumberish,
-    priceDenominator: BigNumberish,
+  FEE_DENOMINATOR(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  auctionStartedDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "auctionStartedDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  auctioningToken(overrides?: CallOverrides): Promise<string>;
+
+  "auctioningToken()"(overrides?: CallOverrides): Promise<string>;
+
+  biddingToken(overrides?: CallOverrides): Promise<string>;
+
+  "biddingToken()"(overrides?: CallOverrides): Promise<string>;
+
+  cancelOrders(
+    _orders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitAuctionCleared(uint256,uint96,uint96)"(
-    auctionId: BigNumberish,
-    priceNumerator: BigNumberish,
-    priceDenominator: BigNumberish,
+  "cancelOrders(bytes32[])"(
+    _orders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  emitCancellationSellOrder(
-    auctionId: BigNumberish,
-    userId: BigNumberish,
-    buyAmount: BigNumberish,
-    sellAmount: BigNumberish,
+  claimFromParticipantOrder(
+    _orders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitCancellationSellOrder(uint256,uint64,uint96,uint96)"(
-    auctionId: BigNumberish,
-    userId: BigNumberish,
-    buyAmount: BigNumberish,
-    sellAmount: BigNumberish,
+  "claimFromParticipantOrder(bytes32[])"(
+    _orders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  emitClaimedFromOrder(
-    auctionId: BigNumberish,
-    userId: BigNumberish,
-    buyAmount: BigNumberish,
-    sellAmount: BigNumberish,
+  clearingPriceOrder(overrides?: CallOverrides): Promise<string>;
+
+  "clearingPriceOrder()"(overrides?: CallOverrides): Promise<string>;
+
+  containsOrder(_order: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+
+  "containsOrder(bytes32)"(
+    _order: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  feeNumerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "feeNumerator()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  feeReceiverUserId(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "feeReceiverUserId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "getSecondsRemainingInBatch()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getUserId(user: string, overrides?: Overrides): Promise<ContractTransaction>;
+
+  "getUserId(address)"(
+    user: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitClaimedFromOrder(uint256,uint64,uint96,uint96)"(
-    auctionId: BigNumberish,
-    userId: BigNumberish,
-    buyAmount: BigNumberish,
-    sellAmount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  gracePeriodEndDate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  emitNewAuction(
-    auctionId: BigNumberish,
+  "gracePeriodEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  gracePeriodStartDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "gracePeriodStartDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  initAuction(
     _auctioningToken: string,
     _biddingToken: string,
-    orderCancellationEndDate: BigNumberish,
-    auctionEndDate: BigNumberish,
-    _auctionedSellAmount: BigNumberish,
-    _minBuyAmount: BigNumberish,
-    minimumBiddingAmountPerOrder: BigNumberish,
-    minFundingThreshold: BigNumberish,
+    _orderCancelationPeriodDuration: BigNumberish,
+    _amountToSell: BigNumberish,
+    _minBidAmountToReceive: BigNumberish,
+    _minimumBiddingAmountPerOrder: BigNumberish,
+    _minFundingThreshold: BigNumberish,
+    _gracePeriodStartDuration: BigNumberish,
+    _gracePeriodDuration: BigNumberish,
+    _isAtomicClosureAllowed: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitNewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)"(
-    auctionId: BigNumberish,
+  "initAuction(address,address,uint256,uint96,uint96,uint256,uint256,uint256,uint256,bool)"(
     _auctioningToken: string,
     _biddingToken: string,
-    orderCancellationEndDate: BigNumberish,
-    auctionEndDate: BigNumberish,
-    _auctionedSellAmount: BigNumberish,
-    _minBuyAmount: BigNumberish,
-    minimumBiddingAmountPerOrder: BigNumberish,
-    minFundingThreshold: BigNumberish,
+    _orderCancelationPeriodDuration: BigNumberish,
+    _amountToSell: BigNumberish,
+    _minBidAmountToReceive: BigNumberish,
+    _minimumBiddingAmountPerOrder: BigNumberish,
+    _minFundingThreshold: BigNumberish,
+    _gracePeriodStartDuration: BigNumberish,
+    _gracePeriodDuration: BigNumberish,
+    _isAtomicClosureAllowed: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  emitNewSellOrder(
-    auctionId: BigNumberish,
-    userId: BigNumberish,
-    buyAmount: BigNumberish,
-    sellAmount: BigNumberish,
+  initialAuctionOrder(overrides?: CallOverrides): Promise<string>;
+
+  "initialAuctionOrder()"(overrides?: CallOverrides): Promise<string>;
+
+  interimOrder(overrides?: CallOverrides): Promise<string>;
+
+  "interimOrder()"(overrides?: CallOverrides): Promise<string>;
+
+  interimSumBidAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "interimSumBidAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  isAtomicClosureAllowed(overrides?: CallOverrides): Promise<boolean>;
+
+  "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<boolean>;
+
+  minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  minFundingThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
+
+  "minFundingThresholdNotReached()"(
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "minimumBiddingAmountPerOrder()"(
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  numUsers(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "numUsers()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  orderCancellationEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  placeOrders(
+    _amountsToBuy: BigNumberish[],
+    _amountsToBid: BigNumberish[],
+    _prevOrders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitNewSellOrder(uint256,uint64,uint96,uint96)"(
-    auctionId: BigNumberish,
-    userId: BigNumberish,
-    buyAmount: BigNumberish,
-    sellAmount: BigNumberish,
+  "placeOrders(uint96[],uint96[],bytes32[])"(
+    _amountsToBuy: BigNumberish[],
+    _amountsToBid: BigNumberish[],
+    _prevOrders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  emitNewUser(
-    userId: BigNumberish,
-    userAddress: string,
+  precalculateSellAmountSum(
+    iterationSteps: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitNewUser(uint64,address)"(
-    userId: BigNumberish,
-    userAddress: string,
+  "precalculateSellAmountSum(uint256)"(
+    iterationSteps: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  emitUserRegistration(
+  registerUser(
     user: string,
-    userId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "emitUserRegistration(address,uint64)"(
+  "registerUser(address)"(
     user: string,
-    userId: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
+
+  setAuctionEndDate(
+    _auctionEndDate: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setAuctionEndDate(uint256)"(
+    _auctionEndDate: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  settleAuction(overrides?: Overrides): Promise<ContractTransaction>;
+
+  "settleAuction()"(overrides?: Overrides): Promise<ContractTransaction>;
+
+  settleAuctionAtomically(
+    _amountsToBuy: BigNumberish[],
+    _amountsToBid: BigNumberish[],
+    _prevOrder: BytesLike[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
+    _amountsToBuy: BigNumberish[],
+    _amountsToBid: BigNumberish[],
+    _prevOrder: BytesLike[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  volumeClearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    emitAuctionCleared(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    auctionStartedDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "auctionStartedDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    auctioningToken(overrides?: CallOverrides): Promise<string>;
+
+    "auctioningToken()"(overrides?: CallOverrides): Promise<string>;
+
+    biddingToken(overrides?: CallOverrides): Promise<string>;
+
+    "biddingToken()"(overrides?: CallOverrides): Promise<string>;
+
+    cancelOrders(
+      _orders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "emitAuctionCleared(uint256,uint96,uint96)"(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    "cancelOrders(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    emitCancellationSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    claimFromParticipantOrder(
+      _orders: BytesLike[],
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        sumAuctioningTokenAmount: BigNumber;
+        sumBiddingTokenAmount: BigNumber;
+      }
+    >;
 
-    "emitCancellationSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "claimFromParticipantOrder(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        sumAuctioningTokenAmount: BigNumber;
+        sumBiddingTokenAmount: BigNumber;
+      }
+    >;
 
-    emitClaimedFromOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    clearingPriceOrder(overrides?: CallOverrides): Promise<string>;
+
+    "clearingPriceOrder()"(overrides?: CallOverrides): Promise<string>;
+
+    containsOrder(
+      _order: BytesLike,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
-    "emitClaimedFromOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "containsOrder(bytes32)"(
+      _order: BytesLike,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
-    emitNewAuction(
-      auctionId: BigNumberish,
+    feeNumerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "feeNumerator()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    feeReceiverUserId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "feeReceiverUserId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getSecondsRemainingInBatch()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserId(user: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getUserId(address)"(
+      user: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    gracePeriodEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "gracePeriodEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    gracePeriodStartDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "gracePeriodStartDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initAuction(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "emitNewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)"(
-      auctionId: BigNumberish,
+    "initAuction(address,address,uint256,uint96,uint96,uint256,uint256,uint256,uint256,bool)"(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    emitNewSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    initialAuctionOrder(overrides?: CallOverrides): Promise<string>;
+
+    "initialAuctionOrder()"(overrides?: CallOverrides): Promise<string>;
+
+    interimOrder(overrides?: CallOverrides): Promise<string>;
+
+    "interimOrder()"(overrides?: CallOverrides): Promise<string>;
+
+    interimSumBidAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "interimSumBidAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isAtomicClosureAllowed(overrides?: CallOverrides): Promise<boolean>;
+
+    "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<boolean>;
+
+    minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    minFundingThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
+
+    "minFundingThresholdNotReached()"(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "minimumBiddingAmountPerOrder()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    numUsers(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "numUsers()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    orderCancellationEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    placeOrders(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "placeOrders(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    precalculateSellAmountSum(
+      iterationSteps: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "emitNewSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "precalculateSellAmountSum(uint256)"(
+      iterationSteps: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    emitNewUser(
-      userId: BigNumberish,
-      userAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    registerUser(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "emitNewUser(uint64,address)"(
-      userId: BigNumberish,
-      userAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    emitUserRegistration(
+    "registerUser(address)"(
       user: string,
-      userId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    setAuctionEndDate(
+      _auctionEndDate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "emitUserRegistration(address,uint64)"(
-      user: string,
-      userId: BigNumberish,
+    "setAuctionEndDate(uint256)"(
+      _auctionEndDate: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    settleAuction(overrides?: CallOverrides): Promise<string>;
+
+    "settleAuction()"(overrides?: CallOverrides): Promise<string>;
+
+    settleAuctionAtomically(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    volumeClearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
     AuctionCleared(
-      auctionId: BigNumberish | null,
-      priceNumerator: null,
-      priceDenominator: null
+      auctionedTokens: null,
+      soldBiddingTokens: null,
+      clearingOrder: null
     ): EventFilter;
 
-    CancellationSellOrder(
-      auctionId: BigNumberish | null,
+    CancellationOrder(
       userId: BigNumberish | null,
-      buyAmount: null,
-      sellAmount: null
+      amountToBuy: null,
+      amountToBid: null
     ): EventFilter;
 
     ClaimedFromOrder(
-      auctionId: BigNumberish | null,
       userId: BigNumberish | null,
-      buyAmount: null,
-      sellAmount: null
+      amountToBuy: null,
+      amountToBid: null
     ): EventFilter;
 
-    NewAuction(
-      auctionId: BigNumberish | null,
+    InitializedAuction(
       _auctioningToken: string | null,
       _biddingToken: string | null,
       orderCancellationEndDate: null,
-      auctionEndDate: null,
-      _auctionedSellAmount: null,
-      _minBuyAmount: null,
+      gracePeriodStartDate: null,
+      gracePeriodEndDate: null,
+      _amountToSell: null,
+      _minBidAmountToReceive: null,
       minimumBiddingAmountPerOrder: null,
       minFundingThreshold: null
     ): EventFilter;
 
-    NewSellOrder(
-      auctionId: BigNumberish | null,
+    NewOrder(
       userId: BigNumberish | null,
-      buyAmount: null,
-      sellAmount: null
+      amountToBuy: null,
+      amountToBid: null
     ): EventFilter;
 
     NewUser(
@@ -520,230 +1059,496 @@ export class EasyAuction extends Contract {
   };
 
   estimateGas: {
-    emitAuctionCleared(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    auctionStartedDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "auctionStartedDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    auctioningToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "auctioningToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    biddingToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "biddingToken()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    cancelOrders(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitAuctionCleared(uint256,uint96,uint96)"(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    "cancelOrders(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    emitCancellationSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    claimFromParticipantOrder(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitCancellationSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "claimFromParticipantOrder(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    emitClaimedFromOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    clearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "clearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    containsOrder(
+      _order: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "containsOrder(bytes32)"(
+      _order: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    feeNumerator(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "feeNumerator()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    feeReceiverUserId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "feeReceiverUserId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getSecondsRemainingInBatch()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserId(user: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "getUserId(address)"(
+      user: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitClaimedFromOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    gracePeriodEndDate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    emitNewAuction(
-      auctionId: BigNumberish,
+    "gracePeriodEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    gracePeriodStartDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "gracePeriodStartDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initAuction(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitNewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)"(
-      auctionId: BigNumberish,
+    "initAuction(address,address,uint256,uint96,uint96,uint256,uint256,uint256,uint256,bool)"(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    emitNewSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    initialAuctionOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "initialAuctionOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    interimOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "interimOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    interimSumBidAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "interimSumBidAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isAtomicClosureAllowed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    minFundingThresholdNotReached(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "minFundingThresholdNotReached()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "minimumBiddingAmountPerOrder()"(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    numUsers(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "numUsers()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    orderCancellationEndDate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    placeOrders(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitNewSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "placeOrders(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    emitNewUser(
-      userId: BigNumberish,
-      userAddress: string,
+    precalculateSellAmountSum(
+      iterationSteps: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitNewUser(uint64,address)"(
-      userId: BigNumberish,
-      userAddress: string,
+    "precalculateSellAmountSum(uint256)"(
+      iterationSteps: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    emitUserRegistration(
+    registerUser(user: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "registerUser(address)"(
       user: string,
-      userId: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "emitUserRegistration(address,uint64)"(
-      user: string,
-      userId: BigNumberish,
+    setAuctionEndDate(
+      _auctionEndDate: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
+
+    "setAuctionEndDate(uint256)"(
+      _auctionEndDate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    settleAuction(overrides?: Overrides): Promise<BigNumber>;
+
+    "settleAuction()"(overrides?: Overrides): Promise<BigNumber>;
+
+    settleAuctionAtomically(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    volumeClearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    emitAuctionCleared(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "FEE_DENOMINATOR()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    auctionEndDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "auctionEndDate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    auctionStartedDate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "auctionStartedDate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    auctioningToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "auctioningToken()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    biddingToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "biddingToken()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    cancelOrders(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitAuctionCleared(uint256,uint96,uint96)"(
-      auctionId: BigNumberish,
-      priceNumerator: BigNumberish,
-      priceDenominator: BigNumberish,
+    "cancelOrders(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    emitCancellationSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    claimFromParticipantOrder(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitCancellationSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "claimFromParticipantOrder(bytes32[])"(
+      _orders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    emitClaimedFromOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    clearingPriceOrder(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "clearingPriceOrder()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    containsOrder(
+      _order: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "containsOrder(bytes32)"(
+      _order: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    feeNumerator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "feeNumerator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    feeReceiverUserId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "feeReceiverUserId()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getSecondsRemainingInBatch(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getSecondsRemainingInBatch()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserId(
+      user: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitClaimedFromOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "getUserId(address)"(
+      user: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    emitNewAuction(
-      auctionId: BigNumberish,
+    gracePeriodEndDate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "gracePeriodEndDate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    gracePeriodStartDate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "gracePeriodStartDate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initAuction(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitNewAuction(uint256,address,address,uint256,uint256,uint96,uint96,uint256,uint256)"(
-      auctionId: BigNumberish,
+    "initAuction(address,address,uint256,uint96,uint96,uint256,uint256,uint256,uint256,bool)"(
       _auctioningToken: string,
       _biddingToken: string,
-      orderCancellationEndDate: BigNumberish,
-      auctionEndDate: BigNumberish,
-      _auctionedSellAmount: BigNumberish,
-      _minBuyAmount: BigNumberish,
-      minimumBiddingAmountPerOrder: BigNumberish,
-      minFundingThreshold: BigNumberish,
+      _orderCancelationPeriodDuration: BigNumberish,
+      _amountToSell: BigNumberish,
+      _minBidAmountToReceive: BigNumberish,
+      _minimumBiddingAmountPerOrder: BigNumberish,
+      _minFundingThreshold: BigNumberish,
+      _gracePeriodStartDuration: BigNumberish,
+      _gracePeriodDuration: BigNumberish,
+      _isAtomicClosureAllowed: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    emitNewSellOrder(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    initialAuctionOrder(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "initialAuctionOrder()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    interimOrder(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "interimOrder()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    interimSumBidAmount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "interimSumBidAmount()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isAtomicClosureAllowed(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "isAtomicClosureAllowed()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    minFundingThreshold(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "minFundingThreshold()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    minFundingThresholdNotReached(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "minFundingThresholdNotReached()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    minimumBiddingAmountPerOrder(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "minimumBiddingAmountPerOrder()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    numUsers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "numUsers()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    orderCancellationEndDate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "orderCancellationEndDate()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    placeOrders(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitNewSellOrder(uint256,uint64,uint96,uint96)"(
-      auctionId: BigNumberish,
-      userId: BigNumberish,
-      buyAmount: BigNumberish,
-      sellAmount: BigNumberish,
+    "placeOrders(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    emitNewUser(
-      userId: BigNumberish,
-      userAddress: string,
+    precalculateSellAmountSum(
+      iterationSteps: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitNewUser(uint64,address)"(
-      userId: BigNumberish,
-      userAddress: string,
+    "precalculateSellAmountSum(uint256)"(
+      iterationSteps: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    emitUserRegistration(
+    registerUser(
       user: string,
-      userId: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "emitUserRegistration(address,uint64)"(
+    "registerUser(address)"(
       user: string,
-      userId: BigNumberish,
       overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setAuctionEndDate(
+      _auctionEndDate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setAuctionEndDate(uint256)"(
+      _auctionEndDate: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    settleAuction(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    "settleAuction()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+
+    settleAuctionAtomically(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
+      _amountsToBuy: BigNumberish[],
+      _amountsToBid: BigNumberish[],
+      _prevOrder: BytesLike[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    volumeClearingPriceOrder(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "volumeClearingPriceOrder()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

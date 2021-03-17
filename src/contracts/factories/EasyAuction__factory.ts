@@ -18,25 +18,30 @@ export class EasyAuction__factory {
 
 const _abi = [
   {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
-      {
         indexed: false,
         internalType: "uint96",
-        name: "priceNumerator",
+        name: "auctionedTokens",
         type: "uint96",
       },
       {
         indexed: false,
         internalType: "uint96",
-        name: "priceDenominator",
+        name: "soldBiddingTokens",
         type: "uint96",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "clearingOrder",
+        type: "bytes32",
       },
     ],
     name: "AuctionCleared",
@@ -47,12 +52,6 @@ const _abi = [
     inputs: [
       {
         indexed: true,
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
         internalType: "uint64",
         name: "userId",
         type: "uint64",
@@ -60,17 +59,17 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint96",
-        name: "buyAmount",
+        name: "amountToBuy",
         type: "uint96",
       },
       {
         indexed: false,
         internalType: "uint96",
-        name: "sellAmount",
+        name: "amountToBid",
         type: "uint96",
       },
     ],
-    name: "CancellationSellOrder",
+    name: "CancellationOrder",
     type: "event",
   },
   {
@@ -78,12 +77,6 @@ const _abi = [
     inputs: [
       {
         indexed: true,
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
-      {
-        indexed: true,
         internalType: "uint64",
         name: "userId",
         type: "uint64",
@@ -91,13 +84,13 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint96",
-        name: "buyAmount",
+        name: "amountToBuy",
         type: "uint96",
       },
       {
         indexed: false,
         internalType: "uint96",
-        name: "sellAmount",
+        name: "amountToBid",
         type: "uint96",
       },
     ],
@@ -107,12 +100,6 @@ const _abi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
       {
         indexed: true,
         internalType: "contract IERC20",
@@ -134,19 +121,25 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "auctionEndDate",
+        name: "gracePeriodStartDate",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "gracePeriodEndDate",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint96",
-        name: "_auctionedSellAmount",
+        name: "_amountToSell",
         type: "uint96",
       },
       {
         indexed: false,
         internalType: "uint96",
-        name: "_minBuyAmount",
+        name: "_minBidAmountToReceive",
         type: "uint96",
       },
       {
@@ -162,18 +155,12 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "NewAuction",
+    name: "InitializedAuction",
     type: "event",
   },
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
       {
         indexed: true,
         internalType: "uint64",
@@ -183,17 +170,17 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint96",
-        name: "buyAmount",
+        name: "amountToBuy",
         type: "uint96",
       },
       {
         indexed: false,
         internalType: "uint96",
-        name: "sellAmount",
+        name: "amountToBid",
         type: "uint96",
       },
     ],
-    name: "NewSellOrder",
+    name: "NewOrder",
     type: "event",
   },
   {
@@ -235,24 +222,79 @@ const _abi = [
     type: "event",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "FEE_DENOMINATOR",
+    outputs: [
       {
         internalType: "uint256",
-        name: "auctionId",
+        name: "",
         type: "uint256",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "auctionEndDate",
+    outputs: [
       {
-        internalType: "uint96",
-        name: "priceNumerator",
-        type: "uint96",
-      },
-      {
-        internalType: "uint96",
-        name: "priceDenominator",
-        type: "uint96",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: "emitAuctionCleared",
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "auctionStartedDate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "auctioningToken",
+    outputs: [
+      {
+        internalType: "contract IERC20",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "biddingToken",
+    outputs: [
+      {
+        internalType: "contract IERC20",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32[]",
+        name: "_orders",
+        type: "bytes32[]",
+      },
+    ],
+    name: "cancelOrders",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -260,66 +302,145 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32[]",
+        name: "_orders",
+        type: "bytes32[]",
+      },
+    ],
+    name: "claimFromParticipantOrder",
+    outputs: [
+      {
         internalType: "uint256",
-        name: "auctionId",
+        name: "sumAuctioningTokenAmount",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "sumBiddingTokenAmount",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "clearingPriceOrder",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_order",
+        type: "bytes32",
+      },
+    ],
+    name: "containsOrder",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "feeNumerator",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "feeReceiverUserId",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getSecondsRemainingInBatch",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "getUserId",
+    outputs: [
       {
         internalType: "uint64",
         name: "userId",
         type: "uint64",
       },
-      {
-        internalType: "uint96",
-        name: "buyAmount",
-        type: "uint96",
-      },
-      {
-        internalType: "uint96",
-        name: "sellAmount",
-        type: "uint96",
-      },
     ],
-    name: "emitCancellationSellOrder",
-    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "gracePeriodEndDate",
+    outputs: [
       {
         internalType: "uint256",
-        name: "auctionId",
+        name: "",
         type: "uint256",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "gracePeriodStartDate",
+    outputs: [
       {
-        internalType: "uint64",
-        name: "userId",
-        type: "uint64",
-      },
-      {
-        internalType: "uint96",
-        name: "buyAmount",
-        type: "uint96",
-      },
-      {
-        internalType: "uint96",
-        name: "sellAmount",
-        type: "uint96",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: "emitClaimedFromOrder",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "auctionId",
-        type: "uint256",
-      },
       {
         internalType: "contract IERC20",
         name: "_auctioningToken",
@@ -332,37 +453,193 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "orderCancellationEndDate",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "auctionEndDate",
+        name: "_orderCancelationPeriodDuration",
         type: "uint256",
       },
       {
         internalType: "uint96",
-        name: "_auctionedSellAmount",
+        name: "_amountToSell",
         type: "uint96",
       },
       {
         internalType: "uint96",
-        name: "_minBuyAmount",
+        name: "_minBidAmountToReceive",
         type: "uint96",
       },
       {
         internalType: "uint256",
-        name: "minimumBiddingAmountPerOrder",
+        name: "_minimumBiddingAmountPerOrder",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "minFundingThreshold",
+        name: "_minFundingThreshold",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_gracePeriodStartDuration",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_gracePeriodDuration",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_isAtomicClosureAllowed",
+        type: "bool",
+      },
+    ],
+    name: "initAuction",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "initialAuctionOrder",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "interimOrder",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "interimSumBidAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
         type: "uint256",
       },
     ],
-    name: "emitNewAuction",
-    outputs: [],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isAtomicClosureAllowed",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minFundingThreshold",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minFundingThresholdNotReached",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "minimumBiddingAmountPerOrder",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "numUsers",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "",
+        type: "uint64",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "orderCancellationEndDate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint96[]",
+        name: "_amountsToBuy",
+        type: "uint96[]",
+      },
+      {
+        internalType: "uint96[]",
+        name: "_amountsToBid",
+        type: "uint96[]",
+      },
+      {
+        internalType: "bytes32[]",
+        name: "_prevOrders",
+        type: "bytes32[]",
+      },
+    ],
+    name: "placeOrders",
+    outputs: [
+      {
+        internalType: "uint64",
+        name: "userId",
+        type: "uint64",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -370,44 +647,11 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "auctionId",
+        name: "iterationSteps",
         type: "uint256",
       },
-      {
-        internalType: "uint64",
-        name: "userId",
-        type: "uint64",
-      },
-      {
-        internalType: "uint96",
-        name: "buyAmount",
-        type: "uint96",
-      },
-      {
-        internalType: "uint96",
-        name: "sellAmount",
-        type: "uint96",
-      },
     ],
-    name: "emitNewSellOrder",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint64",
-        name: "userId",
-        type: "uint64",
-      },
-      {
-        internalType: "address",
-        name: "userAddress",
-        type: "address",
-      },
-    ],
-    name: "emitNewUser",
+    name: "precalculateSellAmountSum",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -419,15 +663,78 @@ const _abi = [
         name: "user",
         type: "address",
       },
+    ],
+    name: "registerUser",
+    outputs: [
       {
         internalType: "uint64",
         name: "userId",
         type: "uint64",
       },
     ],
-    name: "emitUserRegistration",
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_auctionEndDate",
+        type: "uint256",
+      },
+    ],
+    name: "setAuctionEndDate",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "settleAuction",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "clearingOrder",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint96[]",
+        name: "_amountsToBuy",
+        type: "uint96[]",
+      },
+      {
+        internalType: "uint96[]",
+        name: "_amountsToBid",
+        type: "uint96[]",
+      },
+      {
+        internalType: "bytes32[]",
+        name: "_prevOrder",
+        type: "bytes32[]",
+      },
+    ],
+    name: "settleAuctionAtomically",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "volumeClearingPriceOrder",
+    outputs: [
+      {
+        internalType: "uint96",
+        name: "",
+        type: "uint96",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];
