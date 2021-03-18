@@ -78,9 +78,3 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   }
   return BigInt.fromI32(decimalValue)
 }
-
-export function fetchTokenIcon(tokenAddress: Address): string {
-  let contract = ERC20.bind(tokenAddress)
-
-  return ''
-}
