@@ -2,10 +2,12 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 // Types
-import { ERC20SymbolBytes } from '../generated/EasyAuction/ERC20SymbolBytes'
-import { ERC20NameBytes } from '../generated/EasyAuction/ERC20NameBytes'
-import { ERC20 } from '../generated/EasyAuction/ERC20'
+import { ERC20SymbolBytes } from '../../generated/EasyAuction/ERC20SymbolBytes'
+import { ERC20NameBytes } from '../../generated/EasyAuction/ERC20NameBytes'
+import { ERC20 } from '../../generated/EasyAuction/ERC20'
+import * as Schemas from '../../generated/schema'
 
+// Predefined Auction status
 export abstract class AUCTION_STATUS {
   static UPCOMING: string = 'upcoming'
   static SETTLED: string = 'settled'
@@ -13,6 +15,7 @@ export abstract class AUCTION_STATUS {
   static OPEN: string = 'open'
 }
 
+// Predefined Auction Bid status
 export abstract class BID_STATUS {
   static SUBMITTED: string = 'submitted'
   static CANCELLED: string = 'cancelled'
@@ -20,10 +23,18 @@ export abstract class BID_STATUS {
   static CLAIMED: string = 'claimed'
 }
 
+/**
+ * Checks if value is equal to zero
+ */
 export function isNullEthValue(value: string): boolean {
   return value == '0x0000000000000000000000000000000000000000000000000000000000000001'
 }
 
+/**
+ * Fetches an ERC20's token name
+ * @param tokenAddress
+ * @returns
+ */
 export function fetchTokenName(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress)
   let contractNameBytes = ERC20NameBytes.bind(tokenAddress)
@@ -46,6 +57,11 @@ export function fetchTokenName(tokenAddress: Address): string {
   return nameValue
 }
 
+/**
+ * Fetches an ERC20's token symbol
+ * @param tokenAddress the ERC20 contract address
+ * @returns
+ */
 export function fetchTokenSymbol(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress)
   let contractSymbolBytes = ERC20SymbolBytes.bind(tokenAddress)
@@ -68,6 +84,10 @@ export function fetchTokenSymbol(tokenAddress: Address): string {
   return symbolValue
 }
 
+/**
+ * Fetches an ERC20's token decimals
+ * @param tokenAddress the ERC20 contract address
+ */
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress)
   // try types uint8 for decimals
@@ -77,4 +97,21 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
     decimalValue = decimalResult.value
   }
   return BigInt.fromI32(decimalValue)
+}
+
+/**
+ * Returns an existing AuctionToken instance if exists.
+ * Creates a new instance if it does not.
+ * @param tokenAddress the ERC20 contract address
+ */
+export function getOrCreateAuctionToken(tokenAddress: Address): Schemas.AuctionToken {
+  // Try to fetch existing token
+  let auctionToken = Schemas.AuctionToken.load(tokenAddress.toHexString())
+  // Token does not exist, create new record
+  if (auctionToken == null) {
+    auctionToken = new Schemas.AuctionToken(tokenAddress.toHexString())
+    // Set the address
+    auctionToken.address = tokenAddress.toHexString()
+  }
+  return auctionToken as Schemas.AuctionToken
 }

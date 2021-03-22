@@ -1,0 +1,82 @@
+import { log } from '@graphprotocol/graph-ts'
+
+// Types
+import { EasyAuction as EasyAuctionContract } from '../../generated/EasyAuction/EasyAuction'
+import { TemplateLaunched } from '../../generated/MesaFactory/MesaFactory'
+import * as Schemas from '../../generated/schema'
+
+// Mapping helpers
+import {
+  AUCTION_STATUS,
+  fetchTokenDecimals,
+  fetchTokenName,
+  fetchTokenSymbol,
+  getOrCreateAuctionToken
+} from './helpers'
+
+/**
+ * Handles launching a new Auction - EasyAuction or FixedPriceAuction from AuctionLauncher via MesaFactory.
+ *
+ * See [`MesaFactory.LuanchTemplate`](https://github.com/cryptonative-ch/mesa-smartcontracts/blob/main/contracts/MesaFactory.sol)
+ *
+ * @todo Load the AuctionName from the contract to determine type of Auction
+ *
+ */
+export function handleTemplateLaunched(event: TemplateLaunched): void {
+  log.info('New template launched addres: {}', [event.params.auction.toString(), event.params.templateId.toString()])
+
+  // Bind the new Contract
+  let easyAuctionContract = EasyAuctionContract.bind(event.params.auction)
+
+  // Assume that the first template registered is EasyAuction
+  let easyAuction = new Schemas.EasyAuction(event.params.auction.toHexString())
+  // Timestamps
+  easyAuction.createdAt = event.block.timestamp.toI32()
+  easyAuction.updatedAt = event.block.timestamp.toI32()
+
+  easyAuction.minimumBidAmount = easyAuctionContract.minimumBiddingAmountPerOrder().toI32()
+  // Save initial data
+  easyAuction.save()
+  // Entity
+  let auction = new Schemas.EasyAuction(event.address.toHexString())
+
+  // Start and end dates of the auction
+  auction.startDate = easyAuctionContract.auctionStartedDate().toI32()
+  auction.endDate = easyAuctionContract.auctionEndDate().toI32()
+  // Grace period start and end
+  auction.gracePeriodStartDate = easyAuctionContract.gracePeriodEndDate().toI32()
+  auction.gracePeriodEndDate = easyAuctionContract.gracePeriodEndDate().toI32()
+
+  // Auction status
+  auction.status = AUCTION_STATUS.UPCOMING
+
+  // Total amount of token to be auctioned
+  // auction.tokenAmount = ?
+
+  // Bidding token / token in
+  let tokenIn = getOrCreateAuctionToken(easyAuctionContract.biddingToken())
+  tokenIn.name = fetchTokenName(easyAuctionContract.biddingToken())
+  tokenIn.symbol = fetchTokenSymbol(easyAuctionContract.biddingToken())
+  tokenIn.decimals = fetchTokenDecimals(easyAuctionContract.biddingToken()).toI32()
+
+  // Auctioning token / token out
+  let tokenOut = getOrCreateAuctionToken(easyAuctionContract.auctioningToken())
+  tokenOut.name = fetchTokenName(easyAuctionContract.auctioningToken())
+  tokenOut.symbol = fetchTokenSymbol(easyAuctionContract.auctioningToken())
+  tokenOut.decimals = fetchTokenDecimals(easyAuctionContract.auctioningToken()).toI32()
+
+  // Update assign tokenIn and TokenOut foregin keys
+  auction.tokenIn = tokenIn.id
+  auction.tokenOut = tokenOut.id
+
+  /**
+   * @todo find a resolver for the name
+   * Use the token's name for name of the Auction
+   */
+  auction.name = tokenOut.name
+
+  // Save everything
+  tokenIn.save()
+  tokenOut.save()
+  auction.save()
+}
