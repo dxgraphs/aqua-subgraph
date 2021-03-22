@@ -12,7 +12,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class Auction extends Entity {
+export class MesaFactory extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -20,17 +20,17 @@ export class Auction extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save Auction entity without an ID");
+    assert(id !== null, "Cannot save MesaFactory entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save Auction entity with non-string ID. " +
+      "Cannot save MesaFactory entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("Auction", id.toString(), this);
+    store.set("MesaFactory", id.toString(), this);
   }
 
-  static load(id: string): Auction | null {
-    return store.get("Auction", id) as Auction | null;
+  static load(id: string): MesaFactory | null {
+    return store.get("MesaFactory", id) as MesaFactory | null;
   }
 
   get id(): string {
@@ -40,6 +40,72 @@ export class Auction extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get auctionCount(): i32 {
+    let value = this.get("auctionCount");
+    return value.toI32();
+  }
+
+  set auctionCount(value: i32) {
+    this.set("auctionCount", Value.fromI32(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+}
+
+export class EasyAuction extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save EasyAuction entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save EasyAuction entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("EasyAuction", id.toString(), this);
+  }
+
+  static load(id: string): EasyAuction | null {
+    return store.get("EasyAuction", id) as EasyAuction | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string | null {
+    let value = this.get("name");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (value === null) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(value as string));
+    }
   }
 
   get createdAt(): i32 {
@@ -86,31 +152,40 @@ export class Auction extends Entity {
     }
   }
 
-  get startTime(): i32 {
-    let value = this.get("startTime");
+  get startDate(): i32 {
+    let value = this.get("startDate");
     return value.toI32();
   }
 
-  set startTime(value: i32) {
-    this.set("startTime", Value.fromI32(value));
+  set startDate(value: i32) {
+    this.set("startDate", Value.fromI32(value));
   }
 
-  get endTime(): i32 {
-    let value = this.get("endTime");
+  get endDate(): i32 {
+    let value = this.get("endDate");
     return value.toI32();
   }
 
-  set endTime(value: i32) {
-    this.set("endTime", Value.fromI32(value));
+  set endDate(value: i32) {
+    this.set("endDate", Value.fromI32(value));
   }
 
-  get gracePeriod(): i32 {
-    let value = this.get("gracePeriod");
+  get gracePeriodStartDate(): i32 {
+    let value = this.get("gracePeriodStartDate");
     return value.toI32();
   }
 
-  set gracePeriod(value: i32) {
-    this.set("gracePeriod", Value.fromI32(value));
+  set gracePeriodStartDate(value: i32) {
+    this.set("gracePeriodStartDate", Value.fromI32(value));
+  }
+
+  get gracePeriodEndDate(): i32 {
+    let value = this.get("gracePeriodEndDate");
+    return value.toI32();
+  }
+
+  set gracePeriodEndDate(value: i32) {
+    this.set("gracePeriodEndDate", Value.fromI32(value));
   }
 
   get tokenAmount(): i32 {
@@ -120,6 +195,15 @@ export class Auction extends Entity {
 
   set tokenAmount(value: i32) {
     this.set("tokenAmount", Value.fromI32(value));
+  }
+
+  get minimumBidAmount(): i32 {
+    let value = this.get("minimumBidAmount");
+    return value.toI32();
+  }
+
+  set minimumBidAmount(value: i32) {
+    this.set("minimumBidAmount", Value.fromI32(value));
   }
 
   get tokenIn(): string | null {
@@ -154,6 +238,186 @@ export class Auction extends Entity {
     } else {
       this.set("tokenOut", Value.fromString(value as string));
     }
+  }
+
+  get bids(): Array<string> | null {
+    let value = this.get("bids");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set bids(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("bids");
+    } else {
+      this.set("bids", Value.fromStringArray(value as Array<string>));
+    }
+  }
+}
+
+export class FixedPriceAuction extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save FixedPriceAuction entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FixedPriceAuction entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FixedPriceAuction", id.toString(), this);
+  }
+
+  static load(id: string): FixedPriceAuction | null {
+    return store.get("FixedPriceAuction", id) as FixedPriceAuction | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string | null {
+    let value = this.get("name");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (value === null) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(value as string));
+    }
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get status(): string | null {
+    let value = this.get("status");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set status(value: string | null) {
+    if (value === null) {
+      this.unset("status");
+    } else {
+      this.set("status", Value.fromString(value as string));
+    }
+  }
+
+  get sellAmount(): string | null {
+    let value = this.get("sellAmount");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sellAmount(value: string | null) {
+    if (value === null) {
+      this.unset("sellAmount");
+    } else {
+      this.set("sellAmount", Value.fromString(value as string));
+    }
+  }
+
+  get minbiddingAmount(): i32 {
+    let value = this.get("minbiddingAmount");
+    return value.toI32();
+  }
+
+  set minbiddingAmount(value: i32) {
+    this.set("minbiddingAmount", Value.fromI32(value));
+  }
+
+  get minFundingThreshold(): i32 {
+    let value = this.get("minFundingThreshold");
+    return value.toI32();
+  }
+
+  set minFundingThreshold(value: i32) {
+    this.set("minFundingThreshold", Value.fromI32(value));
+  }
+
+  get orderCancellationPeriod(): i32 {
+    let value = this.get("orderCancellationPeriod");
+    return value.toI32();
+  }
+
+  set orderCancellationPeriod(value: i32) {
+    this.set("orderCancellationPeriod", Value.fromI32(value));
+  }
+
+  get duration(): i32 {
+    let value = this.get("duration");
+    return value.toI32();
+  }
+
+  set duration(value: i32) {
+    this.set("duration", Value.fromI32(value));
+  }
+
+  get minBuyAmountPerOrder(): i32 {
+    let value = this.get("minBuyAmountPerOrder");
+    return value.toI32();
+  }
+
+  set minBuyAmountPerOrder(value: i32) {
+    this.set("minBuyAmountPerOrder", Value.fromI32(value));
+  }
+
+  get isAtomicClosureAllowed(): boolean {
+    let value = this.get("isAtomicClosureAllowed");
+    return value.toBoolean();
+  }
+
+  set isAtomicClosureAllowed(value: boolean) {
+    this.set("isAtomicClosureAllowed", Value.fromBoolean(value));
   }
 
   get bids(): Array<string> | null {
@@ -218,23 +482,6 @@ export class AuctionBid extends Entity {
       this.unset("status");
     } else {
       this.set("status", Value.fromString(value as string));
-    }
-  }
-
-  get auction(): string | null {
-    let value = this.get("auction");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set auction(value: string | null) {
-    if (value === null) {
-      this.unset("auction");
-    } else {
-      this.set("auction", Value.fromString(value as string));
     }
   }
 
@@ -331,23 +578,6 @@ export class AuctionToken extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get auction(): string | null {
-    let value = this.get("auction");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set auction(value: string | null) {
-    if (value === null) {
-      this.unset("auction");
-    } else {
-      this.set("auction", Value.fromString(value as string));
-    }
-  }
-
   get name(): string | null {
     let value = this.get("name");
     if (value === null || value.kind == ValueKind.NULL) {
@@ -362,23 +592,6 @@ export class AuctionToken extends Entity {
       this.unset("name");
     } else {
       this.set("name", Value.fromString(value as string));
-    }
-  }
-
-  get icon(): string | null {
-    let value = this.get("icon");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set icon(value: string | null) {
-    if (value === null) {
-      this.unset("icon");
-    } else {
-      this.set("icon", Value.fromString(value as string));
     }
   }
 
@@ -470,6 +683,88 @@ export class AuctionUser extends Entity {
       this.unset("address");
     } else {
       this.set("address", Value.fromString(value as string));
+    }
+  }
+}
+
+export class AuctionTemplate extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save AuctionTemplate entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save AuctionTemplate entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("AuctionTemplate", id.toString(), this);
+  }
+
+  static load(id: string): AuctionTemplate | null {
+    return store.get("AuctionTemplate", id) as AuctionTemplate | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): string | null {
+    let value = this.get("address");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set address(value: string | null) {
+    if (value === null) {
+      this.unset("address");
+    } else {
+      this.set("address", Value.fromString(value as string));
+    }
+  }
+
+  get factory(): string | null {
+    let value = this.get("factory");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set factory(value: string | null) {
+    if (value === null) {
+      this.unset("factory");
+    } else {
+      this.set("factory", Value.fromString(value as string));
+    }
+  }
+
+  get name(): string | null {
+    let value = this.get("name");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (value === null) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(value as string));
     }
   }
 }
