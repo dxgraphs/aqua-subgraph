@@ -3,27 +3,54 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: EasyAuction
+    name: MesaFactory
     network: {{network}}
     source:
-      address: '{{address}}'
-      abi: EasyAuction
+      address: '{{contracts.factory.address}}'
+      abi: MesaFactory
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      entities:
-        - AuctionCleared
-        - CancellationSellOrder
-        - ClaimedFromOrder
-        - NewAuction
-        - NewSellOrder
-        - NewUser
-        - UserRegistration
+      file: ./src/mappings/factory.ts
       abis:
+        - name: MesaFactory
+          file: ./abis/MesaFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+      entities:
+        - FactoryInitialized
+        - TemplateLaunched
+      eventHandlers:
+        - event: TemplateLaunched(indexed address,uint256)
+          handler: handleTemplateLaunched
+  - kind: ethereum/contract
+    name: AuctionLauncher
+    network: {{network}}
+    source:
+      address: '{{contracts.auctionLauncher.address}}'
+      abi: AuctionLauncher
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/core.ts
+      entities:
+        - EasyAuction
+        - FixedPriceAuction
+      abis:
+        - name: AuctionLauncher
+          file: ./abis/AuctionLauncher.json
         - name: EasyAuction
           file: ./abis/EasyAuction.json
+        - name: FixedPriceAuction
+          file: ./abis/FixedPriceAuction.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -31,18 +58,7 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       eventHandlers:
-        - event: AuctionCleared(indexed uint256,uint96,uint96)
-          handler: handleAuctionCleared
-        - event: CancellationSellOrder(indexed uint256,indexed uint64,uint96,uint96)
-          handler: handleCancellationSellOrder
-        - event: ClaimedFromOrder(indexed uint256,indexed uint64,uint96,uint96)
-          handler: handleClaimedFromOrder
-        - event: NewAuction(indexed uint256,indexed address,indexed address,uint256,uint256,uint96,uint96,uint256,uint256)
-          handler: handleNewAuction
-        - event: NewSellOrder(indexed uint256,indexed uint64,uint96,uint96)
-          handler: handleNewSellOrder
-        - event: NewUser(indexed uint64,indexed address)
-          handler: handleNewUser
-        - event: UserRegistration(indexed address,uint64)
-          handler: handleUserRegistration
-      file: ./src/mapping.ts
+        - event: AuctionInitialized(indexed address,uint256,bytes)
+          handler: handleAuctionInitialized
+        - event: AuctionLaunched(indexed address,uint256)
+          handler: handleAuctionLaunched
