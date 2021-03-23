@@ -10,9 +10,11 @@ You can explore the subgraph at [The Graph Explorer](https://thegraph.com/explor
 
 The subgraph listens for events from three fixed contracts:
 
-## `MesaFactory`
+## Contracts
 
-### `TemplateLaunched`
+### `MesaFactory` Events
+
+#### 1. `TemplateLaunched`
 
 Emitted when `MesaFactory.launchTemplate` is called. Returns:
 
@@ -27,17 +29,37 @@ interface TemplateLaunchedParams {
 
 `templateId` is used to determine GraphQL schema -- either `EasyAuction` or `FixedPriceAuction` -- to create. `auction` address is the address of the newly deploed auction contract.
 
-## `AuctionLauncher`
+### `AuctionLauncher` Events
 
 WIP
 
-## `TemplateLauncher`
+### `TemplateLauncher` Events
 
 WIP
 
 ## `EasyAuction` and `FixedPriceAuction`
 
 These contracts are deployed from the factory. Their address is resolved from `Event.address` and compared against `MesaFactory.allAuctions` array. If the address does not belong to Mesa's auction, the handler does an early exit.
+
+## GraphQL Entities
+
+These entities are available in the subgraph. Schemas are in [`schema.graphql`](schema.graphql)
+
+### MesFactory
+
+One entity to retrieve information about the factory
+
+### EasyAuction
+
+All auction of type EasyAuction
+
+### FixedPriceAuction
+
+All auction of type FixedPriceAuction
+
+### AuctionTemplate
+
+Registerd auction mechansims in `TemplateLauncher` contract
 
 # Installation
 
@@ -80,8 +102,6 @@ $ ./build-abis.sh
 ```
 
 Note that it requires [`jq`](https://stedolan.github.io/jq/) tool.
-
-Schema is available in [`schema.graphql`](schema.graphql)
 
 # Tests
 
