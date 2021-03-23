@@ -2,9 +2,8 @@
   "name": "mesa-subgraph",
   "license": "UNLICENSED",
   "scripts": {
-    "compile": "hardhat compile",
     "docker-up": "docker-compose up -d",
-    "pretest": "npm run compile && npm run docker-up",
+    "pretest": "npm run docker-up",
     "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
     "prepare:rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "test": "jest --verbose",
