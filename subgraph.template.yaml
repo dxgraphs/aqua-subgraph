@@ -62,3 +62,25 @@ dataSources:
           handler: handleAuctionInitialized
         - event: AuctionLaunched(indexed address,uint256)
           handler: handleAuctionLaunched
+  - kind: ethereum/contract
+    name: TemplateLauncher
+    network: {{network}}
+    source:
+      address: '{{contracts.templateLauncher.address}}'
+      abi: TemplateLauncher
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/templates.ts
+      entities:
+        - AuctionTemplate
+      abis:
+        - name: TemplateLauncher
+          file: ./abis/TemplateLauncher.json
+        - name: AuctionTemplateNameBytes
+          file: ./abis/AuctionTemplateNameBytes.json
+      eventHandlers:
+        - event: TemplateAdded(indexed address,uint256)
+          handler: handleAuctionInitialized
