@@ -1,10 +1,13 @@
 // Externals
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 
-// Types
+// Contract ABIs and Events
+import { AuctionTemplateNameBytes } from '../../generated/TemplateLauncher/AuctionTemplateNameBytes'
 import { ERC20SymbolBytes } from '../../generated/EasyAuction/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../../generated/EasyAuction/ERC20NameBytes'
 import { ERC20 } from '../../generated/EasyAuction/ERC20'
+
+// GraphQL Schemas
 import * as Schemas from '../../generated/schema'
 
 // Predefined Auction status
@@ -114,4 +117,13 @@ export function getOrCreateAuctionToken(tokenAddress: Address): Schemas.AuctionT
     auctionToken.address = tokenAddress.toHexString()
   }
   return auctionToken as Schemas.AuctionToken
+}
+
+/**
+ * Returns the template name from the `<TemplateName>Template` contract.
+ * @param address the address of the contract
+ */
+export function fetchTemplateName(address: Address): string {
+  let auctionTemplateContract = AuctionTemplateNameBytes.bind(address)
+  return auctionTemplateContract.templateName()
 }

@@ -23,8 +23,34 @@ import {
  *
  */
 export function handleTemplateLaunched(event: TemplateLaunched): void {
-  log.info('New template launched addres: {}', [event.params.auction.toString(), event.params.templateId.toString()])
+  log.info('New template launched addres: {} {}', [event.params.auction.toString(), event.params.templateId.toString()])
 
+  // Determine the entity to use from the templateId
+  const auctionTemplate = Schemas.AuctionTemplate.load(event.params.templateId.toHex())
+
+  // Early exit
+  if (!auctionTemplate) {
+    return
+  }
+
+  // EasyAuction
+  if (auctionTemplate.name === 'EasyAuction') {
+    createEasyAuction(event)
+  }
+
+  // FixedPriceAuction
+  if (auctionTemplate.name === 'FixedPriceAuction') {
+    createFixedPriceAuction(event)
+  }
+
+  // Add more templates to registery and
+}
+
+/**
+ * Creates a new EasyAuction entity
+ * @param event `TemplateLaunched` event
+ */
+function createEasyAuction(event: TemplateLaunched): void {
   // Bind the new Contract
   let easyAuctionContract = EasyAuctionContract.bind(event.params.auction)
 
@@ -79,4 +105,12 @@ export function handleTemplateLaunched(event: TemplateLaunched): void {
   tokenIn.save()
   tokenOut.save()
   auction.save()
+}
+
+/**
+ * Creates a new FixedPriceAuction entity
+ * @param event `TemplateLaunched` event
+ */
+function createFixedPriceAuction(event: TemplateLaunched): void {
+  // WIP
 }
