@@ -10,6 +10,12 @@ import { ERC20 } from '../../generated/MesaFactory/ERC20'
 // GraphQL Schemas
 import * as Schemas from '../../generated/schema'
 
+// Used for ID in GraphlQL
+export abstract class MESA_FACTORY {
+  static ID: string = 'MesaFactory'
+  static NAME: string = 'MesaFactory'
+}
+
 // Predefined Auction status
 export abstract class AUCTION_STATUS {
   static UPCOMING: string = 'upcoming'
