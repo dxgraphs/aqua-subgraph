@@ -24,7 +24,7 @@ interface Auction {
   # The auction name
   name: String
   # The UTC timestamp at which the auction was placed
-  createdAt: Int
+  createdAt: Int!
   # The UTC timestamp at which the auction was updated
   updatedAt: Int
   # The UTC timestamp at which the auction was deleted
@@ -38,7 +38,7 @@ type EasyAuction implements Auction @entity {
   # Base fields from Auction interface
   id: ID!
   name: String
-  createdAt: Int
+  createdAt: Int!
   updatedAt: Int
   deletedAt: Int
   status: String
@@ -68,7 +68,7 @@ type FixedPriceAuction implements Auction @entity {
   # Base fields from Auction interface
   id: ID!
   name: String
-  createdAt: Int
+  createdAt: Int!
   updatedAt: Int
   deletedAt: Int
   status: String
