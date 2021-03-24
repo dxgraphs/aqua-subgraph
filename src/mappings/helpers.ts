@@ -3,9 +3,9 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and Events
 import { AuctionTemplateNameBytes } from '../../generated/TemplateLauncher/AuctionTemplateNameBytes'
-import { ERC20SymbolBytes } from '../../generated/EasyAuction/ERC20SymbolBytes'
-import { ERC20NameBytes } from '../../generated/EasyAuction/ERC20NameBytes'
-import { ERC20 } from '../../generated/EasyAuction/ERC20'
+import { ERC20SymbolBytes } from '../../generated/MesaFactory/ERC20SymbolBytes'
+import { ERC20NameBytes } from '../../generated/MesaFactory/ERC20NameBytes'
+import { ERC20 } from '../../generated/MesaFactory/ERC20'
 
 // GraphQL Schemas
 import * as Schemas from '../../generated/schema'
