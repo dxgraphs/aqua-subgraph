@@ -82,5 +82,71 @@ dataSources:
         - name: AuctionTemplateNameBytes
           file: ./abis/AuctionTemplateNameBytes.json
       eventHandlers:
+        - event: TemplateLaunched(indexed address,uint256)
+          handler: handleTemplateLaunched
         - event: TemplateAdded(indexed address,uint256)
-          handler: handleAuctionInitialized
+          handler: handleTemplateAdded
+        - event: TemplateRemoved(indexed address,uint256)
+          handler: handleTemplateRemoved
+        - event: TemplateVerified(indexed address,uint256)
+          handler: handleTemplateVerified
+  - kind: ethereum/contract
+    name: EasyAuction
+    network: {{network}}
+    source:
+      abi: EasyAuction
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/easyAuction.ts
+      entities:
+        - EasyAuction
+        - AuctionTemplate
+      abis:
+        - name: EasyAuction
+          file: ./abis/EasyAuction.json
+      eventHandlers:
+        - event: AuctionCleared(uint96,uint96,bytes32)
+          handler: handleAuctionCleared
+        - event: CancellationOrder(indexed uint64,uint96,uint96)
+          handler: handleCancellationOrder
+        - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
+          handler: handleClaimedFromOrder
+        - event: InitializedAuction(indexed address,indexed address,uint256,uint256,uint256,uint96,uint96,uint256,uint256)
+          handler: handleInitializedAuction
+        - event: NewOrder(indexed uint64,uint96,uint96)
+          handler: handleNewOrder
+        - event: NewUser(indexed uint64,indexed address)
+          handler: handleNewUser
+        - event: UserRegistration(indexed address,uint64)
+          handler: handleUserRegistration
+  - kind: ethereum/contract
+    name: FixedPriceAuction
+    network: {{network}}
+    source:
+      abi: FixedPriceAuction
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/fixedPriceAuction.ts
+      entities:
+        - FixedPriceAuction
+        - AuctionTemplate
+      abis:
+        - name: FixedPriceAuction
+          file: ./abis/FixedPriceAuction.json
+      eventHandlers:
+        - event: AuctionClosed()
+          handler: handleAuctionClosed
+        - event: AuctionInitalized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleAuctionInitalized
+        - event: NewPurchase(indexed address,indexed uint256)
+          handler: handleNewPurchase
+        - event: NewTokenClaim(indexed address,indexed uint256)
+          handler: handleNewTokenClaim
+        - event: NewTokenRelease(indexed address,indexed uint256)
+          handler: handleNewTokenRelease
