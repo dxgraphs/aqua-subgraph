@@ -125,6 +125,7 @@ enum AuctionTemplateName {
 }
 
 type AuctionTemplate @entity {
+  # TemplatesId from the event
   id: ID!
   # Address of the AuctionTemplate contract: either EasyAuction or FixedPriceAuction
   address: String
@@ -132,4 +133,6 @@ type AuctionTemplate @entity {
   factory: String
   # Template name
   name: AuctionTemplateName
+  # Exists
+  verified: Boolean
 }
