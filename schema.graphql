@@ -1,12 +1,20 @@
 type MesaFactory @entity {
-  # factory address
+  # ID: should be a unique easy-to-reference
   id: ID!
-
-  # pair info
+  # Auction
   auctionCount: Int!
-
-  # transactions
-  txCount: BigInt!
+  # Factory address
+  address: String!
+  # Fee manager: CFO
+  feeManager: String
+  # Fee Collector: Treasury
+  feeTo: String
+  # Template manager:
+  templateManager: String!
+  # Address of TemplateLauncher contract
+  templateLauncher: String!
+  feeNumerator: Int
+  auctionFee: Int
 }
 
 # Base Auction schema
