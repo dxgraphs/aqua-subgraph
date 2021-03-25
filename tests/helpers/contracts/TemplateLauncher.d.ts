@@ -29,8 +29,11 @@ interface TemplateLauncherInterface extends ethers.utils.Interface {
     "getTemplateId(address)": FunctionFragment;
     "launchTemplate(uint256,bytes)": FunctionFragment;
     "removeTemplate(uint256)": FunctionFragment;
+    "restrictedTemplates()": FunctionFragment;
     "templateId()": FunctionFragment;
     "templateInfo(address)": FunctionFragment;
+    "updateTemplateRestriction(bool)": FunctionFragment;
+    "verifyTemplate(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "addTemplate", values: [string]): string;
@@ -52,12 +55,24 @@ interface TemplateLauncherInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "restrictedTemplates",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "templateId",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "templateInfo",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateTemplateRestriction",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "verifyTemplate",
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -81,9 +96,21 @@ interface TemplateLauncherInterface extends ethers.utils.Interface {
     functionFragment: "removeTemplate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "restrictedTemplates",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "templateId", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "templateInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateTemplateRestriction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "verifyTemplate",
     data: BytesLike
   ): Result;
 
@@ -91,11 +118,15 @@ interface TemplateLauncherInterface extends ethers.utils.Interface {
     "TemplateAdded(address,uint256)": EventFragment;
     "TemplateLaunched(address,uint256)": EventFragment;
     "TemplateRemoved(address,uint256)": EventFragment;
+    "TemplateVerified(address,uint256)": EventFragment;
+    "UpdatedTemplateRestriction(bool)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "TemplateAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TemplateLaunched"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TemplateRemoved"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TemplateVerified"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdatedTemplateRestriction"): EventFragment;
 }
 
 export class TemplateLauncher extends Contract {
@@ -114,12 +145,12 @@ export class TemplateLauncher extends Contract {
   functions: {
     addTemplate(
       _template: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "addTemplate(address)"(
       _template: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     factory(overrides?: CallOverrides): Promise<[string]>;
@@ -168,6 +199,10 @@ export class TemplateLauncher extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    restrictedTemplates(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "restrictedTemplates()"(overrides?: CallOverrides): Promise<[boolean]>;
+
     templateId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "templateId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -176,10 +211,11 @@ export class TemplateLauncher extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber] & {
+      [boolean, BigNumber, BigNumber, boolean] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
+        verified: boolean;
       }
     >;
 
@@ -187,22 +223,43 @@ export class TemplateLauncher extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber] & {
+      [boolean, BigNumber, BigNumber, boolean] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
+        verified: boolean;
       }
     >;
+
+    updateTemplateRestriction(
+      _restrictedTemplates: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "updateTemplateRestriction(bool)"(
+      _restrictedTemplates: boolean,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    verifyTemplate(
+      _templateId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "verifyTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
   };
 
   addTemplate(
     _template: string,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "addTemplate(address)"(
     _template: string,
-    overrides?: Overrides
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
@@ -251,6 +308,10 @@ export class TemplateLauncher extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  restrictedTemplates(overrides?: CallOverrides): Promise<boolean>;
+
+  "restrictedTemplates()"(overrides?: CallOverrides): Promise<boolean>;
+
   templateId(overrides?: CallOverrides): Promise<BigNumber>;
 
   "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -259,10 +320,11 @@ export class TemplateLauncher extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [boolean, BigNumber, BigNumber] & {
+    [boolean, BigNumber, BigNumber, boolean] & {
       exists: boolean;
       templateId: BigNumber;
       index: BigNumber;
+      verified: boolean;
     }
   >;
 
@@ -270,12 +332,33 @@ export class TemplateLauncher extends Contract {
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [boolean, BigNumber, BigNumber] & {
+    [boolean, BigNumber, BigNumber, boolean] & {
       exists: boolean;
       templateId: BigNumber;
       index: BigNumber;
+      verified: boolean;
     }
   >;
+
+  updateTemplateRestriction(
+    _restrictedTemplates: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "updateTemplateRestriction(bool)"(
+    _restrictedTemplates: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  verifyTemplate(
+    _templateId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "verifyTemplate(uint256)"(
+    _templateId: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     addTemplate(_template: string, overrides?: CallOverrides): Promise<void>;
@@ -331,6 +414,10 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    restrictedTemplates(overrides?: CallOverrides): Promise<boolean>;
+
+    "restrictedTemplates()"(overrides?: CallOverrides): Promise<boolean>;
+
     templateId(overrides?: CallOverrides): Promise<BigNumber>;
 
     "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -339,10 +426,11 @@ export class TemplateLauncher extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber] & {
+      [boolean, BigNumber, BigNumber, boolean] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
+        verified: boolean;
       }
     >;
 
@@ -350,12 +438,33 @@ export class TemplateLauncher extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber] & {
+      [boolean, BigNumber, BigNumber, boolean] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
+        verified: boolean;
       }
     >;
+
+    updateTemplateRestriction(
+      _restrictedTemplates: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "updateTemplateRestriction(bool)"(
+      _restrictedTemplates: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    verifyTemplate(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "verifyTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -364,14 +473,21 @@ export class TemplateLauncher extends Contract {
     TemplateLaunched(auction: string | null, templateId: null): EventFilter;
 
     TemplateRemoved(template: string | null, templateId: null): EventFilter;
+
+    TemplateVerified(template: string | null, templateId: null): EventFilter;
+
+    UpdatedTemplateRestriction(restrictedTemplates: null): EventFilter;
   };
 
   estimateGas: {
-    addTemplate(_template: string, overrides?: Overrides): Promise<BigNumber>;
+    addTemplate(
+      _template: string,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
 
     "addTemplate(address)"(
       _template: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
@@ -420,6 +536,10 @@ export class TemplateLauncher extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    restrictedTemplates(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "restrictedTemplates()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     templateId(overrides?: CallOverrides): Promise<BigNumber>;
 
     "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -430,17 +550,37 @@ export class TemplateLauncher extends Contract {
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    updateTemplateRestriction(
+      _restrictedTemplates: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "updateTemplateRestriction(bool)"(
+      _restrictedTemplates: boolean,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    verifyTemplate(
+      _templateId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "verifyTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     addTemplate(
       _template: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "addTemplate(address)"(
       _template: string,
-      overrides?: Overrides
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -489,6 +629,14 @@ export class TemplateLauncher extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    restrictedTemplates(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "restrictedTemplates()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     templateId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "templateId()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -501,6 +649,26 @@ export class TemplateLauncher extends Contract {
     "templateInfo(address)"(
       arg0: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    updateTemplateRestriction(
+      _restrictedTemplates: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "updateTemplateRestriction(bool)"(
+      _restrictedTemplates: boolean,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    verifyTemplate(
+      _templateId: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "verifyTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };
 }

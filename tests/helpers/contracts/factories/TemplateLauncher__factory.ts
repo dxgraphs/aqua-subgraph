@@ -86,6 +86,38 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "template",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "templateId",
+        type: "uint256",
+      },
+    ],
+    name: "TemplateVerified",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "restrictedTemplates",
+        type: "bool",
+      },
+    ],
+    name: "UpdatedTemplateRestriction",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -95,7 +127,7 @@ const _abi = [
     ],
     name: "addTemplate",
     outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -188,6 +220,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "restrictedTemplates",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "templateId",
     outputs: [
       {
@@ -224,8 +269,39 @@ const _abi = [
         name: "index",
         type: "uint128",
       },
+      {
+        internalType: "bool",
+        name: "verified",
+        type: "bool",
+      },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bool",
+        name: "_restrictedTemplates",
+        type: "bool",
+      },
+    ],
+    name: "updateTemplateRestriction",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_templateId",
+        type: "uint256",
+      },
+    ],
+    name: "verifyTemplate",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { AuctionLauncher } from "./AuctionLauncher";
+export type { AuctionTemplateNameBytes } from "./AuctionTemplateNameBytes";
 export type { EasyAuction } from "./EasyAuction";
 export type { EasyAuctionTemplate } from "./EasyAuctionTemplate";
 export type { ERC20 } from "./ERC20";
@@ -12,6 +13,7 @@ export type { MesaFactory } from "./MesaFactory";
 export type { TemplateLauncher } from "./TemplateLauncher";
 
 export { AuctionLauncher__factory } from "./factories/AuctionLauncher__factory";
+export { AuctionTemplateNameBytes__factory } from "./factories/AuctionTemplateNameBytes__factory";
 export { EasyAuction__factory } from "./factories/EasyAuction__factory";
 export { EasyAuctionTemplate__factory } from "./factories/EasyAuctionTemplate__factory";
 export { ERC20__factory } from "./factories/ERC20__factory";
