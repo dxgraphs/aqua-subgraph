@@ -8,11 +8,26 @@ You can explore the subgraph at [The Graph Explorer](https://thegraph.com/explor
 
 # Architecture
 
-The subgraph listens for events from three fixed contracts:
+**Fixed Contracts**
+
+The subgraph listens for events from three fixed contracts; they are deployed once:
+
+1. `MesaFactory`
+2. `AuctionLauncher`
+3. `MesaFactory`
+
+**Dynamic Contracts**
+
+These contracts are deployed from the factory for every new auction. Their address is resolved from `Event.address` and compared against `MesaFactory.allAuctions` array. If the address does not belong to Mesa's auction, the handler does an early exit:
+
+1. `EasyAuction`
+2. `FixedPriceAuction`
 
 ## Contracts
 
-### `MesaFactory` Events
+### `MesaFactory`
+
+<sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
 
 #### 1. `TemplateLaunched`
 
@@ -29,17 +44,25 @@ interface TemplateLaunchedParams {
 
 `templateId` is used to determine GraphQL schema -- either `EasyAuction` or `FixedPriceAuction` -- to create. `auction` address is the address of the newly deploed auction contract.
 
-### `AuctionLauncher` Events
+### `AuctionLauncher`
+
+<sub>[`src/mappings/auctionLauncher.ts`](src/mappings/auctionLauncher.ts)</sub>
 
 WIP
 
-### `TemplateLauncher` Events
+### `TemplateLauncher`
+
+<sub>[`src/mappings/templateLauncher.ts`](src/mappings/templateLauncher.ts)</sub>
 
 WIP
 
-## `EasyAuction` and `FixedPriceAuction`
+### `EasyAuction`
 
-These contracts are deployed from the factory. Their address is resolved from `Event.address` and compared against `MesaFactory.allAuctions` array. If the address does not belong to Mesa's auction, the handler does an early exit.
+<sub>[`src/mappings/auctions/easyAuction.ts`](src/mappings/auctions/easyAuction.ts)
+
+### `FixedPriceAuction`
+
+<sub>[`src/mappings/auctions/fixedPriceAuction.ts`](src/mappings/auctions/fixedPriceAuction.ts)</sub>
 
 ## GraphQL Entities
 
