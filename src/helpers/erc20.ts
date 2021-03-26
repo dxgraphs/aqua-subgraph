@@ -1,43 +1,12 @@
-// Externals
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 
-// Contract ABIs and Events
-import { AuctionTemplateNameBytes } from '../../generated/TemplateLauncher/AuctionTemplateNameBytes'
+// Contract ABIs
 import { ERC20SymbolBytes } from '../../generated/MesaFactory/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../../generated/MesaFactory/ERC20NameBytes'
 import { ERC20 } from '../../generated/MesaFactory/ERC20'
+import { isNullEthValue } from '.'
 
-// GraphQL Schemas
-import * as Schemas from '../../generated/schema'
-
-// Used for ID in GraphlQL
-export abstract class MESA_FACTORY {
-  static ID: string = 'MesaFactory'
-  static NAME: string = 'MesaFactory'
-}
-
-// Predefined Auction status
-export abstract class AUCTION_STATUS {
-  static UPCOMING: string = 'upcoming'
-  static SETTLED: string = 'settled'
-  static ENDED: string = 'ended'
-  static OPEN: string = 'open'
-}
-
-// Predefined Auction Bid status
-export abstract class BID_STATUS {
-  static SUBMITTED: string = 'submitted'
-  static CANCELLED: string = 'cancelled'
-  static SETTLED: string = 'settled'
-  static CLAIMED: string = 'claimed'
-}
-
-/**
- * Checks if value is equal to zero
- */
-export function isNullEthValue(value: string): boolean {
-  return value == '0x0000000000000000000000000000000000000000000000000000000000000001'
-}
+// Contract
 
 /**
  * Fetches an ERC20's token name
@@ -106,30 +75,4 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
     decimalValue = decimalResult.value
   }
   return BigInt.fromI32(decimalValue)
-}
-
-/**
- * Returns an existing AuctionToken instance if exists.
- * Creates a new instance if it does not.
- * @param tokenAddress the ERC20 contract address
- */
-export function getOrCreateAuctionToken(tokenAddress: Address): Schemas.AuctionToken {
-  // Try to fetch existing token
-  let auctionToken = Schemas.AuctionToken.load(tokenAddress.toHexString())
-  // Token does not exist, create new record
-  if (auctionToken == null) {
-    auctionToken = new Schemas.AuctionToken(tokenAddress.toHexString())
-    // Set the address
-    auctionToken.address = tokenAddress.toHexString()
-  }
-  return auctionToken as Schemas.AuctionToken
-}
-
-/**
- * Returns the template name from the `<TemplateName>Template` contract.
- * @param address the address of the contract
- */
-export function fetchTemplateName(address: Address): string {
-  let auctionTemplateContract = AuctionTemplateNameBytes.bind(address)
-  return auctionTemplateContract.templateName()
 }
