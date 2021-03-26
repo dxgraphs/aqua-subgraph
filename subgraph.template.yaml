@@ -24,9 +24,10 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       entities:
-        - FactoryInitialized
-        - TemplateLaunched
+        - MesaFactory
       eventHandlers:
+        - event: FactoryInitialized(address,address,address,address,uint256,uint256)
+          handler: handleFactoryInitialized
         - event: TemplateLaunched(indexed address,uint256)
           handler: handleTemplateLaunched
   - kind: ethereum/contract
@@ -40,7 +41,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/core.ts
+      file: ./src/mappings/auctionLauncher.ts
       entities:
         - EasyAuction
         - FixedPriceAuction
@@ -73,7 +74,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/templates.ts
+      file: ./src/mappings/templateLauncher.ts
       entities:
         - AuctionTemplate
       abis:
@@ -100,7 +101,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/easyAuction.ts
+      file: ./src/mappings/auctions/easyAuction.ts
       entities:
         - EasyAuction
         - AuctionTemplate
@@ -132,7 +133,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/fixedPriceAuction.ts
+      file: ./src/mappings/auctions/fixedPriceAuction.ts
       entities:
         - FixedPriceAuction
         - AuctionTemplate
