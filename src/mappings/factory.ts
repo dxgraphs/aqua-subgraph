@@ -5,7 +5,7 @@ import { FactoryInitialized } from '../../generated/MesaFactory/MesaFactory'
 import * as Schemas from '../../generated/schema'
 
 // Mapping helpers
-import { MESA_FACTORY } from './helpers'
+import { MESA_FACTORY } from '../helpers/factory'
 
 /**
  * Handle initilizing the MesaFactory.
