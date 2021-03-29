@@ -2,7 +2,7 @@ type MesaFactory @entity {
   # ID: should be a unique easy-to-reference
   id: ID!
   # Auction
-  auctionCount: Int!
+  auctionCount: Int
   # Factory address
   address: String!
   # Fee manager: CFO
@@ -58,7 +58,7 @@ type EasyAuction implements Auction @entity {
   # Auctioning token
   tokenOut: AuctionToken
   # List of bids
-  bids: [AuctionBid!]
+  bids: [EasyAuctionBid!]
   # The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment
   minFundingThreshold: Int
 }
@@ -84,11 +84,11 @@ type FixedPriceAuction implements Auction @entity {
   duration: Int
   minBuyAmountPerOrder: Int
   isAtomicClosureAllowed: Boolean
-  bids: [AuctionBid!]
+  bids: [FixedPriceAuctionPurchase!]
 }
 
 # AuctionBid
-type AuctionBid @entity {
+type EasyAuctionBid @entity {
   id: ID!
   # submitted/settled/cancelled/claimed
   status: String
@@ -104,6 +104,20 @@ type AuctionBid @entity {
   tokenOutAmount: Int
   # The bidder's Ethereum address
   address: String
+}
+
+type FixedPriceAuctionPurchase @entity {
+  id: ID!
+  # The UTC timestamp at which the bid was placed
+  createdAt: Int
+  # The UTC timestamp at which the bid was updated
+  updatedAt: Int
+  # The UTC timestamp at which the bid was deleted
+  deletedAt: Int
+  # The amount paid by the buyer
+  amount: Int
+  # The buyer address EOA
+  buyer: String
 }
 
 # AuctionToken
