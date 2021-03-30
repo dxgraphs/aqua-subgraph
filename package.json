@@ -4,8 +4,8 @@
   "scripts": {
     "docker-up": "docker-compose up -d",
     "pretest": "npm run docker-up",
-    "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
-    "prepare:rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
+    "prepare-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "prepare-rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "test": "jest --verbose",
     "codegen": "graph codegen",
     "build": "graph build",
@@ -13,7 +13,8 @@
     "create-local": "graph create --node http://localhost:8020/ adamazad/mesa",
     "remove-local": "graph remove --node http://localhost:8020/ adamazad/mesa",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adamazad/mesa",
-    "typechain-build": "typechain --target ethers-v5 --outDir src/contracts abis/*.json"
+    "explore-local": "ts-node explore-local.ts",
+    "typechain": "typechain --target ethers-v5 --outDir tests/helpers/contracts abis/*.json"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.19.0",
