@@ -3,7 +3,14 @@ import { ethers, providers } from 'ethers'
 import { start as StartREPL } from 'repl'
 
 // Contracts
-import { AuctionLauncher, EasyAuction, ERC20, MesaFactory, TemplateLauncher } from './tests/helpers/contracts'
+import {
+  AuctionLauncher,
+  EasyAuction,
+  ERC20,
+  MesaFactory,
+  TemplateLauncher,
+  EasyAuctionTemplate
+} from './tests/helpers/contracts'
 
 // Helpers
 import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL_ENDPOINT, wait } from './tests/helpers'
@@ -91,7 +98,7 @@ import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL
     0, // zero fees
     0 // zero fees
   )
-  console.log('Factory initialized')
+  console.log(`Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}; ${mesaFactoryInitalizeTx.blockHash}`)
 
   console.log('Deploying an EasyAuction Template contract')
   // Create factory for EasyAuction and deploy a new version
@@ -104,14 +111,18 @@ import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL
   // Get the EasyAuction TemplateId
   const easyAuctionTemplateId = auctionLaunch1Receipt.events?.[0]?.args?.templateId
 
-  const easyAuctionTemplate = await getContractFactory('EasyAuctionTemplate', deployer).deploy(
+  const easyAuctionTemplate = (await getContractFactory('EasyAuctionTemplate', deployer).deploy(
     weth.address,
     auctionLauncher.address,
     easyAuctionTemplateId
-  )
+  )) as EasyAuctionTemplate
 
   // Register EasyAuctionTemplate on TemplateLauncher
-  await templateLauncher.addTemplate(easyAuctionTemplate.address)
+  const addTemplateEasyAuctionTx = await templateLauncher.addTemplate(easyAuctionTemplate.address)
+
+  console.log(
+    `EasyAuctionTemplate registered in block ${addTemplateEasyAuctionTx.blockNumber}; ${addTemplateEasyAuctionTx.blockHash}`
+  )
 
   // await mesaFactory.launchTemplate(easyAuctionTemplateId, encodeInitData(
 
@@ -121,8 +132,14 @@ import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL
   replInstance.context.templateLauncher = templateLauncher
   replInstance.context.auctionLauncher = auctionLauncher
   replInstance.context.helpers = require('./tests/helpers')
+  replInstance.context.templates = {
+    easyAuctionTemplate
+  }
 
   console.log(`Subgraph ready at ${GRAPHQL_ENDPOINT}`)
+
+  console.log(`You can access
+  ${['mesaFactory', 'templateLauncher', 'auctionLauncher', 'helpers', 'templates'].join(', ')}`)
 })()
 
 export function encodeInitData(
