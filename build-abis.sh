@@ -7,8 +7,8 @@ NC='\033[0m' # No Color
 # Git URl
 MESA_SMART_CONTRACT_REPO='https://github.com/cryptonative-ch/mesa-smartcontracts'
 # Artifacts path
-ARTIFACT_PATHS=("MesaFactory.sol/MesaFactory.json" "auctions/AuctionLauncher.sol/AuctionLauncher.json" "auctions/FixedPriceAuction.sol/FixedPriceAuction.json" "auctions/EasyAuction.sol/EasyAuction.json" "templates/TemplateLauncher.sol/TemplateLauncher.json" "templates/EasyAuctionTemplate.sol/EasyAuctionTemplate.json")
-ARTIFACT_NAMES=("MesaFactory.json" "AuctionLauncher.json" "FixedPriceAuction.json" "EasyAuction.json" "TemplateLauncher.json" "EasyAuctionTemplate.json")
+ARTIFACT_PATHS=("MesaFactory.sol/MesaFactory.json" "auctions/AuctionLauncher.sol/AuctionLauncher.json" "auctions/FixedPriceAuction.sol/FixedPriceAuction.json" "auctions/EasyAuction.sol/EasyAuction.json" "templates/TemplateLauncher.sol/TemplateLauncher.json" "templates/EasyAuctionTemplate.sol/EasyAuctionTemplate.json" "test/ERC20Mintable.sol/ERC20Mintable.json")
+ARTIFACT_NAMES=("MesaFactory.json" "AuctionLauncher.json" "FixedPriceAuction.json" "EasyAuction.json" "TemplateLauncher.json" "EasyAuctionTemplate.json" "ERC20Mintable.json")
 
 # Clean up
 rm -rf mesa-smartcontracts
