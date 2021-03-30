@@ -13,15 +13,16 @@ import {
 } from './tests/helpers/contracts'
 
 // Helpers
-import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL_ENDPOINT, wait } from './tests/helpers'
+import {
+  buildSubgraphYaml,
+  createBiddingAndAuctioningTokens,
+  EVM_ENDPOINT,
+  execAsync,
+  getContractFactory,
+  GRAPHQL_ENDPOINT,
+  wait
+} from './tests/helpers'
 ;(async () => {
-  // Allow use to access contracts
-  const replInstance = StartREPL({
-    preview: true,
-    useColors: true,
-    prompt: `Mesa > `
-  })
-
   console.log(`Starting Docker`)
 
   await execAsync('npm run docker-up')
@@ -69,7 +70,8 @@ import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL
     }
   }
 
-  console.log(`Building subgraph.yaml using: `, buildSubgraphYamlConfig)
+  console.log('Building subgraph.yaml using config')
+  console.log(buildSubgraphYamlConfig)
   // Prepare subgraph.yaml
   await buildSubgraphYaml(buildSubgraphYamlConfig)
 
@@ -124,9 +126,28 @@ import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL
     `EasyAuctionTemplate registered in block ${addTemplateEasyAuctionTx.blockNumber}; ${addTemplateEasyAuctionTx.blockHash}`
   )
 
+  const { auctioningToken, biddingToken } = await createBiddingAndAuctioningTokens(deployer)
+
+  console.log(`Deployed auctioningToken at ${auctioningToken.address}`)
+  console.log(`Deployed biddingToken at ${biddingToken.address}`)
+
   // await mesaFactory.launchTemplate(easyAuctionTemplateId, encodeInitData(
 
   // ))
+
+  console.log(`Subgraph ready at ${GRAPHQL_ENDPOINT}`)
+
+  console.log(
+    `You can access ${['mesaFactory', 'templateLauncher', 'auctionLauncher', 'helpers', 'templates'].join(', ')}`
+  )
+
+  // Attach contracts to the REPL context
+  // Allow use to access contracts
+  const replInstance = StartREPL({
+    preview: true,
+    useColors: true,
+    prompt: `Mesa > `
+  })
 
   replInstance.context.mesaFactory = mesaFactory
   replInstance.context.templateLauncher = templateLauncher
@@ -135,11 +156,6 @@ import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL
   replInstance.context.templates = {
     easyAuctionTemplate
   }
-
-  console.log(`Subgraph ready at ${GRAPHQL_ENDPOINT}`)
-
-  console.log(`You can access
-  ${['mesaFactory', 'templateLauncher', 'auctionLauncher', 'helpers', 'templates'].join(', ')}`)
 })()
 
 export function encodeInitData(

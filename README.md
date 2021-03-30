@@ -6,6 +6,13 @@ Mesa Subgraph is the main provider for Mesa Interface data.
 
 You can explore the subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa).
 
+## Local
+
+If you wish to deploy a local explorer, run:
+```bash
+$ npm run explore-local
+```
+
 # Architecture
 
 **Fixed Contracts**
