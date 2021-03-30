@@ -77,6 +77,7 @@ import {
 
   // Build, create and deploy the subgraph
   console.log('Bulding subgraph')
+  await execAsync('npm run codegen')
   await execAsync('npm run build')
 
   console.log('Creating subgraph')
