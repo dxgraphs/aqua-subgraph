@@ -92,7 +92,7 @@ const _abi = [
     name: "WETH",
     outputs: [
       {
-        internalType: "contract IWETH",
+        internalType: "contract IWETH10",
         name: "",
         type: "address",
       },
@@ -166,6 +166,19 @@ const _abi = [
         internalType: "contract IMesaFactory",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "templateName",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
     stateMutability: "view",

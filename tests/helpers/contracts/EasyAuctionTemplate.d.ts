@@ -28,6 +28,7 @@ interface EasyAuctionTemplateInterface extends ethers.utils.Interface {
     "auctionTemplateId()": FunctionFragment;
     "init(bytes)": FunctionFragment;
     "mesaFactory()": FunctionFragment;
+    "templateName()": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "WETH", values?: undefined): string;
@@ -45,6 +46,10 @@ interface EasyAuctionTemplateInterface extends ethers.utils.Interface {
     functionFragment: "mesaFactory",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "templateName",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(functionFragment: "WETH", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "auction", data: BytesLike): Result;
@@ -59,6 +64,10 @@ interface EasyAuctionTemplateInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "mesaFactory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "templateName",
     data: BytesLike
   ): Result;
 
@@ -109,6 +118,10 @@ export class EasyAuctionTemplate extends Contract {
     mesaFactory(overrides?: CallOverrides): Promise<[string]>;
 
     "mesaFactory()"(overrides?: CallOverrides): Promise<[string]>;
+
+    templateName(overrides?: CallOverrides): Promise<[string]>;
+
+    "templateName()"(overrides?: CallOverrides): Promise<[string]>;
   };
 
   WETH(overrides?: CallOverrides): Promise<string>;
@@ -138,6 +151,10 @@ export class EasyAuctionTemplate extends Contract {
 
   "mesaFactory()"(overrides?: CallOverrides): Promise<string>;
 
+  templateName(overrides?: CallOverrides): Promise<string>;
+
+  "templateName()"(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     WETH(overrides?: CallOverrides): Promise<string>;
 
@@ -162,6 +179,10 @@ export class EasyAuctionTemplate extends Contract {
     mesaFactory(overrides?: CallOverrides): Promise<string>;
 
     "mesaFactory()"(overrides?: CallOverrides): Promise<string>;
+
+    templateName(overrides?: CallOverrides): Promise<string>;
+
+    "templateName()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -200,6 +221,10 @@ export class EasyAuctionTemplate extends Contract {
     mesaFactory(overrides?: CallOverrides): Promise<BigNumber>;
 
     "mesaFactory()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    templateName(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "templateName()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -236,5 +261,9 @@ export class EasyAuctionTemplate extends Contract {
     mesaFactory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "mesaFactory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    templateName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "templateName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

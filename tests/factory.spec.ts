@@ -2,12 +2,12 @@
 import { providers } from 'ethers'
 import Axios from 'axios'
 
-// Contracts
-import { AuctionLauncher, MesaFactory, ERC20, TemplateLauncher } from './helpers/contracts'
-
 // Helpers
 import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL_ENDPOINT, wait } from './helpers'
 
+// Contracts
+import { AuctionLauncher, MesaFactory, TemplateLauncher } from './helpers/contracts'
+// Test block
 describe('MesaFactory', () => {
   // Connect to local ganache instance
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
