@@ -37,7 +37,6 @@ package-lock.json
 /data/postgres
 
 # Contract artifacts
-/artifacts
 
 # Mesa smart contracts
 /mesa-smartcontracts
