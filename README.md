@@ -9,6 +9,7 @@ You can explore the subgraph at [The Graph Explorer](https://thegraph.com/explor
 ## Local
 
 If you wish to deploy a local explorer, run:
+
 ```bash
 $ npm run explore-local
 ```
@@ -149,9 +150,13 @@ This projects comes with a set of predefined scripts in `package.json`
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `test`            | Runs Jest tests                                                                                                                                                                                   |
 | `docker-up`       | Runs Docker services defined in `docker-compose.yaml`                                                                                                                                             |
-| `prepare:mainnet` | Bulds `subgraph.yaml` for the mainnet                                                                                                                                                             |
-| `prepare:testnet` | Bulds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                     |
+| `prepare-mainnet` | Bulds `subgraph.yaml` for the mainnet                                                                                                                                                             |
+| `prepare-testnet` | Bulds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                     |
 | `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema.                                                                                                                   |
 | `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                                                                                                                                          |
 | `deploy`          | Deploys the subgraph build to a The Graph Node. Requires a valid access token from the dashbaord. See [`graph auth`](https://github.com/graphprotocol/graph-cli#the-graph-command-line-interface) |
-| `typechain-build` | Create typed-contracts classes.                                                                                                                                                                   |
+| `typechain`       | Creates typed-contracts classes.                                                                                                                                                                  |
+| `deploy-local`    | Deploys the graph build to local graph-node                                                                                                                                                       |
+| `create-local`    | Creates the graph build in local graph-node                                                                                                                                                       |
+| `remove-local`    | Removes the graph build from local graph-node                                                                                                                                                     |
+| `explore-local`   | Starts local graph explorer                                                                                                                                                                       |
