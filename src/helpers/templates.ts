@@ -1,5 +1,5 @@
 // Externals
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, log } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and types
 import { AuctionTemplateNameBytes } from '../../generated/TemplateLauncher/AuctionTemplateNameBytes'
@@ -18,7 +18,11 @@ export abstract class AUCTION_TEMPLATES {
  * @param address the address of the contract
  */
 export function fetchTemplateName(address: Address): string {
-  return AuctionTemplateNameBytes.bind(address).templateName()
+  let auctionTemplateNameBytesContract = AuctionTemplateNameBytes.bind(address)
+  // Debug
+  log.info('Contract Address: {}', [auctionTemplateNameBytesContract._address.toHexString()])
+  // templateName() and return
+  return auctionTemplateNameBytesContract.try_templateName().value
 }
 
 /**
