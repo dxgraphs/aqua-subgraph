@@ -14,6 +14,16 @@ If you wish to deploy a local explorer, run:
 $ npm run explore-local
 ```
 
+# Installation
+
+Install dependencies using `yarn`
+
+```bash
+$ yarn
+```
+
+This will start a simulated bench with the contract deployed, one `FairSale` sale and one bid.
+
 # Architecture
 
 **Fixed Contracts**
@@ -21,15 +31,15 @@ $ npm run explore-local
 The subgraph listens for events from three fixed contracts; they are deployed once:
 
 1. `MesaFactory`
-2. `AuctionLauncher`
+2. `SaleLauncher`
 3. `MesaFactory`
 
 **Dynamic Contracts**
 
-These contracts are deployed from the factory for every new auction. Their address is resolved from `Event.address` and compared against `MesaFactory.allAuctions` array. If the address does not belong to Mesa's auction, the handler does an early exit:
+These contracts are deployed from the factory for every new sale. Their address is resolved from `Event.address` and compared against `MesaFactory.allSales` array. If the address does not belong to Mesa's sale, the handler exits:
 
-1. `EasyAuction`
-2. `FixedPriceAuction`
+1. `FairSale`
+2. `FixedPriceSale`
 
 ## Contracts
 
@@ -37,40 +47,94 @@ These contracts are deployed from the factory for every new auction. Their addre
 
 <sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
 
-#### 1. `TemplateLaunched`
+#### 1. `handleFactoryInitialized`
 
-Emitted when `MesaFactory.launchTemplate` is called. Returns:
+Handles initializing the Mesa Factory.
+
+### `SaleLauncher`
+
+<sub>[`src/mappings/saleLauncher.ts`](src/mappings/saleLauncher.ts)</sub>
+
+#### 1. `handleSaleInitialized`
+
+Handles `SaleInitialized`
 
 ```typescript
-interface TemplateLaunchedParams {
-  // Address of the new Auction: EasyAuction or FixedPriceAuction
-  auction: string
-  // The template ID of the auction type: EasyAuction or FixedPriceAuction
+interface SaleInitializedParams {
+  sale: string
   templateId: string
+  data: Bytes
 }
 ```
 
-`templateId` is used to determine GraphQL schema -- either `EasyAuction` or `FixedPriceAuction` -- to create. `auction` address is the address of the newly deploed auction contract.
-
-### `AuctionLauncher`
-
-<sub>[`src/mappings/auctionLauncher.ts`](src/mappings/auctionLauncher.ts)</sub>
-
-WIP
+`templateId` is used to determine GraphQL schema -- either `FairSale` or `FixedPriceSale` -- to create. `sale` address is the address of the newly deploed sale contract.
 
 ### `TemplateLauncher`
 
 <sub>[`src/mappings/templateLauncher.ts`](src/mappings/templateLauncher.ts)</sub>
 
-WIP
+#### 1.`handleTemplateLaunched` from `TemplateLauncher.launchTemplate`
 
-### `EasyAuction`
+Handles `TemplateLaunched` event
 
-<sub>[`src/mappings/auctions/easyAuction.ts`](src/mappings/auctions/easyAuction.ts)
+```typescript
+interface TemplateLaunched {
+  sale: string // Address of the new *-Sale contract
+  templateId: string // Index of the template
+}
+```
 
-### `FixedPriceAuction`
+#### 2.`handleTemplateAdded` from `TemplateLauncher.addTemplate`
 
-<sub>[`src/mappings/auctions/fixedPriceAuction.ts`](src/mappings/auctions/fixedPriceAuction.ts)</sub>
+```typescript
+interface TemplateAdded {
+  template: string // Address of new Template contract
+  templateId: string // Index of the template
+}
+```
+
+#### 3.`handleTemplateRemoved` from `TemplateLauncher.removeTemplate`
+
+Handles removing templates
+
+```typescript
+interface TemplateRemoved {
+  template: string // Address of new Template contract
+  templateId: string // Index of the template
+}
+```
+
+#### 4.`handleTemplateVerified` from `TemplateLauncher.verifyTemplate`
+
+Handles verifying templates - `TemplateVerified`
+
+```typescript
+interface TemplateVerified {
+  template: string // Address of new Template contract
+  templateId: string // Index of the template
+}
+```
+
+### `FairSale`
+
+<sub>[`src/mappings/sales/easySale.ts`](src/mappings/sales/fairSale.ts)
+
+#### 1. `handleNewOrder` from `FairSale.newOrder`
+
+### `FixedPriceSale`
+
+<sub>[`src/mappings/sales/fixedPriceSale.ts`](src/mappings/sales/fixedPriceSale.ts)</sub>
+
+#### 2. `handleNewPurchase`
+
+Handles `NewPurchase` event
+
+```typescript
+interface NewPurchase {
+  amount: string // Amount purchased
+  buyer: string // EOA
+}
+```
 
 ## GraphQL Entities
 
@@ -80,25 +144,29 @@ These entities are available in the subgraph. Schemas are in [`schema.graphql`](
 
 One entity to retrieve information about the factory
 
-### EasyAuction
+### FariSale
 
-All auction of type EasyAuction
+All sales of type FairSale.
 
-### FixedPriceAuction
+### FariSaleBid
 
-All auction of type FixedPriceAuction
+All bids on FairSale sales.
 
-### AuctionTemplate
+### FixedPriceSale
 
-Registerd auction mechansims in `TemplateLauncher` contract
+All sales of type `FixedPriceSale`
 
-# Installation
+### FixedPriceSalePurchase
 
-Install dependencies using `yarn`
+All sales of type `FixedPriceSale`
 
-```bash
-$ yarn
-```
+### SaleTemplate
+
+Registered sale mechansims in `TemplateLauncher` contract.
+
+### Token
+
+Stores information about ERC20 tokens that interact with Mesa contracts.
 
 # Deployment
 
