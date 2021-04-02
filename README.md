@@ -47,23 +47,31 @@ These contracts are deployed from the factory for every new sale. Their address 
 
 <sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
 
-#### 1. `handleFactoryInitialized`
+#### 1. `FactoryInitialized` from `MesaFactory.Initializ`
 
-Handles initializing the Mesa Factory.
+```typescript
+interface FactoryInitialized {
+  feeManager: Address // Address of the fee manager
+  feeTo: Address // Address of fees collector
+  templateManager: Address // Address of template manager
+  templateLauncher: Address // Address of TemplateLauncher  contract
+  templateFee: number // Template fee
+  feeNumerator: number // Fee numerator; because Solidity
+  saleFee: number // A fixed sale fee paid to Mesa
+}
+```
 
 ### `SaleLauncher`
 
 <sub>[`src/mappings/saleLauncher.ts`](src/mappings/saleLauncher.ts)</sub>
 
-#### 1. `handleSaleInitialized`
-
-Handles `SaleInitialized`
+#### 1. `SaleInitialized`
 
 ```typescript
-interface SaleInitializedParams {
-  sale: string
-  templateId: string
-  data: Bytes
+interface SaleInitialized {
+  sale: Address // Address of new Sale contract
+  templateId: number // The template used to create the sale
+  data: Bytes // Details of the sale as Bytes.
 }
 ```
 
@@ -73,9 +81,7 @@ interface SaleInitializedParams {
 
 <sub>[`src/mappings/templateLauncher.ts`](src/mappings/templateLauncher.ts)</sub>
 
-#### 1.`handleTemplateLaunched` from `TemplateLauncher.launchTemplate`
-
-Handles `TemplateLaunched` event
+#### 1.`TemplateLaunched` from `TemplateLauncher.launchTemplate`
 
 ```typescript
 interface TemplateLaunched {
@@ -84,33 +90,33 @@ interface TemplateLaunched {
 }
 ```
 
-#### 2.`handleTemplateAdded` from `TemplateLauncher.addTemplate`
+#### 2.`TemplateAdded` from `TemplateLauncher.addTemplate`
 
 ```typescript
 interface TemplateAdded {
-  template: string // Address of new Template contract
-  templateId: string // Index of the template
+  template: Address // Address of new Template contract
+  templateId: number // Index of the template
 }
 ```
 
-#### 3.`handleTemplateRemoved` from `TemplateLauncher.removeTemplate`
+#### 3.`TemplateRemoved` from `TemplateLauncher.removeTemplate`
 
 Handles removing templates
 
 ```typescript
 interface TemplateRemoved {
-  template: string // Address of new Template contract
-  templateId: string // Index of the template
+  template: Address // Address of new Template contract
+  templateId: number // Index of the template
 }
 ```
 
-#### 4.`handleTemplateVerified` from `TemplateLauncher.verifyTemplate`
+#### 4.`TemplateVerified` from `TemplateLauncher.verifyTemplate`
 
 Handles verifying templates - `TemplateVerified`
 
 ```typescript
 interface TemplateVerified {
-  template: string // Address of new Template contract
+  template: Address // Address of new Template contract
   templateId: string // Index of the template
 }
 ```
@@ -119,20 +125,42 @@ interface TemplateVerified {
 
 <sub>[`src/mappings/sales/easySale.ts`](src/mappings/sales/fairSale.ts)
 
-#### 1. `handleNewOrder` from `FairSale.newOrder`
+#### 1. `SaleCleared` from `FairSale.clearSale`
+
+```typescript
+interface SaleCleared {
+  // No params
+}
+```
+
+#### 2. `NewOrder` from `FairSale.newOrder`
+
+```typescript
+interface NewOrder {
+  ownerId: number
+  orderTokenOut: number
+  orderTokenIn: number
+}
+```
 
 ### `FixedPriceSale`
 
 <sub>[`src/mappings/sales/fixedPriceSale.ts`](src/mappings/sales/fixedPriceSale.ts)</sub>
 
-#### 2. `handleNewPurchase`
+#### 1. `SaleClosed` from `FixedPriceSale.closeSale`
 
-Handles `NewPurchase` event
+```typescript
+interface SaleClosed {
+  // No params
+}
+```
+
+#### 2. `NewPurchase` from `FixedPriceSale.buyTokens`
 
 ```typescript
 interface NewPurchase {
-  amount: string // Amount purchased
-  buyer: string // EOA
+  amount: number // Amount purchased
+  buyer: Address // EOA
 }
 ```
 
