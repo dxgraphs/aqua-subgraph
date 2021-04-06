@@ -26,32 +26,32 @@ dataSources:
       entities:
         - MesaFactory
       eventHandlers:
-        - event: FactoryInitialized(address,address,address,address,uint256,uint256)
+        - event: FactoryInitialized(address,address,address,address,uint256,uint256,uint256)
           handler: handleFactoryInitialized
         - event: TemplateLaunched(indexed address,uint256)
           handler: handleTemplateLaunched
   - kind: ethereum/contract
-    name: AuctionLauncher
+    name: SaleLauncher
     network: {{network}}
     source:
-      address: '{{contracts.auctionLauncher.address}}'
-      abi: AuctionLauncher
+      address: '{{contracts.saleLauncher.address}}'
+      abi: SaleLauncher
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/auctionLauncher.ts
+      file: ./src/mappings/saleLauncher.ts
       entities:
-        - EasyAuction
-        - FixedPriceAuction
+        - FairSale
+        - FixedPriceSale
       abis:
-        - name: AuctionLauncher
-          file: ./abis/AuctionLauncher.json
-        - name: EasyAuction
-          file: ./abis/EasyAuction.json
-        - name: FixedPriceAuction
-          file: ./abis/FixedPriceAuction.json
+        - name: SaleLauncher
+          file: ./abis/SaleLauncher.json
+        - name: FairSale
+          file: ./abis/FairSale.json
+        - name: FixedPriceSale
+          file: ./abis/FixedPriceSale.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -59,10 +59,10 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       eventHandlers:
-        - event: AuctionInitialized(indexed address,uint256,bytes)
-          handler: handleAuctionInitialized
-        - event: AuctionLaunched(indexed address,uint256)
-          handler: handleAuctionLaunched
+        - event: SaleInitialized(indexed address,uint256,bytes)
+          handler: handleSaleInitialized
+        - event: SaleLaunched(indexed address,uint256)
+          handler: handleSaleLaunched
   - kind: ethereum/contract
     name: TemplateLauncher
     network: {{network}}
@@ -76,12 +76,12 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/templateLauncher.ts
       entities:
-        - AuctionTemplate
+        - SaleTemplate
       abis:
         - name: TemplateLauncher
           file: ./abis/TemplateLauncher.json
-        - name: AuctionTemplateNameBytes
-          file: ./abis/AuctionTemplateNameBytes.json
+        - name: SaleTemplateNameBytes
+          file: ./abis/SaleTemplateNameBytes.json
       eventHandlers:
         - event: TemplateLaunched(indexed address,uint256)
           handler: handleTemplateLaunched
@@ -92,31 +92,31 @@ dataSources:
         - event: TemplateVerified(indexed address,uint256)
           handler: handleTemplateVerified
   - kind: ethereum/contract
-    name: EasyAuction
+    name: FairSale
     network: {{network}}
     source:
-      abi: EasyAuction
+      abi: FairSale
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/auctions/easyAuction.ts
+      file: ./src/mappings/sales/fairSale.ts
       entities:
-        - EasyAuction
-        - AuctionTemplate
+        - FairSale
+        - SaleTemplate
       abis:
-        - name: EasyAuction
-          file: ./abis/EasyAuction.json
+        - name: FairSale
+          file: ./abis/FairSale.json
       eventHandlers:
-        - event: AuctionCleared(uint96,uint96,bytes32)
-          handler: handleAuctionCleared
+        - event: SaleCleared(uint96,uint96,bytes32)
+          handler: handleSaleCleared
         - event: CancellationOrder(indexed uint64,uint96,uint96)
           handler: handleCancellationOrder
         - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
           handler: handleClaimedFromOrder
-        - event: InitializedAuction(indexed address,indexed address,uint256,uint256,uint256,uint96,uint96,uint256,uint256)
-          handler: handleInitializedAuction
+        - event: InitializedSale(indexed address,indexed address,uint256,uint256,uint96,uint96,uint256,uint256)
+          handler: handleInitializedSale
         - event: NewOrder(indexed uint64,uint96,uint96)
           handler: handleNewOrder
         - event: NewUser(indexed uint64,indexed address)
@@ -124,27 +124,27 @@ dataSources:
         - event: UserRegistration(indexed address,uint64)
           handler: handleUserRegistration
   - kind: ethereum/contract
-    name: FixedPriceAuction
+    name: FixedPriceSale
     network: {{network}}
     source:
-      abi: FixedPriceAuction
+      abi: FixedPriceSale
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/auctions/fixedPriceAuction.ts
+      file: ./src/mappings/sales/fixedPriceSale.ts
       entities:
-        - FixedPriceAuction
-        - AuctionTemplate
+        - FixedPriceSale
+        - SaleTemplate
       abis:
-        - name: FixedPriceAuction
-          file: ./abis/FixedPriceAuction.json
+        - name: FixedPriceSale
+          file: ./abis/FixedPriceSale.json
       eventHandlers:
-        - event: AuctionClosed()
-          handler: handleAuctionClosed
-        - event: AuctionInitalized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleAuctionInitalized
+        - event: SaleClosed()
+          handler: handleSaleClosed
+        - event: SaleInitalized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleSaleInitalized
         - event: NewPurchase(indexed address,indexed uint256)
           handler: handleNewPurchase
         - event: NewTokenClaim(indexed address,indexed uint256)
