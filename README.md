@@ -172,11 +172,11 @@ These entities are available in the subgraph. Schemas are in [`schema.graphql`](
 
 One entity to retrieve information about the factory
 
-### FariSale
+### FairSale
 
 All sales of type FairSale.
 
-### FariSaleBid
+### FairSaleBid
 
 All bids on FairSale sales.
 
