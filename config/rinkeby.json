@@ -5,7 +5,7 @@
     "factory": {
       "address": "0xc9c6cf237975b882bbef757faa3226b2c3178439"
     },
-    "auctionLauncher": {
+    "saleLauncher": {
       "address": "0x031053f28bf9273b96f7d0dcd20e970ee3bbb54f"
     },
     "templateLauncher": {

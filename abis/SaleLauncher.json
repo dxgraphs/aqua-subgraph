@@ -16,7 +16,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "auction",
+        "name": "sale",
         "type": "address"
       },
       {
@@ -32,7 +32,7 @@
         "type": "bytes"
       }
     ],
-    "name": "AuctionInitialized",
+    "name": "SaleInitialized",
     "type": "event"
   },
   {
@@ -41,7 +41,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "auction",
+        "name": "sale",
         "type": "address"
       },
       {
@@ -51,7 +51,7 @@
         "type": "uint256"
       }
     ],
-    "name": "AuctionLaunched",
+    "name": "SaleLaunched",
     "type": "event"
   },
   {
@@ -114,67 +114,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "auctionInfo",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "exists",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint64",
-        "name": "templateId",
-        "type": "uint64"
-      },
-      {
-        "internalType": "uint128",
-        "name": "index",
-        "type": "uint128"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "auctionTemplateId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "auctions",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "_templateId",
         "type": "uint256"
@@ -195,11 +134,11 @@
         "type": "bytes"
       }
     ],
-    "name": "createAuction",
+    "name": "createSale",
     "outputs": [
       {
         "internalType": "address",
-        "name": "newAuction",
+        "name": "newSale",
         "type": "address"
       }
     ],
@@ -278,7 +217,7 @@
   },
   {
     "inputs": [],
-    "name": "numberOfAuctions",
+    "name": "numberOfSales",
     "outputs": [
       {
         "internalType": "uint256",
@@ -300,6 +239,67 @@
     "name": "removeTemplate",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "saleInfo",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "exists",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint64",
+        "name": "templateId",
+        "type": "uint64"
+      },
+      {
+        "internalType": "uint128",
+        "name": "index",
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "saleTemplateId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "sales",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

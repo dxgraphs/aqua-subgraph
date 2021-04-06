@@ -8,6 +8,155 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "ownerId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "orderTokenOut",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "orderTokenIn",
+        "type": "uint96"
+      }
+    ],
+    "name": "CancellationOrder",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "ownerId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "orderTokenOut",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "orderTokenIn",
+        "type": "uint96"
+      }
+    ],
+    "name": "ClaimedFromOrder",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IERC20",
+        "name": "_tokenIn",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract IERC20",
+        "name": "_tokenOut",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "orderCancellationEndDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "_totalTokenOutAmount",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "_minBidAmountToReceive",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumBiddingAmountPerOrder",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minSellThreshold",
+        "type": "uint256"
+      }
+    ],
+    "name": "InitializedSale",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "ownerId",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "orderTokenOut",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "orderTokenIn",
+        "type": "uint96"
+      }
+    ],
+    "name": "NewOrder",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint64",
+        "name": "ownerId",
+        "type": "uint64"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "NewUser",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "uint96",
         "name": "auctionedTokens",
@@ -26,162 +175,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "AuctionCleared",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint64",
-        "name": "userId",
-        "type": "uint64"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "amountToBuy",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "amountToBid",
-        "type": "uint96"
-      }
-    ],
-    "name": "CancellationOrder",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint64",
-        "name": "userId",
-        "type": "uint64"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "amountToBuy",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "amountToBid",
-        "type": "uint96"
-      }
-    ],
-    "name": "ClaimedFromOrder",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "contract IERC20",
-        "name": "_auctioningToken",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "contract IERC20",
-        "name": "_biddingToken",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "orderCancellationEndDate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "gracePeriodStartDate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "gracePeriodEndDate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "_amountToSell",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "_minBidAmountToReceive",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "minimumBiddingAmountPerOrder",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "minFundingThreshold",
-        "type": "uint256"
-      }
-    ],
-    "name": "InitializedAuction",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint64",
-        "name": "userId",
-        "type": "uint64"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "amountToBuy",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "amountToBid",
-        "type": "uint96"
-      }
-    ],
-    "name": "NewOrder",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint64",
-        "name": "userId",
-        "type": "uint64"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "userAddress",
-        "type": "address"
-      }
-    ],
-    "name": "NewUser",
+    "name": "SaleCleared",
     "type": "event"
   },
   {
@@ -196,7 +190,7 @@
       {
         "indexed": false,
         "internalType": "uint64",
-        "name": "userId",
+        "name": "ownerId",
         "type": "uint64"
       }
     ],
@@ -218,51 +212,12 @@
   },
   {
     "inputs": [],
-    "name": "auctionEndDate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "auctionStartedDate",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "auctioningToken",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "biddingToken",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -293,12 +248,12 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "sumAuctioningTokenAmount",
+        "name": "sumTokenOutAmount",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "sumBiddingTokenAmount",
+        "name": "sumTokenInAmount",
         "type": "uint256"
       }
     ],
@@ -332,6 +287,19 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "endDate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -388,7 +356,7 @@
     "outputs": [
       {
         "internalType": "uint64",
-        "name": "userId",
+        "name": "ownerId",
         "type": "uint64"
       }
     ],
@@ -396,85 +364,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "gracePeriodEndDate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "gracePeriodStartDate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "_auctioningToken",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "_biddingToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_orderCancelationPeriodDuration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint96",
-        "name": "_amountToSell",
-        "type": "uint96"
-      },
-      {
-        "internalType": "uint96",
-        "name": "_minBidAmountToReceive",
-        "type": "uint96"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_minimumBiddingAmountPerOrder",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_minFundingThreshold",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_gracePeriodStartDuration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_gracePeriodDuration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_isAtomicClosureAllowed",
-        "type": "bool"
+        "internalType": "bytes",
+        "name": "_data",
+        "type": "bytes"
       }
     ],
-    "name": "initAuction",
+    "name": "init",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -533,7 +430,7 @@
   },
   {
     "inputs": [],
-    "name": "minFundingThreshold",
+    "name": "minSellThreshold",
     "outputs": [
       {
         "internalType": "uint256",
@@ -546,7 +443,7 @@
   },
   {
     "inputs": [],
-    "name": "minFundingThresholdNotReached",
+    "name": "minSellThresholdNotReached",
     "outputs": [
       {
         "internalType": "bool",
@@ -600,12 +497,12 @@
     "inputs": [
       {
         "internalType": "uint96[]",
-        "name": "_amountsToBuy",
+        "name": "_ordersTokenOut",
         "type": "uint96[]"
       },
       {
         "internalType": "uint96[]",
-        "name": "_amountsToBid",
+        "name": "_ordersTokenIn",
         "type": "uint96[]"
       },
       {
@@ -618,7 +515,7 @@
     "outputs": [
       {
         "internalType": "uint64",
-        "name": "userId",
+        "name": "ownerId",
         "type": "uint64"
       }
     ],
@@ -650,23 +547,10 @@
     "outputs": [
       {
         "internalType": "uint64",
-        "name": "userId",
+        "name": "ownerId",
         "type": "uint64"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_auctionEndDate",
-        "type": "uint256"
-      }
-    ],
-    "name": "setAuctionEndDate",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -687,12 +571,12 @@
     "inputs": [
       {
         "internalType": "uint96[]",
-        "name": "_amountsToBuy",
+        "name": "_ordersTokenOut",
         "type": "uint96[]"
       },
       {
         "internalType": "uint96[]",
-        "name": "_amountsToBid",
+        "name": "_ordersTokenIn",
         "type": "uint96[]"
       },
       {
@@ -704,6 +588,45 @@
     "name": "settleAuctionAtomically",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "templateName",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenIn",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tokenOut",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
