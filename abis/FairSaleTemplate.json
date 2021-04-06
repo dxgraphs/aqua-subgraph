@@ -8,7 +8,7 @@
       },
       {
         "internalType": "address",
-        "name": "_auctionLauncher",
+        "name": "_saleLauncher",
         "type": "address"
       },
       {
@@ -97,19 +97,6 @@
   },
   {
     "inputs": [],
-    "name": "auctionLauncher",
-    "outputs": [
-      {
-        "internalType": "contract IAuctionLauncher",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "auctionTemplateId",
     "outputs": [
       {
@@ -146,6 +133,19 @@
     "outputs": [
       {
         "internalType": "contract IMesaFactory",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "saleLauncher",
+    "outputs": [
+      {
+        "internalType": "contract ISaleLauncher",
         "name": "",
         "type": "address"
       }

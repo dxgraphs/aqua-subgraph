@@ -35,7 +35,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "auction",
+        "name": "sale",
         "type": "address"
       },
       {
@@ -108,7 +108,13 @@
       }
     ],
     "name": "addTemplate",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "payable",
     "type": "function"
   },
