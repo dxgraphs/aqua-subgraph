@@ -14,7 +14,8 @@
     "remove-local": "graph remove --node http://localhost:8020/ adamazad/mesa",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adamazad/mesa",
     "explore-local": "ts-node explore-local.ts",
-    "typechain": "typechain --target ethers-v5 --outDir tests/helpers/contracts abis/*.json"
+    "typechain": "typechain --target ethers-v5 --outDir tests/helpers/contracts abis/*.json",
+    "build-abis": "build-abis.sh"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.19.0",
