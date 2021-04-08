@@ -1,22 +1,6 @@
 [
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_WETH",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_saleLauncher",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_auctionTemplateId",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -71,19 +55,6 @@
   },
   {
     "inputs": [],
-    "name": "WETH",
-    "outputs": [
-      {
-        "internalType": "contract IWETH10",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "auction",
     "outputs": [
       {
@@ -109,6 +80,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "createSale",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "newSale",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes",
@@ -120,7 +104,7 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "newAuction",
+        "name": "",
         "type": "address"
       }
     ],
