@@ -52,30 +52,23 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
+        name: "templateFee",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
         name: "feeNumerator",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "auctionFee",
+        name: "saleFee",
         type: "uint256",
       },
     ],
     name: "FactoryInitialized",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "auctionFee",
-        type: "uint256",
-      },
-    ],
-    name: "SetAuctionFee",
     type: "event",
   },
   {
@@ -122,6 +115,32 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: "uint256",
+        name: "saleFee",
+        type: "uint256",
+      },
+    ],
+    name: "SetSaleFee",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "templateFee",
+        type: "uint256",
+      },
+    ],
+    name: "SetTemplateFee",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: "address",
         name: "templateLauncher",
         type: "address",
@@ -149,7 +168,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "auction",
+        name: "template",
         type: "address",
       },
       {
@@ -170,25 +189,12 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "allAuctions",
+    name: "allSales",
     outputs: [
       {
         internalType: "address",
         name: "",
         type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "auctionFee",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -270,12 +276,17 @@ const _abi = [
       },
       {
         internalType: "uint256",
+        name: "_templateFee",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
         name: "_feeNumerator",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "_auctionFee",
+        name: "_saleFee",
         type: "uint256",
       },
     ],
@@ -301,7 +312,7 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
-        name: "newAuction",
+        name: "newSale",
         type: "address",
       },
     ],
@@ -310,7 +321,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "numberOfAuctions",
+    name: "numberOfSales",
     outputs: [
       {
         internalType: "uint256",
@@ -322,16 +333,16 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "saleFee",
+    outputs: [
       {
         internalType: "uint256",
-        name: "_auctionFee",
+        name: "",
         type: "uint256",
       },
     ],
-    name: "setAuctionFee",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -376,6 +387,32 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "_saleFee",
+        type: "uint256",
+      },
+    ],
+    name: "setSaleFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_templateFee",
+        type: "uint256",
+      },
+    ],
+    name: "setTemplateFee",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "_templateLauncher",
         type: "address",
@@ -397,6 +434,19 @@ const _abi = [
     name: "setTemplateManager",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "templateFee",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

@@ -28,8 +28,6 @@ dataSources:
       eventHandlers:
         - event: FactoryInitialized(address,address,address,address,uint256,uint256,uint256)
           handler: handleFactoryInitialized
-        - event: TemplateLaunched(indexed address,uint256)
-          handler: handleTemplateLaunched
   - kind: ethereum/contract
     name: SaleLauncher
     network: {{network}}

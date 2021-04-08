@@ -1,26 +1,32 @@
 // Externals
-import { ethers, providers } from 'ethers'
+import { BigNumber, BigNumberish, providers, utils } from 'ethers'
 import { start as StartREPL } from 'repl'
 
 // Contracts
 import {
-  AuctionLauncher,
-  EasyAuction,
   ERC20,
+  FairSale,
+  FairSaleTemplate,
+  FairSaleTemplate__factory,
   MesaFactory,
-  TemplateLauncher,
-  EasyAuctionTemplate
+  SaleLauncher,
+  TemplateLauncher
 } from './tests/helpers/contracts'
+
+const ONE_MINUTE = 60
+const ONE_HOUR = ONE_MINUTE * 60
 
 // Helpers
 import {
-  buildSubgraphYaml,
-  createBiddingAndAuctioningTokens,
-  EVM_ENDPOINT,
-  execAsync,
+  createTokenAndMintAndApprove,
+  encodeInitDataFairSale,
   getContractFactory,
+  buildSubgraphYaml,
+  getSigners,
+  execAsync,
+  wait,
   GRAPHQL_ENDPOINT,
-  wait
+  EVM_ENDPOINT
 } from './tests/helpers'
 ;(async () => {
   console.log(`Starting Docker`)
@@ -34,11 +40,28 @@ import {
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
 
   // Wallets/Signers
-  const deployer = provider.getSigner(0)
+  const [deployer, saleCreator, saleInvestorA, saleInvestorB] = getSigners(provider)
 
-  console.log(`Using ${await deployer.getAddress()} as deployer for contracts`)
+  console.table([
+    {
+      address: await deployer.getAddress(),
+      description: 'Contracts Deployer'
+    },
+    {
+      address: await saleCreator.getAddress(),
+      description: 'Sale (IDO) Creator'
+    },
+    {
+      address: await saleInvestorA.getAddress(),
+      description: 'Sale Investor'
+    },
+    {
+      address: await saleInvestorB.getAddress(),
+      description: 'Sale Investor'
+    }
+  ])
 
-  // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher EasyAuction contract is deployed to ganache
+  // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher FairSale contract is deployed to ganache
   // then followed by deploying its subgraph to the Graph node
 
   const weth = (await getContractFactory('ERC20Mintable', deployer).deploy('WETH', 'WETH')) as ERC20
@@ -50,9 +73,7 @@ import {
     mesaFactory.address
   )) as TemplateLauncher
   // Deploy AuctionLauncher
-  const auctionLauncher = (await getContractFactory('AuctionLauncher', deployer).deploy(
-    mesaFactory.address
-  )) as AuctionLauncher
+  const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(mesaFactory.address)) as SaleLauncher
 
   const buildSubgraphYamlConfig = {
     network: 'local',
@@ -61,8 +82,8 @@ import {
       factory: {
         address: mesaFactory.address
       },
-      auctionLauncher: {
-        address: auctionLauncher.address
+      saleLauncher: {
+        address: saleLauncher.address
       },
       templateLauncher: {
         address: templateLauncher.address
@@ -94,52 +115,102 @@ import {
   console.log('Initlizing the MesaFactory')
   // Initilize the Factory
   const mesaFactoryInitalizeTx = await mesaFactory.initalize(
-    await deployer.getAddress(),
-    await deployer.getAddress(),
-    await deployer.getAddress(),
-    templateLauncher.address,
-    0, // zero fees
+    await deployer.getAddress(), // Fee Manager
+    await deployer.getAddress(), // Fee Collector; treasury
+    await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
+    templateLauncher.address, // TemplateLauncher address
+    0, // Template fee: cost to submit a new Sale Template to the Mesa Factory
+    0, // zero sale fees
     0 // zero fees
   )
+
   console.log(`Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}; ${mesaFactoryInitalizeTx.blockHash}`)
 
-  console.log('Deploying an EasyAuction Template contract')
-  // Create factory for EasyAuction and deploy a new version
-  const easyAuction = (await getContractFactory('EasyAuction', deployer).deploy()) as EasyAuction
+  console.log('Deploying an FairSale Template contract')
+  // Create factory for FairSale and deploy a new version
+  const easyAuction = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
 
-  console.log('Register EasyAuction in AuctionLauncher')
-  // Register EasyAuction in AuctionLauncher
-  const auctionLaunch1 = await auctionLauncher.addTemplate(easyAuction.address)
+  console.log('Register FairSale in AuctionLauncher')
+  // Register FairSale in AuctionLauncher
+  const auctionLaunch1 = await saleLauncher.addTemplate(easyAuction.address)
   const auctionLaunch1Receipt = await auctionLaunch1.wait(1)
-  // Get the EasyAuction TemplateId
+  // Get the FairSale TemplateId
   const easyAuctionTemplateId = auctionLaunch1Receipt.events?.[0]?.args?.templateId
 
-  const easyAuctionTemplate = (await getContractFactory('EasyAuctionTemplate', deployer).deploy(
-    weth.address,
-    auctionLauncher.address,
-    easyAuctionTemplateId
-  )) as EasyAuctionTemplate
+  const fairSaleTemplate = (await getContractFactory('FairSale', deployer).deploy()) as FairSaleTemplate
 
-  // Register EasyAuctionTemplate on TemplateLauncher
-  const addTemplateEasyAuctionTx = await templateLauncher.addTemplate(easyAuctionTemplate.address)
+  // Register FairSaleTemplate on TemplateLauncher
+  const addTemplateFairSaleTx = await templateLauncher.addTemplate(fairSaleTemplate.address)
 
   console.log(
-    `EasyAuctionTemplate registered in block ${addTemplateEasyAuctionTx.blockNumber}; ${addTemplateEasyAuctionTx.blockHash}`
+    `FairSaleTemplate registered in block ${addTemplateFairSaleTx.blockNumber}; ${addTemplateFairSaleTx.blockHash}`
   )
 
-  const { auctioningToken, biddingToken } = await createBiddingAndAuctioningTokens(deployer)
+  const auctioningToken = await createTokenAndMintAndApprove({
+    name: 'AuctioningToken',
+    symbol: 'AT',
+    addressToApprove: saleLauncher.address,
+    numberOfTokens: utils.parseEther('1000'),
+    users: [saleCreator],
+    signer: deployer
+  })
 
-  console.log(`Deployed auctioningToken at ${auctioningToken.address}`)
-  console.log(`Deployed biddingToken at ${biddingToken.address}`)
+  // Deploying
+  const biddingToken = await createTokenAndMintAndApprove({
+    name: 'BiddingToken',
+    symbol: 'BT',
+    addressToApprove: saleLauncher.address,
+    numberOfTokens: utils.parseEther('100'),
+    users: [saleCreator, saleInvestorA, saleInvestorB],
+    signer: deployer
+  })
 
-  // await mesaFactory.launchTemplate(easyAuctionTemplateId, encodeInitData(
+  console.log(
+    `Deployed ${await auctioningToken.name()} ($${await auctioningToken.symbol()}) at ${auctioningToken.address}`
+  )
+  console.log(`Deployed ${await biddingToken.name()} at ($${await biddingToken.symbol()}) ${biddingToken.address}`)
 
-  // ))
+  const luanchTemplateTx = await mesaFactory.launchTemplate(
+    1,
+    encodeInitDataFairSale({
+      duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
+      minBuyAmount: utils.parseEther('10'), // Each order's bid must be at least 10
+      minPrice: utils.parseEther('5'), // Minimum price per token
+      minRaise: utils.parseEther('100000'), // 100k DAI
+      saleLauncher: saleLauncher.address,
+      saleTemplateId: BigNumber.from(1),
+      tokenIn: biddingToken.address,
+      tokenOut: auctioningToken.address,
+      tokenOutSupply: utils.parseEther('1'),
+      tokenSupplier: await saleCreator.getAddress()
+    })
+  )
 
+  const luanchTemplateTxConfirmation = await luanchTemplateTx.wait(1)
+
+  if (luanchTemplateTxConfirmation.events) {
+    const templateAddress = luanchTemplateTxConfirmation?.events[0]?.args?.template
+    console.log(`Launched FairSaleTemplate at ${templateAddress}`)
+
+    // Connect to the Template and create the sale
+    const saleTemplate = FairSaleTemplate__factory.connect(templateAddress, saleCreator)
+    console.log(`auctionCreator's balance: ${utils.formatEther(await saleCreator.getBalance())}`)
+
+    try {
+      const createSaleTx = await saleTemplate.createSale({
+        value: utils.parseEther('1')
+      })
+      console.log(await createSaleTx.wait(1))
+    } catch (e) {
+      console.log(`createSale failed`, e)
+    }
+  }
+
+  // Add one bid to
   console.log(`Subgraph ready at ${GRAPHQL_ENDPOINT}`)
 
   console.log(
-    `You can access ${['mesaFactory', 'templateLauncher', 'auctionLauncher', 'helpers', 'templates'].join(', ')}`
+    `You can access ${['mesaFactory', 'templateLauncher', 'saleLauncher', 'helpers', 'templates'].join(', ')}`
   )
 
   // Attach contracts to the REPL context
@@ -152,24 +223,13 @@ import {
 
   replInstance.context.mesaFactory = mesaFactory
   replInstance.context.templateLauncher = templateLauncher
-  replInstance.context.auctionLauncher = auctionLauncher
+  replInstance.context.saleLauncher = saleLauncher
   replInstance.context.helpers = require('./tests/helpers')
   replInstance.context.templates = {
-    easyAuctionTemplate
+    fairSaleTemplate
   }
 })()
 
-export function encodeInitData(
-  tokenOut: string,
-  tokenIn: string,
-  duration: string,
-  tokenOutSupply: string,
-  minPrice: string,
-  minBuyAmount: string,
-  minRaise: string
-) {
-  return ethers.utils.defaultAbiCoder.encode(
-    ['address', 'address', 'uint256', 'uint256', 'uint96', 'uint96', 'uint256'],
-    [tokenOut, tokenIn, duration, tokenOutSupply, minPrice, minBuyAmount, minRaise]
-  )
+function printWei(bigNumber: string): string {
+  return utils.parseUnits(bigNumber).toString()
 }

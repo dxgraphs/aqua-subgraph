@@ -1,10 +1,14 @@
+// Exterals
 import { Address } from '@graphprotocol/graph-ts'
 
 // GraphQL schema
-import { AuctionToken } from '../../generated/schema'
+import { Token } from '../../generated/schema'
+
+// ERC20 helpers
+import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from './erc20'
 
 // Predefined Auction status
-export abstract class AUCTION_STATUS {
+export abstract class SALE_STATUS {
   static UPCOMING: string = 'upcoming'
   static SETTLED: string = 'settled'
   static ENDED: string = 'ended'
@@ -24,14 +28,19 @@ export abstract class BID_STATUS {
  * Creates a new instance if it does not.
  * @param tokenAddress the ERC20 contract address
  */
-export function getOrCreateAuctionToken(tokenAddress: Address): AuctionToken {
+export function getOrCreateSaleToken(tokenAddress: Address): Token {
   // Try to fetch existing token
-  let auctionToken = AuctionToken.load(tokenAddress.toHexString())
+  let token = Token.load(tokenAddress.toHexString())
   // Token does not exist, create new record
-  if (auctionToken == null) {
-    auctionToken = new AuctionToken(tokenAddress.toHexString())
+  if (token == null) {
+    token = new Token(tokenAddress.toHexString())
+    // Fetch inoformation about the token
+    token.decimals = fetchTokenDecimals(tokenAddress).toI32()
+    token.symbol = fetchTokenSymbol(tokenAddress)
+    token.name = fetchTokenName(tokenAddress)
     // Set the address
-    auctionToken.address = tokenAddress.toHexString()
+    token.address = tokenAddress.toHexString()
+    token.save()
   }
-  return auctionToken as AuctionToken
+  return token as Token
 }

@@ -1,6 +1,3 @@
-// Externals
-import { log } from '@graphprotocol/graph-ts'
-
 // Contract ABIs and Events
 import {
   TemplateAdded,
@@ -10,10 +7,11 @@ import {
 } from '../../generated/TemplateLauncher/TemplateLauncher'
 
 // Helpers
-import { AUCTION_TEMPLATES, fetchTemplateName, getAuctionTemplateById } from '../helpers/templates'
+import { SALE_TEMPLATES, fetchTemplateName, getSaleTemplateById } from '../helpers/templates'
 
 // GraphQL Schemas
 import * as Schemas from '../../generated/schema'
+import { logToMesa } from '../helpers'
 
 /**
  * Handles launching a new Auction - EasyAuction or FixedPriceAuction from AuctionLauncher via MesaFactory.
@@ -24,28 +22,28 @@ import * as Schemas from '../../generated/schema'
  *
  */
 export function handleTemplateLaunched(event: TemplateLaunched): void {
-  log.info('New template launched addres: {} {}', [event.params.auction.toString(), event.params.templateId.toString()])
-
   // Determine the entity to use from the templateId
-  let auctionTemplate = getAuctionTemplateById(event.params.templateId.toHexString())
-
+  let saleTemplate = getSaleTemplateById(event.params.templateId.toString())
+  logToMesa('saleTemplate (' + saleTemplate.name + ') found using templateId: ' + event.params.templateId.toString())
   // Template does not exist in database
-  if (!auctionTemplate) {
+  if (!saleTemplate) {
     return
   }
 
-  if (auctionTemplate.name === AUCTION_TEMPLATES.EASY_AUCTION) {
-    let easyAuction = new Schemas.EasyAuction(event.params.auction.toHexString())
-    easyAuction.createdAt = event.block.timestamp.toI32()
-    easyAuction.updatedAt = event.block.timestamp.toI32()
-    easyAuction.save()
+  if (saleTemplate.name === SALE_TEMPLATES.FAIR_SALE) {
+    logToMesa(`Creating new FairSale`)
+    let fairSale = new Schemas.FairSale(event.params.sale.toHexString())
+    fairSale.createdAt = event.block.timestamp.toI32()
+    fairSale.updatedAt = event.block.timestamp.toI32()
+    fairSale.save()
   }
 
-  if (auctionTemplate.name === AUCTION_TEMPLATES.FIXED_PRICE_AUCTION) {
-    let fixedPriceAuction = new Schemas.FixedPriceAuction(event.params.auction.toHexString())
-    fixedPriceAuction.createdAt = event.block.timestamp.toI32()
-    fixedPriceAuction.updatedAt = event.block.timestamp.toI32()
-    fixedPriceAuction.save()
+  if (saleTemplate.name === SALE_TEMPLATES.FIXED_PRICE_SALE) {
+    let fixedPriceSale = new Schemas.FixedPriceSale(event.params.sale.toHexString())
+    logToMesa(`Creating new FixedPriceSale`)
+    fixedPriceSale.createdAt = event.block.timestamp.toI32()
+    fixedPriceSale.updatedAt = event.block.timestamp.toI32()
+    fixedPriceSale.save()
   }
 }
 
@@ -54,17 +52,20 @@ export function handleTemplateLaunched(event: TemplateLaunched): void {
  * @param event the `TemplateAdded` event
  */
 export function handleTemplateAdded(event: TemplateAdded): void {
-  let auctionTemplate = new Schemas.AuctionTemplate(event.params.templateId.toHexString())
+  let saleTemplate = new Schemas.SaleTemplate(event.params.templateId.toString())
+  // Meta
+  saleTemplate.createdAt = event.block.timestamp.toI32()
+  saleTemplate.updatedAt = event.block.timestamp.toI32()
   // Factory address
-  auctionTemplate.factory = event.address.toHexString()
-  // Auction address
-  auctionTemplate.address = event.params.template.toHexString()
+  saleTemplate.factory = event.address.toHexString()
+  // Template contract address
+  saleTemplate.address = event.params.template.toHexString()
   // Auction name: used to resolve ID to contract ABIs
-  auctionTemplate.name = fetchTemplateName(event.address)
+  saleTemplate.name = fetchTemplateName(event.params.template)
   // By default, templates are unverified
-  auctionTemplate.verified = false
+  saleTemplate.verified = false
   // Save entity
-  auctionTemplate.save()
+  saleTemplate.save()
 }
 
 /**
@@ -72,11 +73,12 @@ export function handleTemplateAdded(event: TemplateAdded): void {
  * @param event the `TemplateAdded` event
  */
 export function handleTemplateVerified(event: TemplateVerified): void {
-  let auctionTemplate = Schemas.AuctionTemplate.load(event.params.templateId.toHexString())
-  if (auctionTemplate) {
-    auctionTemplate.verified = true
+  let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toHexString())
+  if (saleTemplate) {
+    saleTemplate.verified = true
+    saleTemplate.updatedAt = event.block.timestamp.toI32()
     // Save entity
-    auctionTemplate.save()
+    saleTemplate.save()
   }
 }
 
@@ -84,4 +86,12 @@ export function handleTemplateVerified(event: TemplateVerified): void {
  * Handles removing templates from the contract
  * @param event
  */
-export function handleTemplateRemoved(event: TemplateRemoved): void {}
+export function handleTemplateRemoved(event: TemplateRemoved): void {
+  let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toHexString())
+  if (saleTemplate) {
+    saleTemplate.updatedAt = event.block.timestamp.toI32()
+    saleTemplate.deletedAt = event.block.timestamp.toI32()
+    // Save entity
+    saleTemplate.save()
+  }
+}
