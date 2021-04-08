@@ -1,7 +1,7 @@
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
-import { SaleLaunched, SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
+import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 
 // Helpers
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
@@ -10,6 +10,11 @@ import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
 
+/**
+ * Handle initializing an (Easy|FixedPrice)Sale via `SaleLauncher.createSale`
+ * Determines the sale mechanism from `event.params.templateId` and
+ * dispatches the event to appropriate handler
+ */
 export function handleSaleInitialized(event: SaleInitialized): void {
   let saleTemplate = getSaleTemplateById(event.params.templateId.toString())
   // Template does not exist, exit
@@ -27,17 +32,9 @@ export function handleSaleInitialized(event: SaleInitialized): void {
 }
 
 /**
- * Handle Launching an (Easy|FixedPrice)Sale via SaleLauncher.
- * This only creates reference in the subgraph for the Sale
- * @param event
+ * Creates a new FairSale entity from
  */
-export function handleSaleLaunched(event: SaleLaunched): void {}
-
-/**
- * Creates a new EasySale entity
- * @param event `TemplateLaunched` event
- */
-export function handleFairSaleInitialized(event: SaleInitialized): void {
+function handleFairSaleInitialized(event: SaleInitialized): void {
   // Bind the new Contract
   let fairSaleContract = FairSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -67,9 +64,8 @@ export function handleFairSaleInitialized(event: SaleInitialized): void {
 
 /**
  * Creates a new FixedPriceSale entity
- * @param event `TemplateLaunched` event
  */
-export function handleFixedPriceSaleInitialized(event: SaleInitialized): void {
+function handleFixedPriceSaleInitialized(event: SaleInitialized): void {
   // Bind the new Contract
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.params.sale)
   // Create new EasySale entity
