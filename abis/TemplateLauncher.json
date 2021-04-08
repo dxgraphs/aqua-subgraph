@@ -186,7 +186,7 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "newAuction",
+        "name": "newSale",
         "type": "address"
       }
     ],
