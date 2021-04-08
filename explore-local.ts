@@ -128,16 +128,19 @@ import {
 
   console.log('Deploying an FairSale Template contract')
   // Create factory for FairSale and deploy a new version
-  const easyAuction = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
+  const fairSaleBaseContract = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
 
   console.log('Register FairSale in AuctionLauncher')
-  // Register FairSale in AuctionLauncher
-  const auctionLaunch1 = await saleLauncher.addTemplate(easyAuction.address)
+  // Register FairSale in SaleLauncher
+  const auctionLaunch1 = await saleLauncher.addTemplate(fairSaleBaseContract.address)
   const auctionLaunch1Receipt = await auctionLaunch1.wait(1)
   // Get the FairSale TemplateId
-  const easyAuctionTemplateId = auctionLaunch1Receipt.events?.[0]?.args?.templateId
+  const FAIR_SALE_TEMPLATE_ID = auctionLaunch1Receipt.events?.[0]?.args?.templateId
 
-  const fairSaleTemplate = (await getContractFactory('FairSale', deployer).deploy()) as FairSaleTemplate
+  console.log({
+    FAIR_SALE_TEMPLATE_ID: FAIR_SALE_TEMPLATE_ID.toString()
+  })
+  const fairSaleTemplate = (await getContractFactory('FairSaleTemplate', deployer).deploy()) as FairSaleTemplate
 
   // Register FairSaleTemplate on TemplateLauncher
   const addTemplateFairSaleTx = await templateLauncher.addTemplate(fairSaleTemplate.address)
@@ -152,7 +155,7 @@ import {
     addressToApprove: saleLauncher.address,
     numberOfTokens: utils.parseEther('1000'),
     users: [saleCreator],
-    signer: deployer
+    signer: saleCreator
   })
 
   // Deploying
@@ -170,6 +173,18 @@ import {
   )
   console.log(`Deployed ${await biddingToken.name()} at ($${await biddingToken.symbol()}) ${biddingToken.address}`)
 
+  console.log({
+    duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
+    minBuyAmount: utils.parseEther('10'), // Each order's bid must be at least 10
+    minPrice: utils.parseEther('5'), // Minimum price per token
+    minRaise: utils.parseEther('100000'), // 100k DAI
+    saleLauncher: saleLauncher.address,
+    saleTemplateId: BigNumber.from(1),
+    tokenIn: biddingToken.address,
+    tokenOut: auctioningToken.address,
+    tokenOutSupply: utils.parseEther('1'),
+    tokenSupplier: await saleCreator.getAddress()
+  })
   const luanchTemplateTx = await mesaFactory.launchTemplate(
     1,
     encodeInitDataFairSale({
@@ -189,12 +204,12 @@ import {
   const luanchTemplateTxConfirmation = await luanchTemplateTx.wait(1)
 
   if (luanchTemplateTxConfirmation.events) {
-    const templateAddress = luanchTemplateTxConfirmation?.events[0]?.args?.template
-    console.log(`Launched FairSaleTemplate at ${templateAddress}`)
+    console.log(luanchTemplateTxConfirmation.events)
+    const launchedTemplateAddress = luanchTemplateTxConfirmation?.events[0]?.args?.template
+    console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
 
     // Connect to the Template and create the sale
-    const saleTemplate = FairSaleTemplate__factory.connect(templateAddress, saleCreator)
-    console.log(`auctionCreator's balance: ${utils.formatEther(await saleCreator.getBalance())}`)
+    const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
     try {
       const createSaleTx = await saleTemplate.createSale({
@@ -202,7 +217,7 @@ import {
       })
       console.log(await createSaleTx.wait(1))
     } catch (e) {
-      console.log(`createSale failed`, e)
+      console.log(`createSale failed: `, JSON.parse(e.body))
     }
   }
 
