@@ -1,101 +1,81 @@
+# EntityMetadata
+# Enforces important fields on each entity that implement this interface
+interface EntityMetadata {
+  # Contract address
+  id: ID!
+  # The UTC timestamp at which the auction was placed
+  createdAt: Int!
+  # The UTC timestamp at which the auction was updated
+  updatedAt: Int!
+  # The UTC timestamp at which the auction was deleted
+  deletedAt: Int
+}
+
+#################################################
+
+# MesaFactory
+# Stores critical information the MesaFactory.
+# Allows subgraph function to access the MesaFactory without knowing its address
 type MesaFactory @entity {
   # ID: should be a unique easy-to-reference
   id: ID!
   # Auction
-  auctionCount: Int
+  saleCount: Int
   # Factory address
   address: String!
   # Fee manager: CFO
-  feeManager: String
+  feeManager: String!
   # Fee Collector: Treasury
-  feeTo: String
+  feeTo: String!
   # Template manager:
   templateManager: String!
   # Address of TemplateLauncher contract
   templateLauncher: String!
-  feeNumerator: Int
-  auctionFee: Int
+  # Fees
+  saleFee: Int!
+  feeNumerator: Int!
 }
 
-# Base Auction schema
-interface Auction {
-  # Contract address
+#################################################
+
+# FairSale entity
+type FairSale implements EntityMetadata @entity {
   id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  # Specific to the EasyAuction
   # The auction name
   name: String
-  # The UTC timestamp at which the auction was placed
-  createdAt: Int!
-  # The UTC timestamp at which the auction was updated
-  updatedAt: Int
-  # The UTC timestamp at which the auction was deleted
-  deletedAt: Int
   # open/ended/settled/upcoming
-  status: String
-}
-
-# EasyAuction entity
-type EasyAuction implements Auction @entity {
-  # Base fields from Auction interface
-  id: ID!
-  name: String
-  createdAt: Int!
-  updatedAt: Int
-  deletedAt: Int
-  status: String
-  # Specific to the EasyAuction
-  startDate: Int # Open timestamp
-  endDate: Int # Close timestamp
-  # Int of seconds after the endTime of the auction
-  gracePeriodStartDate: Int
-  # Int of seconds after the endTime of the auction
-  gracePeriodEndDate: Int
+  status: String!
+  # Date of the sale start
+  startDate: Int
+  # Date of the sale end
+  endDate: Int
   # Total amount of tokens available for auctioning
   tokenAmount: Int
   # Minimum amount per bid
   minimumBidAmount: Int
   # Bidding token (ie: DAI, USDC)
-  tokenIn: AuctionToken
+  tokenIn: Token!
   # Auctioning token
-  tokenOut: AuctionToken
+  tokenOut: Token!
   # List of bids
-  bids: [EasyAuctionBid!]
+  bids: [FairSaleBid!]
   # The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment
   minFundingThreshold: Int
 }
 
-# FixedPriceAuction
-type FixedPriceAuction implements Auction @entity {
-  # Base fields from Auction interface
-  id: ID!
-  name: String
-  createdAt: Int!
-  updatedAt: Int
-  deletedAt: Int
-  status: String
-  # Specific to the FixedPriceAuction
-  startDate: Int # Open timestamp
-  endDate: Int # Close timestamp
-  # Amount to sell
-  sellAmount: String
-  # Minimum amount per bid
-  minbiddingAmount: Int
-  minFundingThreshold: Int
-  orderCancellationPeriod: Int
-  duration: Int
-  minBuyAmountPerOrder: Int
-  isAtomicClosureAllowed: Boolean
-  bids: [FixedPriceAuctionPurchase!]
-}
-
 # AuctionBid
-type EasyAuctionBid @entity {
+type FairSaleBid implements EntityMetadata @entity {
   id: ID!
   # submitted/settled/cancelled/claimed
-  status: String
+  status: String!
   # The UTC timestamp at which the bid was placed
-  createdAt: Int
+  createdAt: Int!
   # The UTC timestamp at which the bid was updated
-  updatedAt: Int
+  updatedAt: Int!
   # The UTC timestamp at which the bid was deleted
   deletedAt: Int
   # Int of tokens the investor wants to buy
@@ -106,24 +86,49 @@ type EasyAuctionBid @entity {
   address: String
 }
 
-type FixedPriceAuctionPurchase @entity {
+#################################################
+
+# FixedPriceSale
+type FixedPriceSale implements EntityMetadata @entity {
   id: ID!
-  # The UTC timestamp at which the bid was placed
-  createdAt: Int
-  # The UTC timestamp at which the bid was updated
-  updatedAt: Int
-  # The UTC timestamp at which the bid was deleted
+  createdAt: Int!
+  updatedAt: Int!
   deletedAt: Int
-  # The amount paid by the buyer
+  # The auction name
+  name: String!
+  # open/ended/settled/upcoming/cancelled/failed
+  status: String!
+  # Specific to the FixedPriceAuction
+  startDate: Int! # Open timestamp
+  endDate: Int! # Close timestamp
+  # Amount to sell
+  sellAmount: String!
+  # Minimum amount per bid
+  minimumRaise: Int!
+  tokenIn: Token!
+  tokenOut: Token!
+  purchaes: [FixedPriceSalePurchase!]
+}
+
+type FixedPriceSalePurchase implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
   amount: Int
   # The buyer address EOA
   buyer: String
 }
 
-# AuctionToken
-type AuctionToken @entity {
+#################################################
+
+# Token
+type Token implements EntityMetadata @entity {
   # Token address
   id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
   # Token name, from the smart contract ERC20.name()
   name: String
   # ERC20 Token's contract address
@@ -134,27 +139,41 @@ type AuctionToken @entity {
   decimals: Int
 }
 
-type AuctionUser @entity {
+#################################################
+
+type SaleUser @entity {
   # User id
   id: ID!
   # The bidder's Ethereum address
   address: String
 }
 
-enum AuctionTemplateName {
-  EasyAuction
-  FixPriceAuction
-}
+#################################################
 
-type AuctionTemplate @entity {
+# Sale Templates
+# Each Sale contract implements a template
+type SaleTemplate @entity {
   # TemplatesId from the event
   id: ID!
-  # Address of the AuctionTemplate contract: either EasyAuction or FixedPriceAuction
-  address: String
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
+  address: String!
   # Address of the MesaFactory
-  factory: String
+  factory: String!
   # Template name
-  name: AuctionTemplateName
-  # Exists
-  verified: Boolean
+  name: SaleTemplateNames!
+  verified: Boolean!
+}
+
+enum SaleTemplateNames {
+  FairSaleTemplate
+  FixedPriceSaleTemplate
+}
+
+# MesaLog beacuses The Graph internal logging does not work
+type MesaLog @entity {
+  id: ID!
+  content: String!
 }
