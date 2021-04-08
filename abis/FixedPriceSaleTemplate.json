@@ -22,32 +22,50 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "duration",
+        "name": "tokenPrice",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "tokenOutSupply",
+        "name": "tokensForSale",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "minPrice",
-        "type": "uint96"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint96",
-        "name": "minBuyAmount",
-        "type": "uint96"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "minRaise",
+        "name": "startDate",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "endDate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "allocationMin",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "allocationMax",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "minimumRaise",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       }
     ],
     "name": "TemplateInitialized",
