@@ -1,35 +1,38 @@
 // Externals
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and types
-import { AuctionTemplateNameBytes } from '../../generated/TemplateLauncher/AuctionTemplateNameBytes'
+import { SaleTemplateNameBytes } from '../../generated/TemplateLauncher/SaleTemplateNameBytes'
 
 // GraphQL schema
-import { AuctionTemplate } from '../../generated/schema'
+import { SaleTemplate } from '../../generated/schema'
 
 // Available Auction types/templates/mechanisms
-export abstract class AUCTION_TEMPLATES {
-  static EASY_AUCTION: string = 'EasyAuction'
-  static FIXED_PRICE_AUCTION: string = 'FixedPriceAuction'
+export abstract class SALE_TEMPLATES {
+  static FAIR_SALE: string = 'FairSaleTemplate'
+  static FIXED_PRICE_SALE: string = 'FixedPriceSaleTemplate'
 }
 
 /**
  * Returns the template name from the `<TemplateName>Template` contract.
  * @param address the address of the contract
+ * @returns the name of the name, otherwise `unknown`
+ *
  */
 export function fetchTemplateName(address: Address): string {
-  let auctionTemplateNameBytesContract = AuctionTemplateNameBytes.bind(address)
-  // Debug
-  log.info('Contract Address: {}', [auctionTemplateNameBytesContract._address.toHexString()])
-  // templateName() and return
-  return auctionTemplateNameBytesContract.try_templateName().value
+  let saleTemplateNameBytesContract = SaleTemplateNameBytes.bind(address)
+  let tryTemplateNameResult = saleTemplateNameBytesContract.try_templateName()
+  if (!tryTemplateNameResult.reverted) {
+    return tryTemplateNameResult.value
+  }
+  return 'unknown'
 }
 
 /**
- *
- * @param auctionAddress
- * @returns
+ * Returns the `SaleTemplate` entity from postgres database using templateId
+ * @param templateId The template from the contract
+ * @returns SaleTemplate
  */
-export function getAuctionTemplateById(templateId: string): AuctionTemplate {
-  return AuctionTemplate.load(templateId) as AuctionTemplate
+export function getSaleTemplateById(templateId: string): SaleTemplate {
+  return SaleTemplate.load(templateId) as SaleTemplate
 }
