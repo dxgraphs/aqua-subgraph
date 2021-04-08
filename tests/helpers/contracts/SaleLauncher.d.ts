@@ -21,23 +21,31 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface TemplateLauncherInterface extends ethers.utils.Interface {
+interface SaleLauncherInterface extends ethers.utils.Interface {
   functions: {
     "addTemplate(address)": FunctionFragment;
+    "createSale(uint256,address,uint256,bytes)": FunctionFragment;
     "factory()": FunctionFragment;
+    "getDepositAmountWithFees(uint256)": FunctionFragment;
     "getTemplate(uint256)": FunctionFragment;
     "getTemplateId(address)": FunctionFragment;
-    "launchTemplate(uint256,bytes)": FunctionFragment;
+    "numberOfSales()": FunctionFragment;
     "removeTemplate(uint256)": FunctionFragment;
-    "restrictedTemplates()": FunctionFragment;
-    "templateId()": FunctionFragment;
-    "templateInfo(address)": FunctionFragment;
-    "updateTemplateRestriction(bool)": FunctionFragment;
-    "verifyTemplate(uint256)": FunctionFragment;
+    "saleInfo(address)": FunctionFragment;
+    "saleTemplateId()": FunctionFragment;
+    "sales(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "addTemplate", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "createSale",
+    values: [BigNumberish, string, BigNumberish, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getDepositAmountWithFees",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "getTemplate",
     values: [BigNumberish]
@@ -47,39 +55,30 @@ interface TemplateLauncherInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "launchTemplate",
-    values: [BigNumberish, BytesLike]
+    functionFragment: "numberOfSales",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "removeTemplate",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "saleInfo", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "restrictedTemplates",
+    functionFragment: "saleTemplateId",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "templateId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "templateInfo",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "updateTemplateRestriction",
-    values: [boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "verifyTemplate",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "sales", values: [BigNumberish]): string;
 
   decodeFunctionResult(
     functionFragment: "addTemplate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "createSale", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositAmountWithFees",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getTemplate",
     data: BytesLike
@@ -89,47 +88,34 @@ interface TemplateLauncherInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "launchTemplate",
+    functionFragment: "numberOfSales",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "removeTemplate",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "saleInfo", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "restrictedTemplates",
+    functionFragment: "saleTemplateId",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "templateId", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "templateInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "updateTemplateRestriction",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "verifyTemplate",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "sales", data: BytesLike): Result;
 
   events: {
+    "SaleInitialized(address,uint256,bytes)": EventFragment;
+    "SaleLaunched(address,uint256)": EventFragment;
     "TemplateAdded(address,uint256)": EventFragment;
-    "TemplateLaunched(address,uint256)": EventFragment;
     "TemplateRemoved(address,uint256)": EventFragment;
-    "TemplateVerified(address,uint256)": EventFragment;
-    "UpdatedTemplateRestriction(bool)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "SaleInitialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SaleLaunched"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TemplateAdded"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TemplateLaunched"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TemplateRemoved"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "TemplateVerified"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdatedTemplateRestriction"): EventFragment;
 }
 
-export class TemplateLauncher extends Contract {
+export class SaleLauncher extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -140,22 +126,48 @@ export class TemplateLauncher extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: TemplateLauncherInterface;
+  interface: SaleLauncherInterface;
 
   functions: {
     addTemplate(
       _template: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "addTemplate(address)"(
       _template: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    createSale(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "createSale(uint256,address,uint256,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
     "factory()"(overrides?: CallOverrides): Promise<[string]>;
+
+    getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getDepositAmountWithFees(uint256)"(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getTemplate(
       _templateId: BigNumberish,
@@ -177,17 +189,9 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    launchTemplate(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
+    numberOfSales(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "launchTemplate(uint256,bytes)"(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     removeTemplate(
       _templateId: BigNumberish,
@@ -199,72 +203,79 @@ export class TemplateLauncher extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    restrictedTemplates(overrides?: CallOverrides): Promise<[boolean]>;
-
-    "restrictedTemplates()"(overrides?: CallOverrides): Promise<[boolean]>;
-
-    templateId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "templateId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    templateInfo(
+    saleInfo(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber, boolean] & {
+      [boolean, BigNumber, BigNumber] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
-        verified: boolean;
       }
     >;
 
-    "templateInfo(address)"(
+    "saleInfo(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber, boolean] & {
+      [boolean, BigNumber, BigNumber] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
-        verified: boolean;
       }
     >;
 
-    updateTemplateRestriction(
-      _restrictedTemplates: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    saleTemplateId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "updateTemplateRestriction(bool)"(
-      _restrictedTemplates: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "saleTemplateId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    verifyTemplate(
-      _templateId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
-    "verifyTemplate(uint256)"(
-      _templateId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "sales(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
   };
 
   addTemplate(
     _template: string,
-    overrides?: PayableOverrides
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "addTemplate(address)"(
     _template: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  createSale(
+    _templateId: BigNumberish,
+    _token: string,
+    _tokenSupply: BigNumberish,
+    _data: BytesLike,
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  "createSale(uint256,address,uint256,bytes)"(
+    _templateId: BigNumberish,
+    _token: string,
+    _tokenSupply: BigNumberish,
+    _data: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
 
   "factory()"(overrides?: CallOverrides): Promise<string>;
+
+  getDepositAmountWithFees(
+    _tokenSupply: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getDepositAmountWithFees(uint256)"(
+    _tokenSupply: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getTemplate(
     _templateId: BigNumberish,
@@ -286,17 +297,9 @@ export class TemplateLauncher extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  launchTemplate(
-    _templateId: BigNumberish,
-    _data: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
+  numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "launchTemplate(uint256,bytes)"(
-    _templateId: BigNumberish,
-    _data: BytesLike,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
+  "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   removeTemplate(
     _templateId: BigNumberish,
@@ -308,57 +311,38 @@ export class TemplateLauncher extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  restrictedTemplates(overrides?: CallOverrides): Promise<boolean>;
-
-  "restrictedTemplates()"(overrides?: CallOverrides): Promise<boolean>;
-
-  templateId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  templateInfo(
+  saleInfo(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [boolean, BigNumber, BigNumber, boolean] & {
+    [boolean, BigNumber, BigNumber] & {
       exists: boolean;
       templateId: BigNumber;
       index: BigNumber;
-      verified: boolean;
     }
   >;
 
-  "templateInfo(address)"(
+  "saleInfo(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<
-    [boolean, BigNumber, BigNumber, boolean] & {
+    [boolean, BigNumber, BigNumber] & {
       exists: boolean;
       templateId: BigNumber;
       index: BigNumber;
-      verified: boolean;
     }
   >;
 
-  updateTemplateRestriction(
-    _restrictedTemplates: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  saleTemplateId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "updateTemplateRestriction(bool)"(
-    _restrictedTemplates: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "saleTemplateId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  verifyTemplate(
-    _templateId: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  "verifyTemplate(uint256)"(
-    _templateId: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "sales(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   callStatic: {
     addTemplate(
@@ -371,9 +355,35 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    createSale(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "createSale(uint256,address,uint256,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     factory(overrides?: CallOverrides): Promise<string>;
 
     "factory()"(overrides?: CallOverrides): Promise<string>;
+
+    getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDepositAmountWithFees(uint256)"(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getTemplate(
       _templateId: BigNumberish,
@@ -395,17 +405,9 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    launchTemplate(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "launchTemplate(uint256,bytes)"(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     removeTemplate(
       _templateId: BigNumberish,
@@ -417,79 +419,75 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    restrictedTemplates(overrides?: CallOverrides): Promise<boolean>;
-
-    "restrictedTemplates()"(overrides?: CallOverrides): Promise<boolean>;
-
-    templateId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    templateInfo(
+    saleInfo(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber, boolean] & {
+      [boolean, BigNumber, BigNumber] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
-        verified: boolean;
       }
     >;
 
-    "templateInfo(address)"(
+    "saleInfo(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<
-      [boolean, BigNumber, BigNumber, boolean] & {
+      [boolean, BigNumber, BigNumber] & {
         exists: boolean;
         templateId: BigNumber;
         index: BigNumber;
-        verified: boolean;
       }
     >;
 
-    updateTemplateRestriction(
-      _restrictedTemplates: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    saleTemplateId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "updateTemplateRestriction(bool)"(
-      _restrictedTemplates: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "saleTemplateId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    verifyTemplate(
-      _templateId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    "verifyTemplate(uint256)"(
-      _templateId: BigNumberish,
+    "sales(uint256)"(
+      arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
   };
 
   filters: {
+    SaleInitialized(
+      sale: string | null,
+      templateId: null,
+      data: null
+    ): EventFilter;
+
+    SaleLaunched(sale: string | null, templateId: null): EventFilter;
+
     TemplateAdded(template: string | null, templateId: null): EventFilter;
 
-    TemplateLaunched(sale: string | null, templateId: null): EventFilter;
-
     TemplateRemoved(template: string | null, templateId: null): EventFilter;
-
-    TemplateVerified(template: string | null, templateId: null): EventFilter;
-
-    UpdatedTemplateRestriction(restrictedTemplates: null): EventFilter;
   };
 
   estimateGas: {
-    addTemplate(
-      _template: string,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
+    addTemplate(_template: string, overrides?: Overrides): Promise<BigNumber>;
 
     "addTemplate(address)"(
       _template: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    createSale(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
+    "createSale(uint256,address,uint256,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
@@ -497,6 +495,16 @@ export class TemplateLauncher extends Contract {
 
     "factory()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDepositAmountWithFees(uint256)"(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTemplate(
       _templateId: BigNumberish,
       overrides?: CallOverrides
@@ -517,17 +525,9 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    launchTemplate(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
+    numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "launchTemplate(uint256,bytes)"(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     removeTemplate(
       _templateId: BigNumberish,
@@ -539,50 +539,49 @@ export class TemplateLauncher extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    restrictedTemplates(overrides?: CallOverrides): Promise<BigNumber>;
+    saleInfo(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "restrictedTemplates()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    templateId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    templateInfo(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "templateInfo(address)"(
+    "saleInfo(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    updateTemplateRestriction(
-      _restrictedTemplates: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    saleTemplateId(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "updateTemplateRestriction(bool)"(
-      _restrictedTemplates: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    "saleTemplateId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    verifyTemplate(
-      _templateId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "verifyTemplate(uint256)"(
-      _templateId: BigNumberish,
-      overrides?: Overrides
+    "sales(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     addTemplate(
       _template: string,
-      overrides?: PayableOverrides
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "addTemplate(address)"(
       _template: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    createSale(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "createSale(uint256,address,uint256,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -590,6 +589,16 @@ export class TemplateLauncher extends Contract {
 
     "factory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getDepositAmountWithFees(uint256)"(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getTemplate(
       _templateId: BigNumberish,
       overrides?: CallOverrides
@@ -610,17 +619,9 @@ export class TemplateLauncher extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    launchTemplate(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
+    numberOfSales(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "launchTemplate(uint256,bytes)"(
-      _templateId: BigNumberish,
-      _data: BytesLike,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     removeTemplate(
       _templateId: BigNumberish,
@@ -632,46 +633,30 @@ export class TemplateLauncher extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    restrictedTemplates(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "restrictedTemplates()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    templateId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "templateId()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    templateInfo(
+    saleInfo(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "templateInfo(address)"(
+    "saleInfo(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    updateTemplateRestriction(
-      _restrictedTemplates: boolean,
-      overrides?: Overrides
+    saleTemplateId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "saleTemplateId()"(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "updateTemplateRestriction(bool)"(
-      _restrictedTemplates: boolean,
-      overrides?: Overrides
+    sales(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    verifyTemplate(
-      _templateId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "verifyTemplate(uint256)"(
-      _templateId: BigNumberish,
-      overrides?: Overrides
+    "sales(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

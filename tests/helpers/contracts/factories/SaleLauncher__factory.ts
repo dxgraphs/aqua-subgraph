@@ -5,14 +5,14 @@
 import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
 
-import type { TemplateLauncher } from "../TemplateLauncher";
+import type { SaleLauncher } from "../SaleLauncher";
 
-export class TemplateLauncher__factory {
+export class SaleLauncher__factory {
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): TemplateLauncher {
-    return new Contract(address, _abi, signerOrProvider) as TemplateLauncher;
+  ): SaleLauncher {
+    return new Contract(address, _abi, signerOrProvider) as SaleLauncher;
   }
 }
 
@@ -27,6 +27,50 @@ const _abi = [
     ],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sale",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "templateId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "SaleInitialized",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sale",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "templateId",
+        type: "uint256",
+      },
+    ],
+    name: "SaleLaunched",
+    type: "event",
   },
   {
     anonymous: false,
@@ -53,25 +97,6 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "sale",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "templateId",
-        type: "uint256",
-      },
-    ],
-    name: "TemplateLaunched",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
         name: "template",
         type: "address",
       },
@@ -83,38 +108,6 @@ const _abi = [
       },
     ],
     name: "TemplateRemoved",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "template",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "templateId",
-        type: "uint256",
-      },
-    ],
-    name: "TemplateVerified",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "restrictedTemplates",
-        type: "bool",
-      },
-    ],
-    name: "UpdatedTemplateRestriction",
     type: "event",
   },
   {
@@ -133,6 +126,40 @@ const _abi = [
         type: "uint256",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_templateId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tokenSupply",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "_data",
+        type: "bytes",
+      },
+    ],
+    name: "createSale",
+    outputs: [
+      {
+        internalType: "address",
+        name: "newSale",
+        type: "address",
+      },
+    ],
     stateMutability: "payable",
     type: "function",
   },
@@ -144,6 +171,25 @@ const _abi = [
         internalType: "address",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_tokenSupply",
+        type: "uint256",
+      },
+    ],
+    name: "getDepositAmountWithFees",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -188,27 +234,16 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_templateId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_data",
-        type: "bytes",
-      },
-    ],
-    name: "launchTemplate",
+    inputs: [],
+    name: "numberOfSales",
     outputs: [
       {
-        internalType: "address",
-        name: "newAuction",
-        type: "address",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    stateMutability: "payable",
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -225,32 +260,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "restrictedTemplates",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "templateId",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -258,7 +267,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "templateInfo",
+    name: "saleInfo",
     outputs: [
       {
         internalType: "bool",
@@ -275,10 +284,18 @@ const _abi = [
         name: "index",
         type: "uint128",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "saleTemplateId",
+    outputs: [
       {
-        internalType: "bool",
-        name: "verified",
-        type: "bool",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -287,27 +304,20 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bool",
-        name: "_restrictedTemplates",
-        type: "bool",
-      },
-    ],
-    name: "updateTemplateRestriction",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "uint256",
-        name: "_templateId",
+        name: "",
         type: "uint256",
       },
     ],
-    name: "verifyTemplate",
-    outputs: [],
-    stateMutability: "nonpayable",
+    name: "sales",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ];

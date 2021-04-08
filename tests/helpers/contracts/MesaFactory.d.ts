@@ -23,33 +23,31 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface MesaFactoryInterface extends ethers.utils.Interface {
   functions: {
-    "allAuctions(uint256)": FunctionFragment;
-    "auctionFee()": FunctionFragment;
+    "allSales(uint256)": FunctionFragment;
     "feeDenominator()": FunctionFragment;
     "feeManager()": FunctionFragment;
     "feeNumerator()": FunctionFragment;
     "feeTo()": FunctionFragment;
-    "initalize(address,address,address,address,uint256,uint256)": FunctionFragment;
+    "initalize(address,address,address,address,uint256,uint256,uint256)": FunctionFragment;
     "launchTemplate(uint256,bytes)": FunctionFragment;
-    "numberOfAuctions()": FunctionFragment;
-    "setAuctionFee(uint256)": FunctionFragment;
+    "numberOfSales()": FunctionFragment;
+    "saleFee()": FunctionFragment;
     "setFeeManager(address)": FunctionFragment;
     "setFeeNumerator(uint256)": FunctionFragment;
     "setFeeTo(address)": FunctionFragment;
+    "setSaleFee(uint256)": FunctionFragment;
+    "setTemplateFee(uint256)": FunctionFragment;
     "setTemplateLauncher(address)": FunctionFragment;
     "setTemplateManager(address)": FunctionFragment;
+    "templateFee()": FunctionFragment;
     "templateId()": FunctionFragment;
     "templateLauncher()": FunctionFragment;
     "templateManager()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "allAuctions",
+    functionFragment: "allSales",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "auctionFee",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "feeDenominator",
@@ -66,20 +64,25 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "feeTo", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initalize",
-    values: [string, string, string, string, BigNumberish, BigNumberish]
+    values: [
+      string,
+      string,
+      string,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "launchTemplate",
     values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "numberOfAuctions",
+    functionFragment: "numberOfSales",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "setAuctionFee",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "saleFee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setFeeManager",
     values: [string]
@@ -90,12 +93,24 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setFeeTo", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "setSaleFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setTemplateFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setTemplateLauncher",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "setTemplateManager",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "templateFee",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "templateId",
@@ -110,11 +125,7 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "allAuctions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "auctionFee", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "allSales", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "feeDenominator",
     data: BytesLike
@@ -131,13 +142,10 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "numberOfAuctions",
+    functionFragment: "numberOfSales",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setAuctionFee",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "saleFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setFeeManager",
     data: BytesLike
@@ -147,12 +155,21 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setFeeTo", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setSaleFee", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setTemplateFee",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "setTemplateLauncher",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setTemplateManager",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "templateFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "templateId", data: BytesLike): Result;
@@ -166,21 +183,23 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "FactoryInitialized(address,address,address,address,uint256,uint256)": EventFragment;
-    "SetAuctionFee(uint256)": EventFragment;
+    "FactoryInitialized(address,address,address,address,uint256,uint256,uint256)": EventFragment;
     "SetFeeManager(address)": EventFragment;
     "SetFeeNumerator(uint256)": EventFragment;
     "SetFeeTo(address)": EventFragment;
+    "SetSaleFee(uint256)": EventFragment;
+    "SetTemplateFee(uint256)": EventFragment;
     "SetTemplateLauncher(address)": EventFragment;
     "SetTemplateManager(address)": EventFragment;
     "TemplateLaunched(address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "FactoryInitialized"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SetAuctionFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetFeeManager"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetFeeNumerator"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetFeeTo"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetSaleFee"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetTemplateFee"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetTemplateLauncher"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SetTemplateManager"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TemplateLaunched"): EventFragment;
@@ -200,19 +219,12 @@ export class MesaFactory extends Contract {
   interface: MesaFactoryInterface;
 
   functions: {
-    allAuctions(
+    allSales(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    "allSales(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    "allAuctions(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    auctionFee(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "auctionFee()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     feeDenominator(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -235,18 +247,20 @@ export class MesaFactory extends Contract {
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initalize(address,address,address,address,uint256,uint256)"(
+    "initalize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -262,19 +276,13 @@ export class MesaFactory extends Contract {
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    numberOfAuctions(overrides?: CallOverrides): Promise<[BigNumber]>;
+    numberOfSales(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "numberOfAuctions()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    setAuctionFee(
-      _auctionFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    saleFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "setAuctionFee(uint256)"(
-      _auctionFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
+    "saleFee()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     setFeeManager(
       _feeManager: string,
@@ -306,6 +314,26 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    setSaleFee(
+      _saleFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setSaleFee(uint256)"(
+      _saleFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    setTemplateFee(
+      _templateFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "setTemplateFee(uint256)"(
+      _templateFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
     setTemplateLauncher(
       _templateLauncher: string,
       overrides?: Overrides
@@ -326,6 +354,10 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
+    templateFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "templateFee()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     templateId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "templateId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -339,16 +371,12 @@ export class MesaFactory extends Contract {
     "templateManager()"(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  allAuctions(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  allSales(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-  "allAuctions(uint256)"(
+  "allSales(uint256)"(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  auctionFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "auctionFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   feeDenominator(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -371,18 +399,20 @@ export class MesaFactory extends Contract {
     _feeTo: string,
     _templateManager: string,
     _templateLauncher: string,
+    _templateFee: BigNumberish,
     _feeNumerator: BigNumberish,
-    _auctionFee: BigNumberish,
+    _saleFee: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initalize(address,address,address,address,uint256,uint256)"(
+  "initalize(address,address,address,address,uint256,uint256,uint256)"(
     _feeManager: string,
     _feeTo: string,
     _templateManager: string,
     _templateLauncher: string,
+    _templateFee: BigNumberish,
     _feeNumerator: BigNumberish,
-    _auctionFee: BigNumberish,
+    _saleFee: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -398,19 +428,13 @@ export class MesaFactory extends Contract {
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  numberOfAuctions(overrides?: CallOverrides): Promise<BigNumber>;
+  numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "numberOfAuctions()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  setAuctionFee(
-    _auctionFee: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  saleFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "setAuctionFee(uint256)"(
-    _auctionFee: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
+  "saleFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   setFeeManager(
     _feeManager: string,
@@ -439,6 +463,26 @@ export class MesaFactory extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  setSaleFee(
+    _saleFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setSaleFee(uint256)"(
+    _saleFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  setTemplateFee(
+    _templateFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "setTemplateFee(uint256)"(
+    _templateFee: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
   setTemplateLauncher(
     _templateLauncher: string,
     overrides?: Overrides
@@ -459,6 +503,10 @@ export class MesaFactory extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
+  templateFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "templateFee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   templateId(overrides?: CallOverrides): Promise<BigNumber>;
 
   "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -472,16 +520,12 @@ export class MesaFactory extends Contract {
   "templateManager()"(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    allAuctions(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    allSales(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    "allAuctions(uint256)"(
+    "allSales(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    auctionFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "auctionFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     feeDenominator(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -504,18 +548,20 @@ export class MesaFactory extends Contract {
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initalize(address,address,address,address,uint256,uint256)"(
+    "initalize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -531,19 +577,13 @@ export class MesaFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    numberOfAuctions(overrides?: CallOverrides): Promise<BigNumber>;
+    numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "numberOfAuctions()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setAuctionFee(
-      _auctionFee: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    saleFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "setAuctionFee(uint256)"(
-      _auctionFee: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    "saleFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     setFeeManager(
       _feeManager: string,
@@ -572,6 +612,26 @@ export class MesaFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setSaleFee(
+      _saleFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setSaleFee(uint256)"(
+      _saleFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setTemplateFee(
+      _templateFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setTemplateFee(uint256)"(
+      _templateFee: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setTemplateLauncher(
       _templateLauncher: string,
       overrides?: CallOverrides
@@ -592,6 +652,10 @@ export class MesaFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    templateFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "templateFee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     templateId(overrides?: CallOverrides): Promise<BigNumber>;
 
     "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -611,11 +675,10 @@ export class MesaFactory extends Contract {
       feeTo: null,
       templateManager: null,
       templateLauncher: null,
+      templateFee: null,
       feeNumerator: null,
-      auctionFee: null
+      saleFee: null
     ): EventFilter;
-
-    SetAuctionFee(auctionFee: BigNumberish | null): EventFilter;
 
     SetFeeManager(feeManager: string | null): EventFilter;
 
@@ -623,27 +686,24 @@ export class MesaFactory extends Contract {
 
     SetFeeTo(feeTo: string | null): EventFilter;
 
+    SetSaleFee(saleFee: BigNumberish | null): EventFilter;
+
+    SetTemplateFee(templateFee: BigNumberish | null): EventFilter;
+
     SetTemplateLauncher(templateLauncher: string | null): EventFilter;
 
     SetTemplateManager(templateManager: string | null): EventFilter;
 
-    TemplateLaunched(auction: string | null, templateId: null): EventFilter;
+    TemplateLaunched(template: string | null, templateId: null): EventFilter;
   };
 
   estimateGas: {
-    allAuctions(
+    allSales(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "allSales(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    "allAuctions(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    auctionFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "auctionFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     feeDenominator(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -666,18 +726,20 @@ export class MesaFactory extends Contract {
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initalize(address,address,address,address,uint256,uint256)"(
+    "initalize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -693,19 +755,13 @@ export class MesaFactory extends Contract {
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    numberOfAuctions(overrides?: CallOverrides): Promise<BigNumber>;
+    numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "numberOfAuctions()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setAuctionFee(
-      _auctionFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    saleFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "setAuctionFee(uint256)"(
-      _auctionFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
+    "saleFee()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     setFeeManager(
       _feeManager: string,
@@ -734,6 +790,26 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    setSaleFee(
+      _saleFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setSaleFee(uint256)"(
+      _saleFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    setTemplateFee(
+      _templateFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "setTemplateFee(uint256)"(
+      _templateFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
     setTemplateLauncher(
       _templateLauncher: string,
       overrides?: Overrides
@@ -754,6 +830,10 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
+    templateFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "templateFee()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     templateId(overrides?: CallOverrides): Promise<BigNumber>;
 
     "templateId()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -768,19 +848,15 @@ export class MesaFactory extends Contract {
   };
 
   populateTransaction: {
-    allAuctions(
+    allSales(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "allAuctions(uint256)"(
+    "allSales(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    auctionFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "auctionFee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     feeDenominator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -805,18 +881,20 @@ export class MesaFactory extends Contract {
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initalize(address,address,address,address,uint256,uint256)"(
+    "initalize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
       _templateLauncher: string,
+      _templateFee: BigNumberish,
       _feeNumerator: BigNumberish,
-      _auctionFee: BigNumberish,
+      _saleFee: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -832,21 +910,13 @@ export class MesaFactory extends Contract {
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    numberOfAuctions(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    numberOfSales(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "numberOfAuctions()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    "numberOfSales()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    setAuctionFee(
-      _auctionFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
+    saleFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "setAuctionFee(uint256)"(
-      _auctionFee: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
+    "saleFee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setFeeManager(
       _feeManager: string,
@@ -878,6 +948,26 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
+    setSaleFee(
+      _saleFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setSaleFee(uint256)"(
+      _saleFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    setTemplateFee(
+      _templateFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "setTemplateFee(uint256)"(
+      _templateFee: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
     setTemplateLauncher(
       _templateLauncher: string,
       overrides?: Overrides
@@ -897,6 +987,10 @@ export class MesaFactory extends Contract {
       _templateManager: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
+
+    templateFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "templateFee()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     templateId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

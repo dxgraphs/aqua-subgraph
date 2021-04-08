@@ -5,14 +5,14 @@
 import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
 
-import type { TemplateLauncher } from "../TemplateLauncher";
+import type { ERC20Mintable } from "../ERC20Mintable";
 
-export class TemplateLauncher__factory {
+export class ERC20Mintable__factory {
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): TemplateLauncher {
-    return new Contract(address, _abi, signerOrProvider) as TemplateLauncher;
+  ): ERC20Mintable {
+    return new Contract(address, _abi, signerOrProvider) as ERC20Mintable;
   }
 }
 
@@ -20,9 +20,14 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_factory",
-        type: "address",
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "symbol",
+        type: "string",
       },
     ],
     stateMutability: "nonpayable",
@@ -34,17 +39,23 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "template",
+        name: "owner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "spender",
         type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "templateId",
+        name: "value",
         type: "uint256",
       },
     ],
-    name: "TemplateAdded",
+    name: "Approval",
     type: "event",
   },
   {
@@ -53,130 +64,39 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "sale",
+        name: "from",
         type: "address",
       },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "templateId",
-        type: "uint256",
-      },
-    ],
-    name: "TemplateLaunched",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: true,
         internalType: "address",
-        name: "template",
+        name: "to",
         type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "templateId",
+        name: "value",
         type: "uint256",
       },
     ],
-    name: "TemplateRemoved",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "template",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "templateId",
-        type: "uint256",
-      },
-    ],
-    name: "TemplateVerified",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "bool",
-        name: "restrictedTemplates",
-        type: "bool",
-      },
-    ],
-    name: "UpdatedTemplateRestriction",
+    name: "Transfer",
     type: "event",
   },
   {
     inputs: [
       {
         internalType: "address",
-        name: "_template",
+        name: "owner",
         type: "address",
       },
-    ],
-    name: "addTemplate",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "factory",
-    outputs: [
       {
         internalType: "address",
-        name: "",
+        name: "spender",
         type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_templateId",
-        type: "uint256",
-      },
-    ],
-    name: "getTemplate",
-    outputs: [
-      {
-        internalType: "address",
-        name: "template",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_template",
-        type: "address",
-      },
-    ],
-    name: "getTemplateId",
+    name: "allowance",
     outputs: [
       {
         internalType: "uint256",
@@ -190,43 +110,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "_templateId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_data",
-        type: "bytes",
-      },
-    ],
-    name: "launchTemplate",
-    outputs: [
-      {
         internalType: "address",
-        name: "newAuction",
+        name: "spender",
         type: "address",
       },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
       {
         internalType: "uint256",
-        name: "_templateId",
+        name: "amount",
         type: "uint256",
       },
     ],
-    name: "removeTemplate",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "restrictedTemplates",
+    name: "approve",
     outputs: [
       {
         internalType: "bool",
@@ -234,79 +128,196 @@ const _abi = [
         type: "bool",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "templateId",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "templateInfo",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "exists",
-        type: "bool",
-      },
-      {
-        internalType: "uint64",
-        name: "templateId",
-        type: "uint64",
-      },
-      {
-        internalType: "uint128",
-        name: "index",
-        type: "uint128",
-      },
-      {
-        internalType: "bool",
-        name: "verified",
-        type: "bool",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bool",
-        name: "_restrictedTemplates",
-        type: "bool",
-      },
-    ],
-    name: "updateTemplateRestriction",
-    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
       {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "balanceOf",
+    outputs: [
+      {
         internalType: "uint256",
-        name: "_templateId",
+        name: "",
         type: "uint256",
       },
     ],
-    name: "verifyTemplate",
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "decimals",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "subtractedValue",
+        type: "uint256",
+      },
+    ],
+    name: "decreaseAllowance",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "addedValue",
+        type: "uint256",
+      },
+    ],
+    name: "increaseAllowance",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "mint",
     outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "name",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "symbol",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalSupply",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "transfer",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "transferFrom",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
