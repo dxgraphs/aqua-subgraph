@@ -5,7 +5,7 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 
 // Helpers
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
-import { SALE_STATUS, getOrCreateSaleToken, decodeOrder } from '../helpers/sales'
+import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
@@ -23,11 +23,11 @@ export function handleSaleInitialized(event: SaleInitialized): void {
     return
   }
 
-  if (saleTemplate.name === SALE_TEMPLATES.FAIR_SALE) {
+  if (saleTemplate.name == SALE_TEMPLATES.FAIR_SALE) {
     registerFairSale(event)
   }
 
-  if (saleTemplate.name === SALE_TEMPLATES.FIXED_PRICE_SALE) {
+  if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
     registerFixedPriceSale(event)
   }
 }
