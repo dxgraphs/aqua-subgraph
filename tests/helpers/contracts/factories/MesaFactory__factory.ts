@@ -290,7 +290,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "initalize",
+    name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

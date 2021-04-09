@@ -21,7 +21,7 @@ import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface FairSaleTemplateInterface extends ethers.utils.Interface {
+interface FixedPriceSaleTemplateInterface extends ethers.utils.Interface {
   functions: {
     "createSale()": FunctionFragment;
     "init(bytes)": FunctionFragment;
@@ -73,13 +73,13 @@ interface FairSaleTemplateInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256)": EventFragment;
+    "TemplateInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "TemplateInitialized"): EventFragment;
 }
 
-export class FairSaleTemplate extends Contract {
+export class FixedPriceSaleTemplate extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -90,7 +90,7 @@ export class FairSaleTemplate extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: FairSaleTemplateInterface;
+  interface: FixedPriceSaleTemplateInterface;
 
   functions: {
     createSale(overrides?: PayableOverrides): Promise<ContractTransaction>;
@@ -178,11 +178,14 @@ export class FairSaleTemplate extends Contract {
     TemplateInitialized(
       tokenOut: null,
       tokenIn: null,
-      duration: null,
-      tokenOutSupply: null,
-      minPrice: null,
-      minBuyAmount: null,
-      minRaise: null
+      tokenPrice: null,
+      tokensForSale: null,
+      startDate: null,
+      endDate: null,
+      allocationMin: null,
+      allocationMax: null,
+      minimumRaise: null,
+      owner: null
     ): EventFilter;
   };
 

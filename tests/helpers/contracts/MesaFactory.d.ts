@@ -28,7 +28,7 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
     "feeManager()": FunctionFragment;
     "feeNumerator()": FunctionFragment;
     "feeTo()": FunctionFragment;
-    "initalize(address,address,address,address,uint256,uint256,uint256)": FunctionFragment;
+    "initialize(address,address,address,address,uint256,uint256,uint256)": FunctionFragment;
     "launchTemplate(uint256,bytes)": FunctionFragment;
     "numberOfSales()": FunctionFragment;
     "saleFee()": FunctionFragment;
@@ -63,7 +63,7 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "feeTo", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "initalize",
+    functionFragment: "initialize",
     values: [
       string,
       string,
@@ -136,7 +136,7 @@ interface MesaFactoryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "feeTo", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "initalize", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "launchTemplate",
     data: BytesLike
@@ -242,7 +242,7 @@ export class MesaFactory extends Contract {
 
     "feeTo()"(overrides?: CallOverrides): Promise<[string]>;
 
-    initalize(
+    initialize(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -253,7 +253,7 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "initalize(address,address,address,address,uint256,uint256,uint256)"(
+    "initialize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -394,7 +394,7 @@ export class MesaFactory extends Contract {
 
   "feeTo()"(overrides?: CallOverrides): Promise<string>;
 
-  initalize(
+  initialize(
     _feeManager: string,
     _feeTo: string,
     _templateManager: string,
@@ -405,7 +405,7 @@ export class MesaFactory extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "initalize(address,address,address,address,uint256,uint256,uint256)"(
+  "initialize(address,address,address,address,uint256,uint256,uint256)"(
     _feeManager: string,
     _feeTo: string,
     _templateManager: string,
@@ -543,7 +543,7 @@ export class MesaFactory extends Contract {
 
     "feeTo()"(overrides?: CallOverrides): Promise<string>;
 
-    initalize(
+    initialize(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -554,7 +554,7 @@ export class MesaFactory extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "initalize(address,address,address,address,uint256,uint256,uint256)"(
+    "initialize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -721,7 +721,7 @@ export class MesaFactory extends Contract {
 
     "feeTo()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    initalize(
+    initialize(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -732,7 +732,7 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "initalize(address,address,address,address,uint256,uint256,uint256)"(
+    "initialize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -876,7 +876,7 @@ export class MesaFactory extends Contract {
 
     "feeTo()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    initalize(
+    initialize(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,
@@ -887,7 +887,7 @@ export class MesaFactory extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "initalize(address,address,address,address,uint256,uint256,uint256)"(
+    "initialize(address,address,address,address,uint256,uint256,uint256)"(
       _feeManager: string,
       _feeTo: string,
       _templateManager: string,

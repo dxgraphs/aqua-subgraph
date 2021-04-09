@@ -204,7 +204,7 @@ const _abi = [
     outputs: [
       {
         internalType: "address",
-        name: "newAuction",
+        name: "newSale",
         type: "address",
       },
     ],

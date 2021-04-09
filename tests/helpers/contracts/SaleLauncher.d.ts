@@ -24,7 +24,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 interface SaleLauncherInterface extends ethers.utils.Interface {
   functions: {
     "addTemplate(address)": FunctionFragment;
-    "createSale(uint256,address,uint256,bytes)": FunctionFragment;
+    "createSale(uint256,address,uint256,address,bytes)": FunctionFragment;
     "factory()": FunctionFragment;
     "getDepositAmountWithFees(uint256)": FunctionFragment;
     "getTemplate(uint256)": FunctionFragment;
@@ -39,7 +39,7 @@ interface SaleLauncherInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "addTemplate", values: [string]): string;
   encodeFunctionData(
     functionFragment: "createSale",
-    values: [BigNumberish, string, BigNumberish, BytesLike]
+    values: [BigNumberish, string, BigNumberish, string, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
@@ -143,14 +143,16 @@ export class SaleLauncher extends Contract {
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
-    "createSale(uint256,address,uint256,bytes)"(
+    "createSale(uint256,address,uint256,address,bytes)"(
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
@@ -251,14 +253,16 @@ export class SaleLauncher extends Contract {
     _templateId: BigNumberish,
     _token: string,
     _tokenSupply: BigNumberish,
+    _tokenSupplier: string,
     _data: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
-  "createSale(uint256,address,uint256,bytes)"(
+  "createSale(uint256,address,uint256,address,bytes)"(
     _templateId: BigNumberish,
     _token: string,
     _tokenSupply: BigNumberish,
+    _tokenSupplier: string,
     _data: BytesLike,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
@@ -359,14 +363,16 @@ export class SaleLauncher extends Contract {
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    "createSale(uint256,address,uint256,bytes)"(
+    "createSale(uint256,address,uint256,address,bytes)"(
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: CallOverrides
     ): Promise<string>;
@@ -479,14 +485,16 @@ export class SaleLauncher extends Contract {
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
-    "createSale(uint256,address,uint256,bytes)"(
+    "createSale(uint256,address,uint256,address,bytes)"(
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
@@ -573,14 +581,16 @@ export class SaleLauncher extends Contract {
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
-    "createSale(uint256,address,uint256,bytes)"(
+    "createSale(uint256,address,uint256,address,bytes)"(
       _templateId: BigNumberish,
       _token: string,
       _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
       _data: BytesLike,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;

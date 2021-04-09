@@ -4,7 +4,7 @@ import { exec as execBase } from 'child_process'
 import { render } from 'mustache'
 
 // Contract interfaces and classes
-import { ERC20, ERC20Mintable } from './contracts'
+import { ERC20Mintable } from './contracts'
 /**
  * Wraps `child_process.exec` in a promise
  * @param command
@@ -91,13 +91,6 @@ interface CreateTokensAndMintAndApproveProps {
   signer: Signer
 }
 
-/**
- *
- * @param easyAuction the easyAuction
- * @param users
- * @param hre
- * @returns
- */
 export async function createTokenAndMintAndApprove({
   name,
   symbol,
@@ -109,10 +102,6 @@ export async function createTokenAndMintAndApprove({
   const token = (await getContractFactory('ERC20Mintable', signer).deploy(symbol, name)) as ERC20Mintable
 
   for (const user of users) {
-    console.log({
-      userAddress: await user.getAddress(),
-      addressToApprove
-    })
     await token.mint(await user.getAddress(), numberOfTokens)
     await token.connect(user).approve(addressToApprove, numberOfTokens)
   }

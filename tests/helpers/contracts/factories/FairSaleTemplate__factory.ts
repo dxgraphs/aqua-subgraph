@@ -73,32 +73,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "auction",
-    outputs: [
-      {
-        internalType: "contract IAuction",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "auctionTemplateId",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "createSale",
     outputs: [
       {
@@ -119,13 +93,7 @@ const _abi = [
       },
     ],
     name: "init",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -150,6 +118,19 @@ const _abi = [
         internalType: "contract ISaleLauncher",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "saleTemplateId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

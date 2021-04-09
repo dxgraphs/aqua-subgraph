@@ -5,36 +5,24 @@
 import { Contract, Signer } from "ethers";
 import { Provider } from "@ethersproject/providers";
 
-import type { EasyAuctionTemplate } from "../EasyAuctionTemplate";
+import type { FixedPriceSaleTemplate } from "../FixedPriceSaleTemplate";
 
-export class EasyAuctionTemplate__factory {
+export class FixedPriceSaleTemplate__factory {
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): EasyAuctionTemplate {
-    return new Contract(address, _abi, signerOrProvider) as EasyAuctionTemplate;
+  ): FixedPriceSaleTemplate {
+    return new Contract(
+      address,
+      _abi,
+      signerOrProvider
+    ) as FixedPriceSaleTemplate;
   }
 }
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_WETH",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_auctionLauncher",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_auctionTemplateId",
-        type: "uint256",
-      },
-    ],
+    inputs: [],
     stateMutability: "nonpayable",
     type: "constructor",
   },
@@ -56,32 +44,50 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "duration",
+        name: "tokenPrice",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "tokenOutSupply",
+        name: "tokensForSale",
         type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint96",
-        name: "minPrice",
-        type: "uint96",
-      },
-      {
-        indexed: false,
-        internalType: "uint96",
-        name: "minBuyAmount",
-        type: "uint96",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "minRaise",
+        name: "startDate",
         type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "endDate",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "allocationMin",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "allocationMax",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "minimumRaise",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "owner",
+        type: "address",
       },
     ],
     name: "TemplateInitialized",
@@ -89,54 +95,15 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "WETH",
+    name: "createSale",
     outputs: [
       {
-        internalType: "contract IWETH10",
-        name: "",
+        internalType: "address",
+        name: "newSale",
         type: "address",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "auction",
-    outputs: [
-      {
-        internalType: "contract IAuction",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "auctionLauncher",
-    outputs: [
-      {
-        internalType: "contract IAuctionLauncher",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "auctionTemplateId",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -148,13 +115,7 @@ const _abi = [
       },
     ],
     name: "init",
-    outputs: [
-      {
-        internalType: "address",
-        name: "newAuction",
-        type: "address",
-      },
-    ],
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -166,6 +127,32 @@ const _abi = [
         internalType: "contract IMesaFactory",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "saleLauncher",
+    outputs: [
+      {
+        internalType: "contract ISaleLauncher",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "saleTemplateId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

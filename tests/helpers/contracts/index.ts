@@ -8,6 +8,7 @@ export type { ERC20SymbolBytes } from "./ERC20SymbolBytes";
 export type { FairSale } from "./FairSale";
 export type { FairSaleTemplate } from "./FairSaleTemplate";
 export type { FixedPriceSale } from "./FixedPriceSale";
+export type { FixedPriceSaleTemplate } from "./FixedPriceSaleTemplate";
 export type { MesaFactory } from "./MesaFactory";
 export type { SaleLauncher } from "./SaleLauncher";
 export type { SaleTemplateNameBytes } from "./SaleTemplateNameBytes";
@@ -20,6 +21,7 @@ export { ERC20SymbolBytes__factory } from "./factories/ERC20SymbolBytes__factory
 export { FairSale__factory } from "./factories/FairSale__factory";
 export { FairSaleTemplate__factory } from "./factories/FairSaleTemplate__factory";
 export { FixedPriceSale__factory } from "./factories/FixedPriceSale__factory";
+export { FixedPriceSaleTemplate__factory } from "./factories/FixedPriceSaleTemplate__factory";
 export { MesaFactory__factory } from "./factories/MesaFactory__factory";
 export { SaleLauncher__factory } from "./factories/SaleLauncher__factory";
 export { SaleTemplateNameBytes__factory } from "./factories/SaleTemplateNameBytes__factory";
