@@ -123,12 +123,9 @@ type FixedPriceSalePurchase implements EntityMetadata @entity {
 #################################################
 
 # Token
-type Token implements EntityMetadata @entity {
+type Token @entity {
   # Token address
   id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  deletedAt: Int
   # Token name, from the smart contract ERC20.name()
   name: String
   # ERC20 Token's contract address
