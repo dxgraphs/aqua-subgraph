@@ -1,16 +1,16 @@
 // Externals
-import { BigNumber, BigNumberish, providers, utils } from 'ethers'
-import { start as StartREPL } from 'repl'
+import { BigNumber, providers, utils } from 'ethers'
+import { start as startREPL } from 'repl'
 
 // Contracts
 import {
-  ERC20,
-  FairSale,
-  FairSaleTemplate,
   FairSaleTemplate__factory,
-  MesaFactory,
+  FairSaleTemplate,
+  TemplateLauncher,
+  ERC20Mintable,
   SaleLauncher,
-  TemplateLauncher
+  MesaFactory,
+  FairSale
 } from './tests/helpers/contracts'
 
 const ONE_MINUTE = 60
@@ -63,9 +63,7 @@ import {
 
   // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher FairSale contract is deployed to ganache
   // then followed by deploying its subgraph to the Graph node
-
-  const weth = (await getContractFactory('ERC20Mintable', deployer).deploy('WETH', 'WETH')) as ERC20
-
+  const weth = (await getContractFactory('ERC20Mintable', deployer).deploy('WETH', 'WETH')) as ERC20Mintable
   // Deploy MesaFactory
   const mesaFactory = (await getContractFactory('MesaFactory', deployer).deploy()) as MesaFactory
   // Deploy TemplateLauncher
@@ -113,42 +111,42 @@ import {
   await wait(20000)
 
   console.log('Initlizing the MesaFactory')
-  // Initilize the Factory
-  const mesaFactoryInitalizeTx = await mesaFactory.initalize(
-    await deployer.getAddress(), // Fee Manager
-    await deployer.getAddress(), // Fee Collector; treasury
-    await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
-    templateLauncher.address, // TemplateLauncher address
-    0, // Template fee: cost to submit a new Sale Template to the Mesa Factory
-    0, // zero sale fees
-    0 // zero fees
-  )
-
-  console.log(`Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}; ${mesaFactoryInitalizeTx.blockHash}`)
-
-  console.log('Deploying an FairSale Template contract')
+  {
+    // Initilize the Factory
+    const mesaFactoryInitalizeTx = await mesaFactory.initialize(
+      await deployer.getAddress(), // Fee Manager
+      await deployer.getAddress(), // Fee Collector; treasury
+      await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
+      templateLauncher.address, // TemplateLauncher address
+      0, // Template fee: cost to submit a new Sale Template to the Mesa Factory
+      0, // zero sale fees
+      0 // zero fees
+    )
+    console.log(
+      `Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}; ${mesaFactoryInitalizeTx.blockHash}`
+    )
+  }
+  // Deploy FairSale
+  const fairSale = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
   // Create factory for FairSale and deploy a new version
-  const fairSaleBaseContract = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
-
-  console.log('Register FairSale in AuctionLauncher')
-  // Register FairSale in SaleLauncher
-  const auctionLaunch1 = await saleLauncher.addTemplate(fairSaleBaseContract.address)
-  const auctionLaunch1Receipt = await auctionLaunch1.wait(1)
-  // Get the FairSale TemplateId
-  const FAIR_SALE_TEMPLATE_ID = auctionLaunch1Receipt.events?.[0]?.args?.templateId
-
-  console.log({
-    FAIR_SALE_TEMPLATE_ID: FAIR_SALE_TEMPLATE_ID.toString()
-  })
   const fairSaleTemplate = (await getContractFactory('FairSaleTemplate', deployer).deploy()) as FairSaleTemplate
 
+  // Register FairSale in SaleLauncher
+  {
+    console.log('Register FairSale in AuctionLauncher')
+    const addSaleTx = await saleLauncher.addTemplate(fairSale.address)
+    const addSaleTxReceipt = await addSaleTx.wait(1)
+    console.log(`Registered FairSale in SaleLauncher`, addSaleTxReceipt.events)
+  }
+
   // Register FairSaleTemplate on TemplateLauncher
-  const addTemplateFairSaleTx = await templateLauncher.addTemplate(fairSaleTemplate.address)
+  {
+    const addFairSaleTemplateTx = await templateLauncher.addTemplate(fairSaleTemplate.address)
+    const addFairSaleTemplateTxReceipt = await addFairSaleTemplateTx.wait(1)
+    console.log(`Registered FairSaleTemplate in TemplateLauncher`, addFairSaleTemplateTxReceipt.events)
+  }
 
-  console.log(
-    `FairSaleTemplate registered in block ${addTemplateFairSaleTx.blockNumber}; ${addTemplateFairSaleTx.blockHash}`
-  )
-
+  // Deploy, mint and approve Auctioning Token
   const auctioningToken = await createTokenAndMintAndApprove({
     name: 'AuctioningToken',
     symbol: 'AT',
@@ -158,7 +156,7 @@ import {
     signer: saleCreator
   })
 
-  // Deploying
+  // Deploy, mint and approve Bidding Token
   const biddingToken = await createTokenAndMintAndApprove({
     name: 'BiddingToken',
     symbol: 'BT',
@@ -173,18 +171,6 @@ import {
   )
   console.log(`Deployed ${await biddingToken.name()} at ($${await biddingToken.symbol()}) ${biddingToken.address}`)
 
-  console.log({
-    duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
-    minBuyAmount: utils.parseEther('10'), // Each order's bid must be at least 10
-    minPrice: utils.parseEther('5'), // Minimum price per token
-    minRaise: utils.parseEther('100000'), // 100k DAI
-    saleLauncher: saleLauncher.address,
-    saleTemplateId: BigNumber.from(1),
-    tokenIn: biddingToken.address,
-    tokenOut: auctioningToken.address,
-    tokenOutSupply: utils.parseEther('1'),
-    tokenSupplier: await saleCreator.getAddress()
-  })
   const luanchTemplateTx = await mesaFactory.launchTemplate(
     1,
     encodeInitDataFairSale({
@@ -201,11 +187,11 @@ import {
     })
   )
 
-  const luanchTemplateTxConfirmation = await luanchTemplateTx.wait(1)
+  const launchTemplateTxReceipt = await luanchTemplateTx.wait(1)
 
-  if (luanchTemplateTxConfirmation.events) {
-    console.log(luanchTemplateTxConfirmation.events)
-    const launchedTemplateAddress = luanchTemplateTxConfirmation?.events[0]?.args?.template
+  if (launchTemplateTxReceipt.events) {
+    console.log(launchTemplateTxReceipt.events)
+    const launchedTemplateAddress = launchTemplateTxReceipt?.events[0]?.args?.template
     console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
 
     // Connect to the Template and create the sale
@@ -215,7 +201,8 @@ import {
       const createSaleTx = await saleTemplate.createSale({
         value: utils.parseEther('1')
       })
-      console.log(await createSaleTx.wait(1))
+      const createSaleTxReceipt = await createSaleTx.wait(1)
+      console.log(createSaleTxReceipt.events)
     } catch (e) {
       console.log(`createSale failed: `, JSON.parse(e.body))
     }
@@ -230,7 +217,7 @@ import {
 
   // Attach contracts to the REPL context
   // Allow use to access contracts
-  const replInstance = StartREPL({
+  const replInstance = startREPL({
     preview: true,
     useColors: true,
     prompt: `Mesa > `
@@ -244,7 +231,3 @@ import {
     fairSaleTemplate
   }
 })()
-
-function printWei(bigNumber: string): string {
-  return utils.parseUnits(bigNumber).toString()
-}
