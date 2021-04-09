@@ -59,8 +59,6 @@ dataSources:
       eventHandlers:
         - event: SaleInitialized(indexed address,uint256,bytes)
           handler: handleSaleInitialized
-        - event: SaleLaunched(indexed address,uint256)
-          handler: handleSaleLaunched
   - kind: ethereum/contract
     name: TemplateLauncher
     network: {{network}}
@@ -113,8 +111,6 @@ dataSources:
           handler: handleCancellationOrder
         - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
           handler: handleClaimedFromOrder
-        - event: InitializedSale(indexed address,indexed address,uint256,uint256,uint96,uint96,uint256,uint256)
-          handler: handleInitializedSale
         - event: NewOrder(indexed uint64,uint96,uint96)
           handler: handleNewOrder
         - event: NewUser(indexed uint64,indexed address)
