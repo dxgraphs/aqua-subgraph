@@ -5,10 +5,11 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 
 // Helpers
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
-import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
+import { SALE_STATUS, getOrCreateSaleToken, decodeOrder } from '../helpers/sales'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
+import { logToMesa } from '../helpers'
 
 /**
  * Handle initializing an (Easy|FixedPrice)Sale via `SaleLauncher.createSale`
@@ -23,18 +24,18 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   }
 
   if (saleTemplate.name === SALE_TEMPLATES.FAIR_SALE) {
-    handleFairSaleInitialized(event)
+    registerFairSale(event)
   }
 
   if (saleTemplate.name === SALE_TEMPLATES.FIXED_PRICE_SALE) {
-    handleFixedPriceSaleInitialized(event)
+    registerFixedPriceSale(event)
   }
 }
 
 /**
  * Creates a new FairSale entity from
  */
-function handleFairSaleInitialized(event: SaleInitialized): void {
+function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   // Bind the new Contract
   let fairSaleContract = FairSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -48,7 +49,10 @@ function handleFairSaleInitialized(event: SaleInitialized): void {
   fairSale.endDate = fairSaleContract.endDate().toI32()
   // Sale status
   fairSale.status = SALE_STATUS.UPCOMING
+
   fairSale.tokenAmount = 0
+
+  logToMesa(fairSaleContract.initialAuctionOrder().toString())
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(fairSaleContract.tokenIn())
   // Saleing token / token out
@@ -60,12 +64,14 @@ function handleFairSaleInitialized(event: SaleInitialized): void {
   fairSale.name = tokenOut.name || ''
   // Save
   fairSale.save()
+
+  return fairSale
 }
 
 /**
  * Creates a new FixedPriceSale entity
  */
-function handleFixedPriceSaleInitialized(event: SaleInitialized): void {
+function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale {
   // Bind the new Contract
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -91,4 +97,6 @@ function handleFixedPriceSaleInitialized(event: SaleInitialized): void {
   fixedPriceSale.name = tokenOut.name || ''
   // Save
   fixedPriceSale.save()
+
+  return fixedPriceSale
 }
