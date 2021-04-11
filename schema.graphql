@@ -34,6 +34,7 @@ type MesaFactory @entity {
   # Fees
   saleFee: Int!
   feeNumerator: Int!
+  templateFee: Int!
 }
 
 #################################################
