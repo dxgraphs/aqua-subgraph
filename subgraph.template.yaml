@@ -28,6 +28,20 @@ dataSources:
       eventHandlers:
         - event: FactoryInitialized(address,address,address,address,uint256,uint256,uint256)
           handler: handleFactoryInitialized
+        - event: SetFeeManager(indexed address)
+          handler: handleSetFeeManager
+        - event: SetFeeNumerator(indexed uint256)
+          handler: handleSetFeeNumerator
+        - event: SetFeeTo(indexed address)
+          handler: handleSetFeeTo
+        - event: SetSaleFee(indexed uint256)
+          handler: handleSetSaleFee
+        - event: SetTemplateFee(indexed uint256)
+          handler: handleSetTemplateFee
+        - event: SetTemplateLauncher(indexed address)
+          handler: handleSetTemplateLauncher
+        - event: SetTemplateManager(indexed address)
+          handler: handleSetTemplateManager
   - kind: ethereum/contract
     name: SaleLauncher
     network: {{network}}
