@@ -93,8 +93,6 @@ dataSources:
         - name: SaleTemplateNameBytes
           file: ./abis/SaleTemplateNameBytes.json
       eventHandlers:
-        - event: TemplateLaunched(indexed address,uint256)
-          handler: handleTemplateLaunched
         - event: TemplateAdded(indexed address,uint256)
           handler: handleTemplateAdded
         - event: TemplateRemoved(indexed address,uint256)
