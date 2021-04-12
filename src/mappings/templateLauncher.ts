@@ -7,45 +7,10 @@ import {
 } from '../../generated/TemplateLauncher/TemplateLauncher'
 
 // Helpers
-import { SALE_TEMPLATES, fetchTemplateName, getSaleTemplateById } from '../helpers/templates'
+import { fetchTemplateName } from '../helpers/templates'
 
 // GraphQL Schemas
 import * as Schemas from '../../generated/schema'
-import { logToMesa } from '../helpers'
-
-/**
- * Handles launching a new Auction - EasyAuction or FixedPriceAuction from AuctionLauncher via MesaFactory.
- *
- * See [`MesaFactory.LuanchTemplate`](https://github.com/cryptonative-ch/mesa-smartcontracts/blob/main/contracts/MesaFactory.sol)
- *
- * @todo Load the AuctionName from the contract to determine type of Auction
- *
- */
-export function handleTemplateLaunched(event: TemplateLaunched): void {
-  // Determine the entity to use from the templateId
-  let saleTemplate = getSaleTemplateById(event.params.templateId.toString())
-  logToMesa('saleTemplate (' + saleTemplate.name + ') found using templateId: ' + event.params.templateId.toString())
-  // Template does not exist in database
-  if (!saleTemplate) {
-    return
-  }
-
-  if (saleTemplate.name === SALE_TEMPLATES.FAIR_SALE) {
-    logToMesa(`Creating new FairSale`)
-    let fairSale = new Schemas.FairSale(event.params.sale.toHexString())
-    fairSale.createdAt = event.block.timestamp.toI32()
-    fairSale.updatedAt = event.block.timestamp.toI32()
-    fairSale.save()
-  }
-
-  if (saleTemplate.name === SALE_TEMPLATES.FIXED_PRICE_SALE) {
-    let fixedPriceSale = new Schemas.FixedPriceSale(event.params.sale.toHexString())
-    logToMesa(`Creating new FixedPriceSale`)
-    fixedPriceSale.createdAt = event.block.timestamp.toI32()
-    fixedPriceSale.updatedAt = event.block.timestamp.toI32()
-    fixedPriceSale.save()
-  }
-}
 
 /**
  * Handles adding a new template
