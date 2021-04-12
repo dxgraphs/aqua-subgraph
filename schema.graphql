@@ -54,8 +54,8 @@ type FairSale implements EntityMetadata @entity {
   startDate: Int
   # Date of the sale end
   endDate: Int
-  # Total amount of tokens available for auctioning
-  tokenAmount: Int
+  # Total amount of tokens available for sale
+  tokenAmount: Int!
   # Minimum amount per bid
   minimumBidAmount: Int
   # Bidding token (ie: DAI, USDC)
@@ -106,6 +106,10 @@ type FixedPriceSale implements EntityMetadata @entity {
   sellAmount: String!
   # Minimum amount per bid
   minimumRaise: Int!
+  # Minimum and maxmimum token per order
+  allocationMin: Int!
+  allocationMax: Int!
+  # bidding and sale tokens
   tokenIn: Token!
   tokenOut: Token!
   purchaes: [FixedPriceSalePurchase!]
