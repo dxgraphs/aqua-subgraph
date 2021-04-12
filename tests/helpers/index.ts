@@ -5,6 +5,7 @@ import { render } from 'mustache'
 
 // Contract interfaces and classes
 import { ERC20Mintable } from './contracts'
+import { Dayjs } from 'dayjs'
 /**
  * Wraps `child_process.exec` in a promise
  * @param command
@@ -71,6 +72,7 @@ export type ContractFactories =
   | 'TemplateLauncher'
   | 'FixedPriceSale'
   | 'FairSaleTemplate'
+  | 'FixedPriceSaleTemplate'
 /**
  * Creates and returns a `ContractFactory` from ethers
  * @param contract the contract name. See `ContractFactories`
@@ -200,4 +202,74 @@ export function encodeInitDataFairSale({
       tokenSupplier
     ]
   )
+}
+
+interface EncodeInitDataFixedPriceOptions {
+  saleLauncher: string
+  saleTemplateId: BigNumberish
+  tokenSupplier: string
+  tokenOut: string
+  tokenIn: string
+  tokenPrice: BigNumberish
+  tokensForSale: BigNumberish
+  startDate: BigNumberish
+  endDate: BigNumberish
+  allocationMin: BigNumberish
+  allocationMax: BigNumberish
+  minimumRaise: BigNumberish
+  owner: string
+}
+
+export function encodeInitDataFixedPrice({
+  saleLauncher,
+  saleTemplateId,
+  tokenSupplier,
+  tokenOut,
+  tokenIn,
+  tokenPrice,
+  tokensForSale,
+  startDate,
+  endDate,
+  allocationMin,
+  allocationMax,
+  minimumRaise,
+  owner
+}: EncodeInitDataFixedPriceOptions) {
+  return ethers.utils.defaultAbiCoder.encode(
+    [
+      'address',
+      'uint256',
+      'address',
+      'address',
+      'address',
+      'uint256',
+      'uint256',
+      'uint256',
+      'uint256',
+      'uint256',
+      'uint256',
+      'uint256',
+      'address'
+    ],
+    [
+      saleLauncher,
+      saleTemplateId,
+      tokenSupplier,
+      tokenOut,
+      tokenIn,
+      tokenPrice,
+      tokensForSale,
+      startDate,
+      endDate,
+      allocationMin,
+      allocationMax,
+      minimumRaise,
+      owner
+    ]
+  )
+}
+
+export function toUTC(dayjs: Dayjs): Dayjs {
+  const utcMinutesOffset = dayjs.utcOffset()
+  return dayjs.add(utcMinutesOffset, 'minutes')
 }
