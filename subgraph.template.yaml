@@ -149,8 +149,6 @@ dataSources:
       eventHandlers:
         - event: SaleClosed()
           handler: handleSaleClosed
-        - event: SaleInitalized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleSaleInitalized
         - event: NewPurchase(indexed address,indexed uint256)
           handler: handleNewPurchase
         - event: NewTokenClaim(indexed address,indexed uint256)
