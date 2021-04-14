@@ -45,7 +45,7 @@ These contracts are deployed from the factory for every new sale. Their address 
 
 <sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
 
-#### 1. `FactoryInitialized` from `MesaFactory.Initializ`
+#### 1. `FactoryInitialized` from `MesaFactory.initialize`
 
 ```typescript
 interface FactoryInitialized {
