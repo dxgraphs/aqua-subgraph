@@ -139,8 +139,8 @@ interface SaleInitialized {
 
 ```typescript
 interface TemplateLaunched {
-  sale: string // Address of the new *-Sale contract
-  templateId: string // Index of the template
+  sale: Address // Address of the new *-Sale contract
+  templateId: number // Index of the template
 }
 ```
 
@@ -154,8 +154,6 @@ interface TemplateAdded {
 ```
 
 #### 3.`TemplateRemoved` from `TemplateLauncher.removeTemplate`
-
-Handles removing templates
 
 ```typescript
 interface TemplateRemoved {
@@ -171,7 +169,7 @@ Handles verifying templates - `TemplateVerified`
 ```typescript
 interface TemplateVerified {
   template: Address // Address of new Template contract
-  templateId: string // Index of the template
+  templateId: number // Index of the template
 }
 ```
 
@@ -187,7 +185,7 @@ interface SaleCleared {
 }
 ```
 
-#### 2. `NewOrder` from `FairSale.newOrder`
+#### 2. `NewOrder` from `FairSale.placeOrders`
 
 ```typescript
 interface NewOrder {
@@ -228,11 +226,11 @@ One entity to retrieve information about the factory
 
 ### FairSale
 
-All sales of type FairSale.
+All sales of type `FairSale`.
 
 ### FairSaleBid
 
-All bids on FairSale sales.
+All bids on `FairSale` sales.
 
 ### FixedPriceSale
 
@@ -244,7 +242,7 @@ All sales of type `FixedPriceSale`
 
 ### SaleTemplate
 
-Registered sale mechansims in `TemplateLauncher` contract.
+Registered sale mechanisms in `TemplateLauncher` contract.
 
 ### Token
 
@@ -254,17 +252,17 @@ Stores information about ERC20 tokens that interact with Mesa contracts.
 
 ## Set up config file
 
-Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`. For instance, for Rinkeby, the file
+Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`.
 
 ## Prepare `subgraph.yaml`
 
 `subgraph.yaml` is built from `subgraph.template.yaml` using configuration defined in previous section. To do so, run
 
 ```bash
-$ npm run prepare:<NetworkName>
+$ npm run prepare-<NetworkName>
 ```
 
-Current available networks are Mainnet and Rinkeby.
+Mainnet and Rinkeby are supported out of the box.
 
 ## Deploy to The Graph
 
@@ -274,7 +272,7 @@ Read documentations for [installing The Graph CLI](https://thegraph.com/docs/qui
 $ npm run deploy
 ```
 
-# Build ABIs
+# Extract ABIs from Artifacts
 
 ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract repo ([cryptonative-ch/mesa-smartcontracts](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
 
