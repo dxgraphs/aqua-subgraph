@@ -20,21 +20,21 @@ type MesaFactory @entity {
   # ID: should be a unique easy-to-reference
   id: ID!
   # Auction
-  saleCount: Int
+  saleCount: Int!
   # Factory address
-  address: String!
+  address: Bytes!
   # Fee manager: CFO
-  feeManager: String!
+  feeManager: Bytes!
   # Fee Collector: Treasury
-  feeTo: String!
+  feeTo: Bytes!
   # Template manager:
-  templateManager: String!
+  templateManager: Bytes!
   # Address of TemplateLauncher contract
-  templateLauncher: String!
+  templateLauncher: Bytes!
   # Fees
-  saleFee: Int!
-  feeNumerator: Int!
-  templateFee: Int!
+  saleFee: BigDecimal!
+  feeNumerator: BigDecimal!
+  templateFee: BigDecimal!
 }
 
 #################################################
@@ -51,13 +51,13 @@ type FairSale implements EntityMetadata @entity {
   # open/ended/settled/upcoming
   status: String!
   # Date of the sale start
-  startDate: Int
+  startDate: Int!
   # Date of the sale end
-  endDate: Int
+  endDate: Int!
   # Total amount of tokens available for sale
-  tokenAmount: Int!
+  tokenAmount: BigDecimal!
   # Minimum amount per bid
-  minimumBidAmount: Int
+  minimumBidAmount: BigDecimal!
   # Bidding token (ie: DAI, USDC)
   tokenIn: Token!
   # Auctioning token
@@ -82,11 +82,11 @@ type FairSaleBid implements EntityMetadata @entity {
   # The UTC timestamp at which the bid was deleted
   deletedAt: Int
   # Int of tokens the investor wants to buy
-  tokenInAmount: Int
+  tokenInAmount: BigDecimal!
   # Int of tokens the investor wants to buy
-  tokenOutAmount: Int
+  tokenOutAmount: BigDecimal!
   # The bidder's Ethereum address
-  address: String
+  address: Bytes!
 }
 
 #################################################
@@ -102,15 +102,15 @@ type FixedPriceSale implements EntityMetadata @entity {
   # open/ended/settled/upcoming/cancelled/failed
   status: String!
   # Specific to the FixedPriceAuction
-  startDate: Int # Open timestamp
-  endDate: Int # Close timestamp
+  startDate: Int! # Open timestamp
+  endDate: Int! # Close timestamp
   # Amount to sell
-  sellAmount: Int!
+  sellAmount: BigDecimal!
   # Minimum amount per bid
-  minimumRaise: Int
+  minimumRaise: BigDecimal!
   # Minimum and maxmimum token per order
-  allocationMin: Int
-  allocationMax: Int
+  allocationMin: BigDecimal!
+  allocationMax: BigDecimal!
   # bidding and sale tokens
   tokenIn: Token!
   tokenOut: Token!
@@ -126,9 +126,9 @@ type FixedPriceSalePurchase implements EntityMetadata @entity {
   # Address of sale this bid is associated with
   sale: FixedPriceSale!
   # Address of buyer
-  buyer: String!
+  buyer: Bytes!
   # Amount this purchase took
-  amount: Int!
+  amount: BigDecimal!
 }
 
 #################################################
@@ -139,12 +139,10 @@ type Token @entity {
   id: ID!
   # Token name, from the smart contract ERC20.name()
   name: String
-  # ERC20 Token's contract address
-  address: String
   # Symbol, from ERC20.symbol()
   symbol: String
   # Decimal, from ERC.decimals()
-  decimals: Int
+  decimals: BigInt!
 }
 
 #################################################
@@ -153,7 +151,7 @@ type SaleUser @entity {
   # User id
   id: ID!
   # The bidder's Ethereum address
-  address: String
+  address: Bytes
 }
 
 #################################################
@@ -167,9 +165,9 @@ type SaleTemplate @entity {
   updatedAt: Int!
   deletedAt: Int
   # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
-  address: String!
+  address: Bytes!
   # Address of the MesaFactory
-  factory: String!
+  factory: Bytes!
   # Template name
   name: SaleTemplateNames!
   verified: Boolean!
