@@ -9,11 +9,14 @@ import { encodeInitDataFairSale, encodeInitDataFixedPrice, toUTC } from '../test
 // Typechained
 import {
   ERC20Mintable,
+  FairSale,
   FairSaleTemplate__factory,
   FixedPriceSale,
   FixedPriceSaleTemplate__factory,
+  FixedPriceSale__factory,
   MesaFactory,
   SaleLauncher,
+  SaleLauncher__factory,
   TemplateLauncher
 } from '../tests/helpers/contracts'
 
@@ -117,6 +120,8 @@ export async function createFairSale({
         value: utils.parseEther('1')
       })
       const createSaleTxReceipt = await createSaleTx.wait(1)
+
+      const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
     } catch (e) {
       console.log(`FairSaleTemplate.createSale failed: `, JSON.parse(e.body))
     }
@@ -134,7 +139,7 @@ export async function createFixedPriceSale({
   biddingToken,
   saleToken,
   saleCreator
-}: CreateSaleOptions) {
+}: CreateSaleOptions): Promise<string> {
   const launchFixedPriceSaleTemplateTxReceipt = await mesaFactory
     .launchTemplate(
       templateId, // FixedPriceSale templateId
@@ -149,32 +154,31 @@ export async function createFixedPriceSale({
         tokenOut: saleToken.address,
         minimumRaise: utils.parseEther('100'),
         tokenSupplier: await saleCreator.getAddress(),
-        allocationMax: utils.parseEther('10'),
-        allocationMin: utils.parseEther('1'),
+        allocationMax: 10,
+        allocationMin: 1,
         owner: await saleCreator.getAddress(),
         tokenPrice: utils.parseEther('2'),
         tokensForSale: await saleToken.totalSupply()
       })
     )
     .then(tx => tx.wait(1))
-  if (launchFixedPriceSaleTemplateTxReceipt.events) {
-    const launchedTemplateAddress = launchFixedPriceSaleTemplateTxReceipt?.events[0]?.args?.template
-    console.log(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
-    // Connect to the Template and create the sale
-    const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
-    console.log('saleTemplateName: ', await saleTemplate.templateName())
-    console.log('saleTemplateId: ', (await saleTemplate.saleTemplateId()).toNumber())
 
-    try {
-      const createSaleTx = await saleTemplate.createSale({
-        value: utils.parseEther('1')
-      })
-      const createSaleTxReceipt = await createSaleTx.wait(1)
-      console.log(`Launched a new FixedPriceSale at ${createSaleTxReceipt.blockNumber}`)
-    } catch (e) {
-      console.log(`FixedPriceSaleTemplate.createSale failed: `, JSON.parse(e.body))
-    }
+  if (!launchFixedPriceSaleTemplateTxReceipt.events) {
+    throw new Error('Not events found')
   }
+  const launchedTemplateAddress = launchFixedPriceSaleTemplateTxReceipt?.events[0]?.args?.template
+  console.log(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
+  // Connect to the Template and create the sale
+  const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
+
+  const createSaleTx = await saleTemplate.createSale({
+    value: utils.parseEther('1')
+  })
+  const createSaleTxReceipt = await createSaleTx.wait(1)
+  // Extract the newSale from logs
+  const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+
+  return newSaleAddress
 }
 
 export async function addSaleTemplateToLauncher({
