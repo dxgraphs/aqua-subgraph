@@ -1,3 +1,6 @@
+// Externals
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
@@ -9,7 +12,6 @@ import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
-import { logToMesa } from '../helpers'
 
 /**
  * Handle initializing an (Easy|FixedPrice)Sale via `SaleLauncher.createSale`
@@ -26,7 +28,6 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   if (saleTemplate.name == SALE_TEMPLATES.FAIR_SALE) {
     registerFairSale(event)
   }
-
   if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
     registerFixedPriceSale(event)
   }
@@ -43,16 +44,16 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   // Timestamps
   fairSale.createdAt = event.block.timestamp.toI32()
   fairSale.updatedAt = event.block.timestamp.toI32()
-  fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder().toI32()
+  fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder().toBigDecimal()
   // Start and end dates of the sale
   fairSale.startDate = fairSaleContract.auctionStartedDate().toI32()
   fairSale.endDate = fairSaleContract.endDate().toI32()
   // Sale status
   fairSale.status = SALE_STATUS.UPCOMING
-
-  fairSale.tokenAmount = 0
-
-  logToMesa(fairSaleContract.initialAuctionOrder().toString())
+  /**
+   * @todo
+   */
+  fairSale.tokenAmount = new BigDecimal(new BigInt(0))
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(fairSaleContract.tokenIn())
   // Saleing token / token out
@@ -79,8 +80,12 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   // Timestamps
   fixedPriceSale.createdAt = event.block.timestamp.toI32()
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
+  fixedPriceSale.sellAmount = fixedPriceSaleContract.tokensForSale().toBigDecimal()
   // Minimum raise amount
-  fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise().toI32()
+  fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise().toBigDecimal()
+  // // Mnimum and maximum tokens per order
+  fixedPriceSale.allocationMin = fixedPriceSaleContract.allocationMin().toBigDecimal()
+  fixedPriceSale.allocationMax = fixedPriceSaleContract.allocationMax().toBigDecimal()
   // Start and end dates of the sale
   fixedPriceSale.startDate = fixedPriceSaleContract.startDate().toI32()
   fixedPriceSale.endDate = fixedPriceSaleContract.endDate().toI32()

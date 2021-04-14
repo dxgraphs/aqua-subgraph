@@ -30,8 +30,12 @@ export function handleNewPurchase(event: NewPurchase): void {
   if (!fixedPriceSale) {
     return
   }
-  let purchase = new FixedPriceSalePurchase(event.params.amount.toHexString())
+  let purchase = new FixedPriceSalePurchase(event.block.timestamp.toString())
+  purchase.sale = event.address.toHexString()
   purchase.createdAt = event.block.timestamp.toI32()
+  purchase.updatedAt = event.block.timestamp.toI32()
+  purchase.amount = event.params.amount.toBigDecimal()
+  purchase.buyer = event.params.buyer
   purchase.save()
 }
 
@@ -54,4 +58,5 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
   }
 
   fixedPriceSale.status = SALE_STATUS.SETTLED
+  fixedPriceSale.save()
 }
