@@ -63,14 +63,16 @@ type FairSale implements EntityMetadata @entity {
   # Auctioning token
   tokenOut: Token!
   # List of bids
-  bids: [FairSaleBid!]
   # The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment
   minFundingThreshold: Int
+  bids: [FairSaleBid!] @derivedFrom(field: "sale")
 }
 
 # AuctionBid
 type FairSaleBid implements EntityMetadata @entity {
   id: ID!
+  # Address of sale this bid is associated with
+  sale: FairSale!
   # submitted/settled/cancelled/claimed
   status: String!
   # The UTC timestamp at which the bid was placed
@@ -100,29 +102,33 @@ type FixedPriceSale implements EntityMetadata @entity {
   # open/ended/settled/upcoming/cancelled/failed
   status: String!
   # Specific to the FixedPriceAuction
-  startDate: Int! # Open timestamp
-  endDate: Int! # Close timestamp
+  startDate: Int # Open timestamp
+  endDate: Int # Close timestamp
   # Amount to sell
-  sellAmount: String!
+  sellAmount: Int!
   # Minimum amount per bid
-  minimumRaise: Int!
+  minimumRaise: Int
   # Minimum and maxmimum token per order
-  allocationMin: Int!
-  allocationMax: Int!
+  allocationMin: Int
+  allocationMax: Int
   # bidding and sale tokens
   tokenIn: Token!
   tokenOut: Token!
-  purchaes: [FixedPriceSalePurchase!]
+  purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
 }
 
 type FixedPriceSalePurchase implements EntityMetadata @entity {
+  # Meta
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  amount: Int
-  # The buyer address EOA
-  buyer: String
+  # Address of sale this bid is associated with
+  sale: FixedPriceSale!
+  # Address of buyer
+  buyer: String!
+  # Amount this purchase took
+  amount: Int!
 }
 
 #################################################
