@@ -1,37 +1,46 @@
 // Externals
-import { BigNumber, providers, utils } from 'ethers'
+import { upAll as upDockerCompose } from 'docker-compose'
+import { ethers, providers, utils } from 'ethers'
 import { start as startREPL } from 'repl'
 
 // Contracts
 import {
-  FairSaleTemplate__factory,
+  // types
   FairSaleTemplate,
   TemplateLauncher,
+  FixedPriceSale,
   ERC20Mintable,
   SaleLauncher,
   MesaFactory,
-  FairSale
+  FairSale,
+  FixedPriceSale__factory
 } from './tests/helpers/contracts'
-
-const ONE_MINUTE = 60
-const ONE_HOUR = ONE_MINUTE * 60
 
 // Helpers
 import {
   createTokenAndMintAndApprove,
-  encodeInitDataFairSale,
   getContractFactory,
   buildSubgraphYaml,
   getSigners,
   execAsync,
   wait,
+  // Constants
   GRAPHQL_ENDPOINT,
   EVM_ENDPOINT
 } from './tests/helpers'
+
+// Interfaces
+import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './scripts/helpers'
+
+// Start explore-local
 ;(async () => {
   console.log(`Starting Docker`)
 
-  await execAsync('npm run docker-up')
+  try {
+    await upDockerCompose()
+  } catch (error) {
+    console.log(error)
+  }
 
   // Wait for everything to fire up
   await wait(10000)
@@ -89,8 +98,7 @@ import {
     }
   }
 
-  console.log('Building subgraph.yaml using config')
-  console.log(buildSubgraphYamlConfig)
+  console.log('Building subgraph.yaml using config', buildSubgraphYamlConfig)
   // Prepare subgraph.yaml
   await buildSubgraphYaml(buildSubgraphYamlConfig)
 
@@ -101,16 +109,12 @@ import {
 
   console.log('Creating subgraph')
   await execAsync('npm run create-local')
-
-  await wait(4000)
-
   console.log('Deploying subgraph')
   await execAsync('npm run deploy-local')
 
   // Wait for subgraph to sync
   await wait(20000)
 
-  console.log('Initlizing the MesaFactory')
   {
     // Initilize the Factory
     const mesaFactoryInitalizeTx = await mesaFactory.initialize(
@@ -122,97 +126,103 @@ import {
       0, // zero sale fees
       0 // zero fees
     )
-    console.log(
-      `Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}; ${mesaFactoryInitalizeTx.blockHash}`
-    )
+    console.log(`Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}`)
   }
-  // Deploy FairSale
-  const fairSale = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
-  // Create factory for FairSale and deploy a new version
-  const fairSaleTemplate = (await getContractFactory('FairSaleTemplate', deployer).deploy()) as FairSaleTemplate
 
-  // Register FairSale in SaleLauncher
+  const templates = {
+    fairSaleTemplate: (await getContractFactory('FairSaleTemplate', deployer).deploy()) as FairSaleTemplate,
+    fixedPriceSaleTemplate: (await getContractFactory('FixedPriceSaleTemplate', deployer).deploy()) as FixedPriceSale
+  }
+
+  // Deploy FairSale and FixedPriceSale
+  // Deploy base templates
+
+  // Register FairSale and FixedPriceSale in SaleLauncher
   {
-    console.log('Register FairSale in AuctionLauncher')
+    const fairSale = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
     const addSaleTx = await saleLauncher.addTemplate(fairSale.address)
     const addSaleTxReceipt = await addSaleTx.wait(1)
-    console.log(`Registered FairSale in SaleLauncher`, addSaleTxReceipt.events)
+    console.log(`Registered FairSale in SaleLauncher`)
+  }
+  {
+    const fixedPriceSale = (await getContractFactory('FixedPriceSale', deployer).deploy()) as FixedPriceSale
+    const addSaleTx = await saleLauncher.addTemplate(fixedPriceSale.address)
+    const addSaleTxReceipt = await addSaleTx.wait(1)
+    console.log(`Registered FixedPriceSale in SaleLauncher`)
   }
 
-  // Register FairSaleTemplate on TemplateLauncher
-  {
-    const addFairSaleTemplateTx = await templateLauncher.addTemplate(fairSaleTemplate.address)
-    const addFairSaleTemplateTxReceipt = await addFairSaleTemplateTx.wait(1)
-    console.log(`Registered FairSaleTemplate in TemplateLauncher`, addFairSaleTemplateTxReceipt.events)
-  }
+  // Register FairSaleTemplate and FixedPriceTemplate on TemplateLauncher
+  const { templateId: fairSaleTemplateId } = await addSaleTemplateToLauncher({
+    launcher: templateLauncher,
+    saleTemplateAddress: templates.fairSaleTemplate.address
+  })
+  console.log(`Registered FairSaleTemplate in TemplateLauncher. TemplateId = `, fairSaleTemplateId.toNumber())
+
+  const { templateId: fixedPriceSaleTemplateId } = await addSaleTemplateToLauncher({
+    launcher: templateLauncher,
+    saleTemplateAddress: templates.fixedPriceSaleTemplate.address
+  })
+
+  console.log(
+    `Registered FixedPriceSaleTemplate in TemplateLauncher. TemplateId = `,
+    fixedPriceSaleTemplateId.toNumber()
+  )
 
   // Deploy, mint and approve Auctioning Token
-  const auctioningToken = await createTokenAndMintAndApprove({
-    name: 'AuctioningToken',
-    symbol: 'AT',
-    addressToApprove: saleLauncher.address,
-    numberOfTokens: utils.parseEther('1000'),
-    users: [saleCreator],
-    signer: saleCreator
-  })
-
-  // Deploy, mint and approve Bidding Token
-  const biddingToken = await createTokenAndMintAndApprove({
-    name: 'BiddingToken',
-    symbol: 'BT',
-    addressToApprove: saleLauncher.address,
-    numberOfTokens: utils.parseEther('100'),
-    users: [saleCreator, saleInvestorA, saleInvestorB],
-    signer: deployer
-  })
-
-  console.log(
-    `Deployed ${await auctioningToken.name()} ($${await auctioningToken.symbol()}) at ${auctioningToken.address}`
-  )
-  console.log(`Deployed ${await biddingToken.name()} at ($${await biddingToken.symbol()}) ${biddingToken.address}`)
-
-  const luanchTemplateTx = await mesaFactory.launchTemplate(
-    1,
-    encodeInitDataFairSale({
-      duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
-      minBuyAmount: utils.parseEther('10'), // Each order's bid must be at least 10
-      minPrice: utils.parseEther('5'), // Minimum price per token
-      minRaise: utils.parseEther('100000'), // 100k DAI
-      saleLauncher: saleLauncher.address,
-      saleTemplateId: BigNumber.from(1),
-      tokenIn: biddingToken.address,
-      tokenOut: auctioningToken.address,
-      tokenOutSupply: utils.parseEther('1'),
-      tokenSupplier: await saleCreator.getAddress()
+  const tokens = {
+    fairSaleToken: await createTokenAndMintAndApprove({
+      name: 'Fair Sale Token',
+      symbol: 'FST',
+      addressToApprove: saleLauncher.address,
+      numberOfTokens: utils.parseEther('1000'),
+      users: [saleCreator],
+      signer: saleCreator
+    }),
+    // Deploy, mint and approve Auctioning Token
+    fixedPriceSaleToken: await createTokenAndMintAndApprove({
+      name: 'Fixed Price Sale Token',
+      symbol: 'FPST',
+      addressToApprove: saleLauncher.address,
+      numberOfTokens: utils.parseEther('1000'),
+      users: [saleCreator],
+      signer: saleCreator
+    }),
+    // Deploy, mint and approve Bidding Token
+    biddingToken: await createTokenAndMintAndApprove({
+      name: 'Bidding Token',
+      symbol: 'BT',
+      addressToApprove: saleLauncher.address,
+      numberOfTokens: utils.parseEther('1000'),
+      users: [saleCreator, saleInvestorA, saleInvestorB],
+      signer: deployer
     })
-  )
-
-  const launchTemplateTxReceipt = await luanchTemplateTx.wait(1)
-
-  if (launchTemplateTxReceipt.events) {
-    console.log(launchTemplateTxReceipt.events)
-    const launchedTemplateAddress = launchTemplateTxReceipt?.events[0]?.args?.template
-    console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
-
-    // Connect to the Template and create the sale
-    const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
-
-    try {
-      const createSaleTx = await saleTemplate.createSale({
-        value: utils.parseEther('1')
-      })
-      const createSaleTxReceipt = await createSaleTx.wait(1)
-      console.log(createSaleTxReceipt.events)
-    } catch (e) {
-      console.log(`createSale failed: `, JSON.parse(e.body))
-    }
   }
 
+  // Print the token into console
+  await printTokens(tokens)
+  // Launch a FairSale template via the factory
+
+  // Launch FixedPriceSale
+  const newFairSaleAddress = await createFixedPriceSale({
+    templateId: fixedPriceSaleTemplateId,
+    mesaFactory,
+    saleLauncher,
+    biddingToken: tokens.biddingToken,
+    saleToken: tokens.fixedPriceSaleToken,
+    saleCreator
+  })
+
+  console.log(`Launched a new FixedPriceSale at ${newFairSaleAddress}`)
+
+  // Approve new SaleContract
+  await tokens.biddingToken.connect(saleInvestorA).approve(newFairSaleAddress, ethers.constants.MaxUint256)
+  await tokens.biddingToken.connect(saleInvestorB).approve(newFairSaleAddress, ethers.constants.MaxUint256)
+
   // Add one bid to
-  console.log(`Subgraph ready at ${GRAPHQL_ENDPOINT}`)
+  console.log(`\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Subgraph ready at ${GRAPHQL_ENDPOINT}`)
 
   console.log(
-    `You can access ${['mesaFactory', 'templateLauncher', 'saleLauncher', 'helpers', 'templates'].join(', ')}`
+    `You can access ${['mesaFactory', 'templateLauncher', 'saleLauncher', 'helpers', 'templates', 'sales'].join(', ')}`
   )
 
   // Attach contracts to the REPL context
@@ -222,12 +232,17 @@ import {
     useColors: true,
     prompt: `Mesa > `
   })
-
-  replInstance.context.mesaFactory = mesaFactory
+  // Attach to context
+  replInstance.context.helpers = require('./tests/helpers')
   replInstance.context.templateLauncher = templateLauncher
   replInstance.context.saleLauncher = saleLauncher
-  replInstance.context.helpers = require('./tests/helpers')
-  replInstance.context.templates = {
-    fairSaleTemplate
+  replInstance.context.mesaFactory = mesaFactory
+  replInstance.context.templates = templates
+  replInstance.context.tokens = tokens
+  replInstance.context.sales = {
+    fixedPriceSale: {
+      saleInvestorA: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorA),
+      saleInvestorB: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorB)
+    }
   }
 })()
