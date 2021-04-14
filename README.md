@@ -30,7 +30,7 @@ The subgraph listens for events from three fixed contracts; they are deployed on
 
 1. `MesaFactory`
 2. `SaleLauncher`
-3. `MesaFactory`
+3. `TemplateLauncher`
 
 **Dynamic Contracts**
 
