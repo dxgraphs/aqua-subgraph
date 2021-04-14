@@ -58,4 +58,5 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
   }
 
   fixedPriceSale.status = SALE_STATUS.SETTLED
+  fixedPriceSale.save()
 }
