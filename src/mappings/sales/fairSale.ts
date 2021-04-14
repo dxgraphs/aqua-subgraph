@@ -86,9 +86,9 @@ export function handleNewOrder(event: NewOrder): void {
   // bid.auction = event.address.toHexString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
-  bid.tokenInAmount = event.params.orderTokenIn.toI32()
-  bid.tokenOutAmount = event.params.orderTokenOut.toI32()
-  bid.address = event.transaction.from.toHexString()
+  bid.tokenInAmount = event.params.orderTokenIn.toBigDecimal()
+  bid.tokenOutAmount = event.params.orderTokenOut.toBigDecimal()
+  bid.address = event.transaction.from
   bid.status = BID_STATUS.SUBMITTED
   bid.save()
 }
@@ -103,7 +103,7 @@ export function handleNewUser(event: NewUser): void {
   }
 
   let saleUser = new Schemas.SaleUser(event.params.ownerId.toHexString())
-  saleUser.address = event.params.userAddress.toHexString()
+  saleUser.address = event.params.userAddress
   saleUser.save()
 }
 

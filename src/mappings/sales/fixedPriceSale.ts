@@ -34,8 +34,8 @@ export function handleNewPurchase(event: NewPurchase): void {
   purchase.sale = event.address.toHexString()
   purchase.createdAt = event.block.timestamp.toI32()
   purchase.updatedAt = event.block.timestamp.toI32()
-  purchase.amount = event.params.amount.toI32()
-  purchase.buyer = event.params.buyer.toHexString()
+  purchase.amount = event.params.amount.toBigDecimal()
+  purchase.buyer = event.params.buyer
   purchase.save()
 }
 
