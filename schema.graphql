@@ -139,8 +139,6 @@ type Token @entity {
   id: ID!
   # Token name, from the smart contract ERC20.name()
   name: String
-  # ERC20 Token's contract address
-  address: String
   # Symbol, from ERC20.symbol()
   symbol: String
   # Decimal, from ERC.decimals()
