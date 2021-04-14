@@ -87,7 +87,7 @@ export function getContractFactory(contract: ContractFactories, signer: Signer) 
 interface CreateTokensAndMintAndApproveProps {
   name: string
   symbol: string
-  numberOfTokens: BigNumber
+  numberOfTokens: BigNumberish
   addressToApprove: string
   users: providers.JsonRpcSigner[]
   signer: Signer
@@ -105,7 +105,7 @@ export async function createTokenAndMintAndApprove({
 
   for (const user of users) {
     await token.mint(await user.getAddress(), numberOfTokens)
-    await token.connect(user).approve(addressToApprove, numberOfTokens)
+    await token.connect(user).approve(addressToApprove, ethers.constants.MaxUint256)
   }
 
   return token
