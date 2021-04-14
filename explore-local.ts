@@ -218,7 +218,17 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
   await tokens.biddingToken.connect(saleInvestorA).approve(newFairSaleAddress, ethers.constants.MaxUint256)
   await tokens.biddingToken.connect(saleInvestorB).approve(newFairSaleAddress, ethers.constants.MaxUint256)
 
-  // Add one bid to
+  const sales = {
+    fixedPriceSale: {
+      saleInvestorA: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorA),
+      saleInvestorB: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorB)
+    }
+  }
+
+  // Add one bid by each investor to sale FixedPricesale
+  await sales.fixedPriceSale.saleInvestorA.buyTokens(4)
+  await sales.fixedPriceSale.saleInvestorA.buyTokens(5)
+
   console.log(`\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Subgraph ready at ${GRAPHQL_ENDPOINT}`)
 
   console.log(
@@ -239,10 +249,5 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
   replInstance.context.mesaFactory = mesaFactory
   replInstance.context.templates = templates
   replInstance.context.tokens = tokens
-  replInstance.context.sales = {
-    fixedPriceSale: {
-      saleInvestorA: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorA),
-      saleInvestorB: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorB)
-    }
-  }
+  replInstance.context.sales = sales
 })()
