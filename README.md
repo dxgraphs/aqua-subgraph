@@ -19,10 +19,8 @@ $ npm run explore-local
 Install dependencies using `yarn`
 
 ```bash
-$ yarn
+$ yarn install
 ```
-
-This will start a simulated bench with the contract deployed, one `FairSale` sale and one bid.
 
 # Architecture
 
