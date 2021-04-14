@@ -35,11 +35,9 @@ export function getOrCreateSaleToken(tokenAddress: Address): Token {
   if (token == null) {
     token = new Token(tokenAddress.toHexString())
     // Fetch inoformation about the token
-    token.decimals = fetchTokenDecimals(tokenAddress).toI32()
+    token.decimals = fetchTokenDecimals(tokenAddress)
     token.symbol = fetchTokenSymbol(tokenAddress)
     token.name = fetchTokenName(tokenAddress)
-    // Set the address
-    token.address = tokenAddress.toHexString()
     token.save()
   }
   return token as Token
