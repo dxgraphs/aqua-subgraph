@@ -59,11 +59,67 @@ interface FactoryInitialized {
 }
 ```
 
+#### 2. `SetFeeManager` from `MesaFactory.setFeeManager`
+
+```typescript
+interface SetFeeManager {
+  feeManager: Address
+}
+```
+
+#### 3. `SetFeeNumerator` from `MesaFactory.setFeeNumerator`
+
+```typescript
+interface SetFeeNumerator {
+  feeNumerator: Address
+}
+```
+
+#### 4. `SetFeeTo` from `MesaFactory.setFeeTo`
+
+```typescript
+interface SetFeeTo {
+  feeTo: Address
+}
+```
+
+#### 5. `SetSaleFee` from `MesaFactory.setSaleFee`
+
+```typescript
+interface SetSaleFee {
+  saleFee: number
+}
+```
+
+#### 6. `SetTemplateFee` from `MesaFactory.setTemplateFee`
+
+```typescript
+interface SetTemplateFee {
+  templateFee: number
+}
+```
+
+#### 7. `SetTemplateLauncher` from `MesaFactory.setTemplateLauncher`
+
+```typescript
+interface SetTemplateLauncher {
+  templateLauncher: Address
+}
+```
+
+#### 8. `SetTemplateManager` from `MesaFactory.setTemplateManager`
+
+```typescript
+interface SetTemplateManager {
+  templateManager: Address
+}
+```
+
 ### `SaleLauncher`
 
 <sub>[`src/mappings/saleLauncher.ts`](src/mappings/saleLauncher.ts)</sub>
 
-#### 1. `SaleInitialized`
+#### 1. `SaleInitialized` from `SaleLauncher.createSale`
 
 ```typescript
 interface SaleInitialized {
