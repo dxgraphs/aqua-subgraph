@@ -1,14 +1,14 @@
 // Contract ABIs and Events
 import {
-  FactoryInitialized,
-  SetFeeManager,
-  SetFeeNumerator,
-  SetFeeTo,
-  SetSaleFee,
-  SetTemplateManager,
   MesaFactory as MesaFactoryContract,
   SetTemplateLauncher,
-  SetTemplateFee
+  FactoryInitialized,
+  SetTemplateManager,
+  SetFeeNumerator,
+  SetTemplateFee,
+  SetFeeManager,
+  SetSaleFee,
+  SetFeeTo
 } from '../../generated/MesaFactory/MesaFactory'
 
 // GraphQL Schemas
@@ -31,8 +31,8 @@ export function handleFactoryInitialized(event: FactoryInitialized): void {
   // Fees collector from auctions
   mesaFactory.feeTo = event.params.feeTo.toHexString()
   mesaFactory.saleFee = mesaFactoryContract.saleFee().toI32()
-  // Fees
   mesaFactory.feeManager = event.params.feeManager.toHexString()
+  // Fees
   mesaFactory.feeNumerator = event.params.feeNumerator.toI32()
   mesaFactory.templateFee = event.params.templateFee.toI32()
   // Auction count
@@ -63,7 +63,7 @@ export function handleSetFeeNumerator(event: SetFeeNumerator): void {
     return
   }
 
-  mesaFactory.feeNumerator = event.params.feeNumerator
+  mesaFactory.feeNumerator = event.params.feeNumerator.toI32()
   mesaFactory.save()
 }
 
@@ -85,7 +85,7 @@ export function handleSetSaleFee(event: SetSaleFee): void {
     return
   }
 
-  mesaFactory.saleFee = event.params.saleFee
+  mesaFactory.saleFee = event.params.saleFee.toI32()
   mesaFactory.save()
 }
 
@@ -96,7 +96,7 @@ export function handleSetTemplateFee(event: SetTemplateFee): void {
     return
   }
 
-  mesaFactory.temp = event.params.templateFee
+  mesaFactory.templateFee = event.params.templateFee.toI32()
   mesaFactory.save()
 }
 
@@ -111,7 +111,7 @@ export function handleSetTemplateManager(event: SetTemplateManager): void {
   mesaFactory.save()
 }
 
-export function handleSetTemplateLauncher(event: SetTemplateLauncher) {
+export function handleSetTemplateLauncher(event: SetTemplateLauncher): void {
   let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
 
   if (!mesaFactory) {
