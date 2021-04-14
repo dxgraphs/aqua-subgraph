@@ -92,9 +92,9 @@ export async function createFairSale({
     templateId,
     encodeInitDataFairSale({
       duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
-      minBuyAmount: utils.parseEther('10'), // Each order's bid must be at least 10
-      minPrice: utils.parseEther('5'), // Minimum price per token
-      minRaise: utils.parseEther('100000'), // 100k DAI
+      minBuyAmount: 10, // Each order's bid must be at least 10
+      minPrice: 5, // Minimum price per token
+      minRaise: 100000, // 100k DAI
       saleLauncher: saleLauncher.address,
       saleTemplateId: templateId,
       tokenIn: biddingToken.address,
@@ -152,12 +152,12 @@ export async function createFixedPriceSale({
         saleTemplateId: templateId,
         tokenIn: biddingToken.address,
         tokenOut: saleToken.address,
-        minimumRaise: utils.parseEther('100'),
+        minimumRaise: 100,
         tokenSupplier: await saleCreator.getAddress(),
         allocationMax: 10,
         allocationMin: 1,
         owner: await saleCreator.getAddress(),
-        tokenPrice: utils.parseEther('2'),
+        tokenPrice: 2,
         tokensForSale: await saleToken.totalSupply()
       })
     )
