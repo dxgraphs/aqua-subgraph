@@ -6,6 +6,9 @@ import { render } from 'mustache'
 // Contract interfaces and classes
 import { ERC20Mintable } from './contracts'
 import { Dayjs } from 'dayjs'
+
+export const ETH_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 /**
  * Wraps `child_process.exec` in a promise
  * @param command
