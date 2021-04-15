@@ -1,3 +1,4 @@
+import { upAll as upDockerCompose } from 'docker-compose'
 import axios, { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
 
@@ -13,12 +14,11 @@ import {
 } from '../tests/helpers'
 
 export async function mesaJestBeforeEach(): Promise<MesaJestBeforeEachContext> {
+  await upDockerCompose()
   // Connect to local ganache instance
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
   // Wallets/Signers
   const deployer = provider.getSigner(0)
-  // Wait for everything to fire up
-  await wait(5000)
   // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher EasyAuction contract is deployed to ganache
   // then followed by deploying its subgraph to the Graph node
   // Deploy MesaFactory
@@ -77,7 +77,6 @@ export async function mesaJestBeforeEach(): Promise<MesaJestBeforeEachContext> {
   await execAsync('npm run build')
   await execAsync('npm run create-local')
   await execAsync('npm run deploy-local')
-
   // Wait for subgraph to sync
   await wait(5000)
   // Add to context
