@@ -7,6 +7,8 @@ import { render } from 'mustache'
 import { ERC20Mintable } from './contracts'
 import { Dayjs } from 'dayjs'
 
+export const SUBGRAPH_SYNC_SECONDS = 5000
+
 export const ETH_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 /**
