@@ -2,22 +2,20 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { Event } from '@ethersproject/contracts'
 import { providers, utils } from 'ethers'
+import DayJSUTC from 'dayjs/plugin/utc'
 import dayjs from 'dayjs'
 
 // Helpers
 import { encodeInitDataFairSale, encodeInitDataFixedPrice, toUTC } from '../tests/helpers'
 // Typechained
 import {
-  ERC20Mintable,
-  FairSale,
-  FairSaleTemplate__factory,
-  FixedPriceSale,
   FixedPriceSaleTemplate__factory,
-  FixedPriceSale__factory,
+  FairSaleTemplate__factory,
+  TemplateLauncher,
+  FixedPriceSale,
+  ERC20Mintable,
   MesaFactory,
-  SaleLauncher,
-  SaleLauncher__factory,
-  TemplateLauncher
+  SaleLauncher
 } from '../tests/helpers/contracts'
 
 // Interfaces
@@ -46,6 +44,11 @@ export interface PurchaseTokenOptions {
   amount: BigNumberish
   signer: providers.JsonRpcSigner
 }
+
+// UTC plugin
+dayjs.extend(DayJSUTC)
+
+console.log(dayjs.utc().format())
 
 // Time constants
 export const ONE_MINUTE = 60
@@ -144,8 +147,9 @@ export async function createFixedPriceSale({
     .launchTemplate(
       templateId, // FixedPriceSale templateId
       encodeInitDataFixedPrice({
-        startDate: toUTC(dayjs()).unix(),
-        endDate: toUTC(dayjs())
+        startDate: dayjs.utc().unix(),
+        endDate: dayjs
+          .utc()
           .add(2, 'hours')
           .unix(),
         saleLauncher: saleLauncher.address,
