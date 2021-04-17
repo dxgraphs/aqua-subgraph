@@ -48,8 +48,6 @@ export interface PurchaseTokenOptions {
 // UTC plugin
 dayjs.extend(DayJSUTC)
 
-console.log(dayjs.utc().format())
-
 // Time constants
 export const ONE_MINUTE = 60
 export const ONE_HOUR = ONE_MINUTE * 60
@@ -145,14 +143,13 @@ export async function createFixedPriceSale({
 }: CreateSaleOptions): Promise<string> {
   // Get blocktimestamp from Ganache
   const lastBlock = await getLastBlock(mesaFactory.provider)
-  console.log(lastBlock.timestamp)
   const blockTimestamp = dayjs.utc(lastBlock.timestamp)
 
   const launchFixedPriceSaleTemplateTxReceipt = await mesaFactory
     .launchTemplate(
       templateId, // FixedPriceSale templateId
       encodeInitDataFixedPrice({
-        startDate: blockTimestamp.unix(),
+        startDate: blockTimestamp.add(1, 'hours').unix(),
         endDate: blockTimestamp.add(2, 'hours').unix(),
         saleLauncher: saleLauncher.address,
         saleTemplateId: templateId,
