@@ -143,15 +143,17 @@ export async function createFixedPriceSale({
   saleToken,
   saleCreator
 }: CreateSaleOptions): Promise<string> {
+  // Get blocktimestamp from Ganache
+  const lastBlock = await getLastBlock(mesaFactory.provider)
+  console.log(lastBlock.timestamp)
+  const blockTimestamp = dayjs.utc(lastBlock.timestamp)
+
   const launchFixedPriceSaleTemplateTxReceipt = await mesaFactory
     .launchTemplate(
       templateId, // FixedPriceSale templateId
       encodeInitDataFixedPrice({
-        startDate: dayjs.utc().unix(),
-        endDate: dayjs
-          .utc()
-          .add(2, 'hours')
-          .unix(),
+        startDate: blockTimestamp.unix(),
+        endDate: blockTimestamp.add(2, 'hours').unix(),
         saleLauncher: saleLauncher.address,
         saleTemplateId: templateId,
         tokenIn: biddingToken.address,
@@ -210,4 +212,10 @@ export async function purchaseToken({ fixedPriceSale, amount }: PurchaseTokenOpt
   } else {
     throw new Error('Contract did not emit NewPurchase')
   }
+}
+
+export async function getLastBlock(provider: providers.Provider) {
+  const lastBlockNumber = await provider.getBlockNumber()
+
+  return provider.getBlock(lastBlockNumber)
 }
