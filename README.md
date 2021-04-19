@@ -14,6 +14,14 @@ If you wish to deploy a local explorer, run:
 $ npm run explore-local
 ```
 
+# Installation
+
+Install dependencies using `yarn`
+
+```bash
+$ yarn install
+```
+
 # Architecture
 
 **Fixed Contracts**
@@ -21,15 +29,15 @@ $ npm run explore-local
 The subgraph listens for events from three fixed contracts; they are deployed once:
 
 1. `MesaFactory`
-2. `AuctionLauncher`
-3. `MesaFactory`
+2. `SaleLauncher`
+3. `TemplateLauncher`
 
 **Dynamic Contracts**
 
-These contracts are deployed from the factory for every new auction. Their address is resolved from `Event.address` and compared against `MesaFactory.allAuctions` array. If the address does not belong to Mesa's auction, the handler does an early exit:
+These contracts are deployed from the factory for every new sale. Their address is resolved from `Event.address` and compared against `MesaFactory.allSales` array. If the address does not belong to Mesa's sale, the handler exits:
 
-1. `EasyAuction`
-2. `FixedPriceAuction`
+1. `FairSale`
+2. `FixedPriceSale`
 
 ## Contracts
 
@@ -37,40 +45,176 @@ These contracts are deployed from the factory for every new auction. Their addre
 
 <sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
 
-#### 1. `TemplateLaunched`
-
-Emitted when `MesaFactory.launchTemplate` is called. Returns:
+#### 1. `FactoryInitialized` from `MesaFactory.initialize`
 
 ```typescript
-interface TemplateLaunchedParams {
-  // Address of the new Auction: EasyAuction or FixedPriceAuction
-  auction: string
-  // The template ID of the auction type: EasyAuction or FixedPriceAuction
-  templateId: string
+interface FactoryInitialized {
+  feeManager: Address // Address of the fee manager
+  feeTo: Address // Address of fees collector
+  templateManager: Address // Address of template manager
+  templateLauncher: Address // Address of TemplateLauncher  contract
+  templateFee: number // Template fee
+  feeNumerator: number // Fee numerator; because Solidity
+  saleFee: number // A fixed sale fee paid to Mesa
 }
 ```
 
-`templateId` is used to determine GraphQL schema -- either `EasyAuction` or `FixedPriceAuction` -- to create. `auction` address is the address of the newly deploed auction contract.
+#### 2. `SetFeeManager` from `MesaFactory.setFeeManager`
 
-### `AuctionLauncher`
+```typescript
+interface SetFeeManager {
+  feeManager: Address
+}
+```
 
-<sub>[`src/mappings/auctionLauncher.ts`](src/mappings/auctionLauncher.ts)</sub>
+#### 3. `SetFeeNumerator` from `MesaFactory.setFeeNumerator`
 
-WIP
+```typescript
+interface SetFeeNumerator {
+  feeNumerator: Address
+}
+```
+
+#### 4. `SetFeeTo` from `MesaFactory.setFeeTo`
+
+```typescript
+interface SetFeeTo {
+  feeTo: Address
+}
+```
+
+#### 5. `SetSaleFee` from `MesaFactory.setSaleFee`
+
+```typescript
+interface SetSaleFee {
+  saleFee: number
+}
+```
+
+#### 6. `SetTemplateFee` from `MesaFactory.setTemplateFee`
+
+```typescript
+interface SetTemplateFee {
+  templateFee: number
+}
+```
+
+#### 7. `SetTemplateLauncher` from `MesaFactory.setTemplateLauncher`
+
+```typescript
+interface SetTemplateLauncher {
+  templateLauncher: Address
+}
+```
+
+#### 8. `SetTemplateManager` from `MesaFactory.setTemplateManager`
+
+```typescript
+interface SetTemplateManager {
+  templateManager: Address
+}
+```
+
+### `SaleLauncher`
+
+<sub>[`src/mappings/saleLauncher.ts`](src/mappings/saleLauncher.ts)</sub>
+
+#### 1. `SaleInitialized` from `SaleLauncher.createSale`
+
+```typescript
+interface SaleInitialized {
+  sale: Address // Address of new Sale contract
+  templateId: number // The template used to create the sale
+  data: Bytes // Details of the sale as Bytes.
+}
+```
+
+`templateId` is used to determine GraphQL schema -- either `FairSale` or `FixedPriceSale` -- to create. `sale` address is the address of the newly deploed sale contract.
 
 ### `TemplateLauncher`
 
 <sub>[`src/mappings/templateLauncher.ts`](src/mappings/templateLauncher.ts)</sub>
 
-WIP
+#### 1.`TemplateLaunched` from `TemplateLauncher.launchTemplate`
 
-### `EasyAuction`
+```typescript
+interface TemplateLaunched {
+  sale: Address // Address of the new *-Sale contract
+  templateId: number // Index of the template
+}
+```
 
-<sub>[`src/mappings/auctions/easyAuction.ts`](src/mappings/auctions/easyAuction.ts)
+#### 2.`TemplateAdded` from `TemplateLauncher.addTemplate`
 
-### `FixedPriceAuction`
+```typescript
+interface TemplateAdded {
+  template: Address // Address of new Template contract
+  templateId: number // Index of the template
+}
+```
 
-<sub>[`src/mappings/auctions/fixedPriceAuction.ts`](src/mappings/auctions/fixedPriceAuction.ts)</sub>
+#### 3.`TemplateRemoved` from `TemplateLauncher.removeTemplate`
+
+```typescript
+interface TemplateRemoved {
+  template: Address // Address of new Template contract
+  templateId: number // Index of the template
+}
+```
+
+#### 4.`TemplateVerified` from `TemplateLauncher.verifyTemplate`
+
+Handles verifying templates - `TemplateVerified`
+
+```typescript
+interface TemplateVerified {
+  template: Address // Address of new Template contract
+  templateId: number // Index of the template
+}
+```
+
+### `FairSale`
+
+<sub>[`src/mappings/sales/easySale.ts`](src/mappings/sales/fairSale.ts)
+
+#### 1. `SaleCleared` from `FairSale.clearSale`
+
+```typescript
+interface SaleCleared {
+  // No params
+}
+```
+
+#### 2. `NewOrder` from `FairSale.placeOrders`
+
+```typescript
+interface NewOrder {
+  ownerId: number
+  orderTokenOut: number
+  orderTokenIn: number
+}
+```
+
+### `FixedPriceSale`
+
+<sub>[`src/mappings/sales/fixedPriceSale.ts`](src/mappings/sales/fixedPriceSale.ts)</sub>
+
+#### 1. `SaleClosed` from `FixedPriceSale.closeSale`
+
+```typescript
+interface SaleClosed {
+  // No params
+}
+```
+
+#### 2. `NewPurchase` from `FixedPriceSale.buyTokens`
+
+```typescript
+interface NewPurchase {
+  amount: number // Amount purchased
+  buyer: Address // EOA
+}
+```
 
 ## GraphQL Entities
 
@@ -80,41 +224,45 @@ These entities are available in the subgraph. Schemas are in [`schema.graphql`](
 
 One entity to retrieve information about the factory
 
-### EasyAuction
+### FairSale
 
-All auction of type EasyAuction
+All sales of type `FairSale`.
 
-### FixedPriceAuction
+### FairSaleBid
 
-All auction of type FixedPriceAuction
+All bids on `FairSale` sales.
 
-### AuctionTemplate
+### FixedPriceSale
 
-Registerd auction mechansims in `TemplateLauncher` contract
+All sales of type `FixedPriceSale`
 
-# Installation
+### FixedPriceSalePurchase
 
-Install dependencies using `yarn`
+All sales of type `FixedPriceSale`
 
-```bash
-$ yarn
-```
+### SaleTemplate
+
+Registered sale mechanisms in `TemplateLauncher` contract.
+
+### Token
+
+Stores information about ERC20 tokens that interact with Mesa contracts.
 
 # Deployment
 
 ## Set up config file
 
-Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`. For instance, for Rinkeby, the file
+Each network deployment requires setting up a JSON configuration file in `config/<NetworkName>.json`.
 
 ## Prepare `subgraph.yaml`
 
 `subgraph.yaml` is built from `subgraph.template.yaml` using configuration defined in previous section. To do so, run
 
 ```bash
-$ npm run prepare:<NetworkName>
+$ npm run prepare-<NetworkName>
 ```
 
-Current available networks are Mainnet and Rinkeby.
+Mainnet and Rinkeby are supported out of the box.
 
 ## Deploy to The Graph
 
@@ -124,7 +272,7 @@ Read documentations for [installing The Graph CLI](https://thegraph.com/docs/qui
 $ npm run deploy
 ```
 
-# Build ABIs
+# Extract ABIs from Artifacts
 
 ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract repo ([cryptonative-ch/mesa-smartcontracts](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
 
@@ -150,13 +298,14 @@ This projects comes with a set of predefined scripts in `package.json`
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `test`            | Runs Jest tests                                                                                                                                                                                   |
 | `docker-up`       | Runs Docker services defined in `docker-compose.yaml`                                                                                                                                             |
-| `prepare-mainnet` | Bulds `subgraph.yaml` for the mainnet                                                                                                                                                             |
-| `prepare-testnet` | Bulds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                     |
+| `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet                                                                                                                                                            |
+| `prepare-testnet` | Builds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                    |
 | `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema.                                                                                                                   |
 | `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                                                                                                                                          |
 | `deploy`          | Deploys the subgraph build to a The Graph Node. Requires a valid access token from the dashbaord. See [`graph auth`](https://github.com/graphprotocol/graph-cli#the-graph-command-line-interface) |
 | `typechain`       | Creates typed-contracts classes.                                                                                                                                                                  |
-| `deploy-local`    | Deploys the graph build to local graph-node                                                                                                                                                       |
-| `create-local`    | Creates the graph build in local graph-node                                                                                                                                                       |
-| `remove-local`    | Removes the graph build from local graph-node                                                                                                                                                     |
-| `explore-local`   | Starts local graph explorer                                                                                                                                                                       |
+| `build-abis`      | Extracts contract ABIs from artifacts in `artifacts` directory.                                                                                                                                   |
+| `deploy-local`    | Deploys the graph build to local graph-node.                                                                                                                                                      |
+| `create-local`    | Creates the graph build in local graph-node.                                                                                                                                                      |
+| `remove-local`    | Removes the graph build from local graph-node.                                                                                                                                                    |
+| `explore-local`   | Starts local graph explorer.                                                                                                                                                                      |
