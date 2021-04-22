@@ -14,6 +14,118 @@ If you wish to deploy a local explorer, run:
 $ npm run explore-local
 ```
 
+After starting, a local version of the graph, with a web front-end,shows up:
+
+http://localhost:8000/subgraphs/name/adamazad/mesa
+
+Now make a query:
+
+```{
+ mesaFactory (id: "MesaFactory") {
+   id
+   address
+   feeManager
+   feeTo
+   templateManager
+   saleCount
+   templateManager
+   templateLauncher
+   feeNumerator
+   templateFee
+   saleFee
+ },
+ fixedPriceSales {
+   id
+   createdAt
+   status
+   sellAmount
+   startDate
+   endDate
+   minimumRaise
+   allocationMin
+   allocationMax
+   tokenIn {
+     id
+     name
+     symbol
+     decimals
+   }
+   tokenOut {
+     id
+     name
+     symbol
+     decimals
+   }
+   purchases {
+     id
+     amount
+     buyer
+   }
+ }
+}
+```
+
+Result should be:
+
+```{
+  "data": {
+    "fixedPriceSales": [
+      {
+        "allocationMax": "10",
+        "allocationMin": "1",
+        "createdAt": 1619086303,
+        "endDate": 1619093502,
+        "id": "0x32a82316dd98887f016b8b95a52ac5886a15d28c",
+        "minimumRaise": "100",
+        "purchases": [
+          {
+            "amount": "4",
+            "buyer": "0xc61650fc0960e267b28d530b50e41fd07c9b1b11",
+            "id": "1619086303"
+          },
+          {
+            "amount": "5",
+            "buyer": "0xc61650fc0960e267b28d530b50e41fd07c9b1b11",
+            "id": "1619086304"
+          }
+        ],
+        "sellAmount": "1000000000000000000000",
+        "startDate": 1619089902,
+        "status": "upcoming",
+        "tokenIn": {
+          "decimals": "18",
+          "id": "0x7e47024ed41ba3b526755c45257cfcc359888da1",
+          "name": "Bidding Token",
+          "symbol": "BT"
+        },
+        "tokenOut": {
+          "decimals": "18",
+          "id": "0x840ac1dbbc658f39c055895b07f796a1f9395a99",
+          "name": "Fixed Price Sale Token",
+          "symbol": "FPST"
+        }
+      }
+    ],
+    "mesaFactory": {
+      "address": "0x8a529455833c9cd31aa1be9f44e4761f6a588745",
+      "feeManager": "0x1ba9e7349fe36032fd07809aca800125cddb296f",
+      "feeNumerator": "0",
+      "feeTo": "0x1ba9e7349fe36032fd07809aca800125cddb296f",
+      "id": "MesaFactory",
+      "saleCount": 0,
+      "saleFee": "0",
+      "templateFee": "0",
+      "templateLauncher": "0x4da2ffa0cfc8689a12069ab871f01f7a0262da64",
+      "templateManager": "0x1ba9e7349fe36032fd07809aca800125cddb296f"
+    }
+  }
+}
+```
+
+As screenshot:
+
+![FE](https://user-images.githubusercontent.com/918180/115698704-35870e80-a365-11eb-9002-80637dfa84cd.png)
+
 # Installation
 
 Install dependencies using `yarn`
@@ -299,7 +411,8 @@ This projects comes with a set of predefined scripts in `package.json`
 | `test`            | Runs Jest tests                                                                                                                                                                                   |
 | `docker-up`       | Runs Docker services defined in `docker-compose.yaml`                                                                                                                                             |
 | `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet                                                                                                                                                            |
-| `prepare-testnet` | Builds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                    |
+| `prepare-rinkeby` | Builds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                    |
+| `prepare-xdai`    | Builds `subgraph.yaml` for the xDai                                                                                                                                                               |
 | `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema.                                                                                                                   |
 | `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                                                                                                                                          |
 | `deploy`          | Deploys the subgraph build to a The Graph Node. Requires a valid access token from the dashbaord. See [`graph auth`](https://github.com/graphprotocol/graph-cli#the-graph-command-line-interface) |
