@@ -2,11 +2,10 @@
   "name": "mesa-subgraph",
   "license": "UNLICENSED",
   "scripts": {
-    "compile": "hardhat compile",
-    "docker-up": "docker-compose up -d",
-    "pretest": "npm run compile && npm run docker-up",
-    "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
-    "prepare:rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
+    "docker-up": "docker-compose up -d --force-recreate",
+    "pretest": "npm run docker-up",
+    "prepare-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
+    "prepare-rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "test": "jest --verbose",
     "codegen": "graph codegen",
     "build": "graph build",
@@ -14,7 +13,9 @@
     "create-local": "graph create --node http://localhost:8020/ adamazad/mesa",
     "remove-local": "graph remove --node http://localhost:8020/ adamazad/mesa",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adamazad/mesa",
-    "typechain-build": "typechain --target ethers-v5 --outDir src/contracts abis/*.json"
+    "explore-local": "ts-node explore-local.ts",
+    "typechain": "typechain --target ethers-v5 --outDir tests/helpers/contracts abis/*.json",
+    "build-abis": "build-abis.sh"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.19.0",
@@ -22,9 +23,13 @@
     "@openzeppelin/contracts": "^3.4.0",
     "@typechain/ethers-v5": "^5.0.0",
     "@types/mustache": "^4.1.1",
+    "@types/node": "^14.14.37",
     "axios": "^0.21.1",
+    "dayjs": "^1.10.4",
+    "docker-compose": "^0.23.6",
     "ethers": "^5.0.31",
     "mustache": "^4.1.0",
+    "ts-node": "^9.1.1",
     "typechain": "^4.0.1",
     "typescript": "^4.1.5"
   },

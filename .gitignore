@@ -10,7 +10,6 @@
 
 # production
 /build
-/generated
 /cache
 
 # misc
@@ -37,4 +36,9 @@ package-lock.json
 /data/postgres
 
 # Contract artifacts
-/artifacts
+
+# Mesa smart contracts
+/mesa-smartcontracts
+/mesa-smart-contracts
+
+subgraph.yaml

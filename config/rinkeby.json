@@ -1,5 +1,15 @@
 {
-  "address": "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4",
   "network": "rinkeby",
-  "startBlock": 7900000
+  "startBlock": 8243429,
+  "contracts": {
+    "factory": {
+      "address": "0xc9c6cf237975b882bbef757faa3226b2c3178439"
+    },
+    "saleLauncher": {
+      "address": "0x031053f28bf9273b96f7d0dcd20e970ee3bbb54f"
+    },
+    "templateLauncher": {
+      "address": "0xb89a4ed67a280ed9755758607d75a39e2b7dda68"
+    }
+  }
 }

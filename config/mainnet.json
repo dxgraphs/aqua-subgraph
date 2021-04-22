@@ -1,5 +1,15 @@
 {
-  "address": "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4",
-  "network": "mainnet",
-  "startBlock": 7900000
+  "network": "rinkeby",
+  "startBlock": 7900000,
+  "contracts": {
+    "factory": {
+      "address": "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4"
+    },
+    "auctionLauncher": {
+      "address": "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4"
+    },
+    "templateLauncher": {
+      "address": "0xEb3Caa20ac5540834DDF2D32B8D741c3B32630a4"
+    }
+  }
 }
