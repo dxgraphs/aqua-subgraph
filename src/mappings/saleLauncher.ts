@@ -80,6 +80,8 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   // Timestamps
   fixedPriceSale.createdAt = event.block.timestamp.toI32()
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
+  // Token price and amount
+  fixedPriceSale.tokenPrice = fixedPriceSaleContract.tokenPrice().toBigDecimal()
   fixedPriceSale.sellAmount = fixedPriceSaleContract.tokensForSale().toBigDecimal()
   // Minimum raise amount
   fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise().toBigDecimal()
