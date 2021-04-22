@@ -16,52 +16,52 @@ $ npm run explore-local
 
 After starting, a local version of the graph, with a web front-end,shows up:
 
- http://localhost:8000/subgraphs/name/adamazad/mesa
- 
- Now make a query:
- 
- ```{
-  mesaFactory (id: "MesaFactory") {
-    id
-    address
-    feeManager
-    feeTo
-    templateManager
-    saleCount
-    templateManager
-    templateLauncher
-    feeNumerator
-    templateFee
-    saleFee
-  },
-  fixedPriceSales {
-    id
-    createdAt
-    status
-    sellAmount
-    startDate
-    endDate
-    minimumRaise
-    allocationMin
-    allocationMax
-    tokenIn {
-      id
-      name
-      symbol
-      decimals
-    }
-    tokenOut {
-      id
-      name
-      symbol
-      decimals
-    }
-    purchases {
-      id
-      amount
-      buyer
-    }
-  } 
+http://localhost:8000/subgraphs/name/adamazad/mesa
+
+Now make a query:
+
+```{
+ mesaFactory (id: "MesaFactory") {
+   id
+   address
+   feeManager
+   feeTo
+   templateManager
+   saleCount
+   templateManager
+   templateLauncher
+   feeNumerator
+   templateFee
+   saleFee
+ },
+ fixedPriceSales {
+   id
+   createdAt
+   status
+   sellAmount
+   startDate
+   endDate
+   minimumRaise
+   allocationMin
+   allocationMax
+   tokenIn {
+     id
+     name
+     symbol
+     decimals
+   }
+   tokenOut {
+     id
+     name
+     symbol
+     decimals
+   }
+   purchases {
+     id
+     amount
+     buyer
+   }
+ }
 }
 ```
 
@@ -121,11 +121,10 @@ Result should be:
   }
 }
 ```
+
 As screenshot:
 
 ![FE](https://user-images.githubusercontent.com/918180/115698704-35870e80-a365-11eb-9002-80637dfa84cd.png)
-
-
 
 # Installation
 
@@ -412,7 +411,8 @@ This projects comes with a set of predefined scripts in `package.json`
 | `test`            | Runs Jest tests                                                                                                                                                                                   |
 | `docker-up`       | Runs Docker services defined in `docker-compose.yaml`                                                                                                                                             |
 | `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet                                                                                                                                                            |
-| `prepare-testnet` | Builds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                    |
+| `prepare-rinkeby` | Builds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                    |
+| `prepare-xdai`    | Builds `subgraph.yaml` for the xDai                                                                                                                                                               |
 | `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema.                                                                                                                   |
 | `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                                                                                                                                          |
 | `deploy`          | Deploys the subgraph build to a The Graph Node. Requires a valid access token from the dashbaord. See [`graph auth`](https://github.com/graphprotocol/graph-cli#the-graph-command-line-interface) |
