@@ -70,6 +70,7 @@ describe('SaleLauncher', function() {
           sellAmount
           startDate
           endDate
+          tokenPrice
           minimumRaise
           allocationMin
           allocationMax
@@ -98,6 +99,7 @@ describe('SaleLauncher', function() {
     expect(data.data.fixedPriceSale.minimumRaise).toMatch((await launchedfixedPriceSale.minimumRaise()).toString())
     expect(data.data.fixedPriceSale.allocationMin).toMatch((await launchedfixedPriceSale.allocationMin()).toString())
     expect(data.data.fixedPriceSale.allocationMax).toMatch((await launchedfixedPriceSale.allocationMax()).toString())
+    expect(data.data.fixedPriceSale.sellAmount).toMatch((await launchedfixedPriceSale.tokensForSale()).toString())
     expect(data.data.fixedPriceSale.tokenPrice).toMatch((await launchedfixedPriceSale.tokenPrice()).toString())
     expect(data.data.fixedPriceSale.tokenIn.id.toLowerCase()).toMatch(biddingToken.address.toLowerCase())
     expect(data.data.fixedPriceSale.tokenIn.name).toMatch(await biddingToken.name())
