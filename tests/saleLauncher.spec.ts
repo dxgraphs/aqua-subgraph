@@ -1,9 +1,9 @@
 // Externals
 import { utils } from 'ethers'
-// Signers
+// Helpers
 import { createTokenAndMintAndApprove, getContractFactory, SUBGRAPH_SYNC_SECONDS, wait, getSigners } from './helpers'
-import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
 import { FixedPriceSale, FixedPriceSaleTemplate, FixedPriceSale__factory } from './helpers/contracts'
+import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
 import { createFixedPriceSale } from '../scripts/helpers'
 
 // Test block
@@ -31,9 +31,6 @@ describe('SaleLauncher', function() {
     const txReceipt1 = await (await mesa.saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
     // Regiter template in TemplateLauncher
     const txReceipt2 = await (await mesa.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait(1)
-    // Comment if you wish to debug
-    // console.log(txReceipt1.events)
-    // console.log(txReceipt2.events)
     // Deploy, mint and approve Auctioning Token
     const fixedPriceSaleToken = await createTokenAndMintAndApprove({
       name: 'Fixed Price Sale Token',
@@ -53,7 +50,6 @@ describe('SaleLauncher', function() {
       users: [saleCreator, saleInvestorA, saleInvestorB],
       signer: deployer
     })
-
     // Launch FixedPriceSale
     const newFixedPriceSaleAddress = await createFixedPriceSale({
       templateId: 1,
@@ -63,10 +59,8 @@ describe('SaleLauncher', function() {
       saleToken: fixedPriceSaleToken,
       saleCreator
     })
-    console.log(`Launched a new FixedPriceSale at ${newFixedPriceSaleAddress}`)
     const launchedfixedPriceSale = FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleCreator)
 
-    console.log((await launchedfixedPriceSale.tokensForSale()).toString())
     await wait(SUBGRAPH_SYNC_SECONDS * 5)
 
     const { data } = await mesa.fetchFromTheGraph(`{
