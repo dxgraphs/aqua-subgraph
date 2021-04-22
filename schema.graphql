@@ -104,6 +104,8 @@ type FixedPriceSale implements EntityMetadata @entity {
   # Specific to the FixedPriceAuction
   startDate: Int! # Open timestamp
   endDate: Int! # Close timestamp
+  "Token price"
+  tokenPrice: BigDecimal!
   # Amount to sell
   sellAmount: BigDecimal!
   # Minimum amount per bid

@@ -484,6 +484,15 @@ export class FixedPriceSale extends Entity {
     this.set("endDate", Value.fromI32(value));
   }
 
+  get tokenPrice(): BigDecimal {
+    let value = this.get("tokenPrice");
+    return value.toBigDecimal();
+  }
+
+  set tokenPrice(value: BigDecimal) {
+    this.set("tokenPrice", Value.fromBigDecimal(value));
+  }
+
   get sellAmount(): BigDecimal {
     let value = this.get("sellAmount");
     return value.toBigDecimal();
