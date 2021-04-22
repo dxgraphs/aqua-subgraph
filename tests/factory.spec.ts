@@ -1,107 +1,114 @@
-// Externals
-import { providers } from 'ethers'
-import Axios from 'axios'
-
 // Helpers
-import { buildSubgraphYaml, EVM_ENDPOINT, execAsync, getContractFactory, GRAPHQL_ENDPOINT, wait } from './helpers'
+import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
+import { ETH_ZERO_ADDRESS, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
 
-// Contracts
-import { AuctionLauncher, MesaFactory, TemplateLauncher } from './helpers/contracts'
 // Test block
-describe('MesaFactory', () => {
-  // Connect to local ganache instance
-  const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
-
-  // Wallets/Signers
-  const deployer = provider.getSigner(0)
-
-  // Contracts
-  let mesaFactory: MesaFactory
-  let auctionLauncher: AuctionLauncher
-  let templateLauncher: TemplateLauncher
-
-  // The Graph client
-  const theGraph = Axios.create({
-    baseURL: GRAPHQL_ENDPOINT,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+describe('MesaFactory', function() {
+  let mesa: MesaJestBeforeEachContext
 
   beforeEach(async () => {
-    // Wait for everything to fire up
-    await wait(10000)
-
-    // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher EasyAuction contract is deployed to ganache
-    // then followed by deploying its subgraph to the Graph node
-
-    // Deploy MesaFactory
-    mesaFactory = (await getContractFactory('MesaFactory', deployer).deploy()) as MesaFactory
-    // Deploy TemplateLauncher
-    templateLauncher = (await getContractFactory('TemplateLauncher', deployer).deploy(
-      mesaFactory.address
-    )) as TemplateLauncher
-    // Deploy AuctionLauncher
-    auctionLauncher = (await getContractFactory('AuctionLauncher', deployer).deploy(
-      mesaFactory.address
-    )) as AuctionLauncher
-
-    // Prepare subgraph.yaml
-    await buildSubgraphYaml({
-      network: 'local',
-      startBlock: mesaFactory.deployTransaction.blockNumber as number,
-      contracts: {
-        factory: {
-          address: mesaFactory.address
-        },
-        auctionLauncher: {
-          address: auctionLauncher.address
-        },
-        templateLauncher: {
-          address: templateLauncher.address
-        }
-      }
-    })
-
-    // Initilize the Factory
-    await mesaFactory.initalize(
-      await deployer.getAddress(),
-      await deployer.getAddress(),
-      await deployer.getAddress(),
-      templateLauncher.address,
-      0, // zero fees
-      0 // zero fees
-    )
-
-    // Build, create and deploy the subgraph
-    await execAsync('npm run build')
-    await execAsync('npm run create-local')
-    await execAsync('npm run deploy-local')
-
-    // Wait for subgraph to sync
-    await wait(20000)
+    mesa = await mesaJestBeforeEach()
   })
 
   afterEach(async () => {
-    // Clean up
-    await execAsync('npm run remove-local')
+    await mesaJestAfterEach()
   })
-
-  test('Should return MesaFactory', async () => {
-    const { data, status } = await theGraph.post(GRAPHQL_ENDPOINT, {
-      query: `{
+  test('Should return MesaFactory upon initialization', async () => {
+    const { data } = await mesa.fetchFromTheGraph(`{
           mesaFactory (id: "MesaFactory") {
-            address
+            saleFee
+            feeTo
+            feeNumerator
             feeManager
             templateLauncher
+            templateManager
+            templateFee
           }
-        }
-      `
-    })
+        }`)
+    expect(data.data.mesaFactory.saleFee).toMatch((await mesa.mesaFactory.saleFee()).toString())
+    expect(data.data.mesaFactory.feeTo.toLowerCase()).toMatch((await mesa.mesaFactory.feeTo()).toLowerCase())
+    expect(data.data.mesaFactory.feeNumerator).toMatch((await mesa.mesaFactory.feeNumerator()).toString())
+    expect(data.data.mesaFactory.feeManager.toLowerCase()).toMatch((await mesa.mesaFactory.feeManager()).toLowerCase())
+    expect(data.data.mesaFactory.templateLauncher.toLowerCase()).toMatch(
+      (await mesa.mesaFactory.templateLauncher()).toLowerCase()
+    )
+    expect(data.data.mesaFactory.templateManager.toLowerCase()).toMatch(
+      (await mesa.mesaFactory.templateManager()).toLowerCase()
+    )
+    expect(data.data.mesaFactory.templateFee).toMatch((await mesa.mesaFactory.templateFee()).toString())
+  })
 
-    expect(status).toBe(200)
-    expect(data.data.mesaFactory.address).toEqual(mesaFactory.address)
-    expect(data.data.mesaFactory.feeManager).toEqual(await mesaFactory.feeManager())
-    expect(data.data.mesaFactory.templateLauncher).toEqual(await mesaFactory.templateLauncher())
+  test('Should return new saleFee', async () => {
+    await (await mesa.mesaFactory.setSaleFee(3)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            saleFee
+          }
+        }`)
+    expect(data.data.mesaFactory.saleFee).toMatch((await mesa.mesaFactory.saleFee()).toString())
+  })
+  test('Should return new feeTo', async () => {
+    await (await mesa.mesaFactory.setFeeTo(ETH_ZERO_ADDRESS)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            feeTo
+          }
+        }`)
+    expect(data.data.mesaFactory.feeTo.toLowerCase()).toMatch((await mesa.mesaFactory.feeTo()).toLowerCase())
+  })
+  test('Should return new feeNumerator', async () => {
+    await (await mesa.mesaFactory.setFeeNumerator(2)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            feeNumerator
+          }
+        }`)
+    expect(data.data.mesaFactory.feeNumerator).toMatch((await mesa.mesaFactory.feeNumerator()).toString())
+  })
+  test('Should return new feeManager', async () => {
+    await (await mesa.mesaFactory.setFeeManager(ETH_ZERO_ADDRESS)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            feeManager
+          }
+        }`)
+    expect(data.data.mesaFactory.feeManager.toLowerCase()).toMatch((await mesa.mesaFactory.feeManager()).toLowerCase())
+  })
+  test('Should return new templateLauncher', async () => {
+    await (await mesa.mesaFactory.setTemplateLauncher(ETH_ZERO_ADDRESS)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            templateLauncher
+          }
+        }`)
+    expect(data.data.mesaFactory.templateLauncher).toMatch((await mesa.mesaFactory.templateLauncher()).toLowerCase())
+  })
+  test('Should return new templateManager', async () => {
+    await (await mesa.mesaFactory.setTemplateManager(ETH_ZERO_ADDRESS)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            templateManager
+          }
+        }`)
+    expect(data.data.mesaFactory.templateManager.toLowerCase()).toMatch(
+      (await mesa.mesaFactory.templateManager()).toLowerCase()
+    )
+  })
+  test('Should return new templateFee', async () => {
+    await (await mesa.mesaFactory.setTemplateFee(10)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { data } = await mesa.fetchFromTheGraph(`{
+          mesaFactory (id: "MesaFactory") {
+            templateFee
+          }
+        }`)
+    expect(data.data.mesaFactory.templateFee).toMatch((await mesa.mesaFactory.templateFee()).toString())
   })
 })

@@ -2,7 +2,7 @@
   "name": "mesa-subgraph",
   "license": "UNLICENSED",
   "scripts": {
-    "docker-up": "docker-compose up -d",
+    "docker-up": "docker-compose up -d --force-recreate",
     "pretest": "npm run docker-up",
     "prepare-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
     "prepare-rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",

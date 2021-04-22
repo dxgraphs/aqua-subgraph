@@ -2,22 +2,20 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { Event } from '@ethersproject/contracts'
 import { providers, utils } from 'ethers'
+import DayJSUTC from 'dayjs/plugin/utc'
 import dayjs from 'dayjs'
 
 // Helpers
 import { encodeInitDataFairSale, encodeInitDataFixedPrice, toUTC } from '../tests/helpers'
 // Typechained
 import {
-  ERC20Mintable,
-  FairSale,
-  FairSaleTemplate__factory,
-  FixedPriceSale,
   FixedPriceSaleTemplate__factory,
-  FixedPriceSale__factory,
+  FairSaleTemplate__factory,
+  TemplateLauncher,
+  FixedPriceSale,
+  ERC20Mintable,
   MesaFactory,
-  SaleLauncher,
-  SaleLauncher__factory,
-  TemplateLauncher
+  SaleLauncher
 } from '../tests/helpers/contracts'
 
 // Interfaces
@@ -46,6 +44,9 @@ export interface PurchaseTokenOptions {
   amount: BigNumberish
   signer: providers.JsonRpcSigner
 }
+
+// UTC plugin
+dayjs.extend(DayJSUTC)
 
 // Time constants
 export const ONE_MINUTE = 60
@@ -140,14 +141,18 @@ export async function createFixedPriceSale({
   saleToken,
   saleCreator
 }: CreateSaleOptions): Promise<string> {
+  // Get blocktimestamp from Ganache
+  const lastBlock = await getLastBlock(mesaFactory.provider)
+  // Sale lasts for one hour
+  const startDate = lastBlock.timestamp + 3600 // One hour from last block timestamp
+  const endDate = lastBlock.timestamp + 3600 * 2 // One hour from last block timestamp
+
   const launchFixedPriceSaleTemplateTxReceipt = await mesaFactory
     .launchTemplate(
       templateId, // FixedPriceSale templateId
       encodeInitDataFixedPrice({
-        startDate: toUTC(dayjs()).unix(),
-        endDate: toUTC(dayjs())
-          .add(2, 'hours')
-          .unix(),
+        startDate,
+        endDate,
         saleLauncher: saleLauncher.address,
         saleTemplateId: templateId,
         tokenIn: biddingToken.address,
@@ -206,4 +211,10 @@ export async function purchaseToken({ fixedPriceSale, amount }: PurchaseTokenOpt
   } else {
     throw new Error('Contract did not emit NewPurchase')
   }
+}
+
+export async function getLastBlock(provider: providers.Provider) {
+  const lastBlockNumber = await provider.getBlockNumber()
+
+  return provider.getBlock(lastBlockNumber)
 }
