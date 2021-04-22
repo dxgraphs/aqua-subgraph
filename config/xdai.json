@@ -1,0 +1,15 @@
+{
+  "network": "xdai",
+  "startBlock": 15656492,
+  "contracts": {
+    "factory": {
+      "address": "0xefb5490683bE4AE8de4bFB05a84Ef0F79d9DC2db"
+    },
+    "saleLauncher": {
+      "address": "0x646219EaE83eD7dff641332B36402350FA9a0CdA"
+    },
+    "templateLauncher": {
+      "address": "0x1C55a988E025492dDcf872CA68a8562dfEBAe5C9"
+    }
+  }
+}
