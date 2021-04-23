@@ -83,6 +83,7 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   // Token price and amount
   fixedPriceSale.tokenPrice = fixedPriceSaleContract.tokenPrice().toBigDecimal()
   fixedPriceSale.sellAmount = fixedPriceSaleContract.tokensForSale().toBigDecimal()
+  fixedPriceSale.soldAmount = new BigDecimal(new BigInt(0))
   // Minimum raise amount
   fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise().toBigDecimal()
   // // Mnimum and maximum tokens per order

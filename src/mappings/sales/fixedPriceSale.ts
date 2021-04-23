@@ -1,5 +1,6 @@
 // Contract ABIs and Events
 import {
+  FixedPriceSale as FixedPriceSaleContract,
   NewTokenRelease,
   SaleClosed,
   NewTokenClaim,
@@ -24,9 +25,11 @@ export function handleSaleClosed(event: SaleClosed): void {
 
 /**
  * WIP
+ * Handles `NewPurchase` when a investors buy certain amount of tokens
  */
 export function handleNewPurchase(event: NewPurchase): void {
   let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
+  let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.address)
   if (!fixedPriceSale) {
     return
   }
@@ -37,6 +40,9 @@ export function handleNewPurchase(event: NewPurchase): void {
   purchase.amount = event.params.amount.toBigDecimal()
   purchase.buyer = event.params.buyer
   purchase.save()
+  // update `soldAmount` field in on auction
+  fixedPriceSale.soldAmount = fixedPriceSaleContract.tokensSold().toBigDecimal()
+  fixedPriceSale.save()
 }
 
 /**
