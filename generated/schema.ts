@@ -502,6 +502,15 @@ export class FixedPriceSale extends Entity {
     this.set("sellAmount", Value.fromBigDecimal(value));
   }
 
+  get soldAmount(): BigDecimal {
+    let value = this.get("soldAmount");
+    return value.toBigDecimal();
+  }
+
+  set soldAmount(value: BigDecimal) {
+    this.set("soldAmount", Value.fromBigDecimal(value));
+  }
+
   get minimumRaise(): BigDecimal {
     let value = this.get("minimumRaise");
     return value.toBigDecimal();
