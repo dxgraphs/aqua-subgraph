@@ -24,7 +24,7 @@ describe('TemplateLauncher', function() {
       launcher: mesa.templateLauncher,
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    await wait(SUBGRAPH_SYNC_SECONDS * 3)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${event.template}") {
             address
@@ -48,7 +48,7 @@ describe('TemplateLauncher', function() {
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
     await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    await wait(SUBGRAPH_SYNC_SECONDS * 2)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${event.templateId}") {
             verified
@@ -66,7 +66,7 @@ describe('TemplateLauncher', function() {
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
     await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    await wait(SUBGRAPH_SYNC_SECONDS * 2)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${event.templateId}") {
             verified
@@ -84,7 +84,7 @@ describe('TemplateLauncher', function() {
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
     await (await mesa.templateLauncher.removeTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    await wait(SUBGRAPH_SYNC_SECONDS * 2)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${event.templateId}") {
             deleted
