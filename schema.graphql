@@ -108,6 +108,8 @@ type FixedPriceSale implements EntityMetadata @entity {
   tokenPrice: BigDecimal!
   # Amount to sell
   sellAmount: BigDecimal!
+  "Amount of tokens sold so far"
+  soldAmount: BigDecimal!
   # Minimum amount per bid
   minimumRaise: BigDecimal!
   # Minimum and maxmimum token per order
