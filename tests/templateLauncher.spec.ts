@@ -43,12 +43,14 @@ describe('TemplateLauncher', function() {
       'FixedPriceSaleTemplate',
       mesa.provider.getSigner(0)
     ).deploy()) as FixedPriceSale
-    const { events } = await (await mesa.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait(1)
-    const templateId = events[0].args.tempateId
-    await (await mesa.templateLauncher.verifyTemplate(templateId)).wait(1)
+    const event = await addSaleTemplateToLauncher({
+      launcher: mesa.templateLauncher,
+      saleTemplateAddress: fixedPriceSaleTemplate.address
+    })
+    await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          saleTemplate (id: "${templateId}") {
+          saleTemplate (id: "${event.templateId}") {
             verified
           }
         }`)
