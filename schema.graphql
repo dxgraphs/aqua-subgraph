@@ -97,25 +97,31 @@ type FixedPriceSale implements EntityMetadata @entity {
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  # The auction name
+  "The name of the same, default is the tokenIn's name"
   name: String!
-  # open/ended/settled/upcoming/cancelled/failed
+  "Sale status: open/ended/settled/upcoming/cancelled/failed"
   status: String!
-  # Specific to the FixedPriceAuction
+  "The UTC timestamp at which the sale starts"
   startDate: Int! # Open timestamp
+  "The UTC timestamp at which the sale closes"
   endDate: Int! # Close timestamp
   "Token price"
   tokenPrice: BigDecimal!
-  # Amount to sell
+  "Amount of tokens to sell"
   sellAmount: BigDecimal!
+  "Amount of tokens sold so far"
+  soldAmount: BigDecimal!
   # Minimum amount per bid
   minimumRaise: BigDecimal!
-  # Minimum and maxmimum token per order
+  "Minimum token amount per purchase"
   allocationMin: BigDecimal!
+  "Maximum token amount per purchase"
   allocationMax: BigDecimal!
-  # bidding and sale tokens
+  "Token investors can use to bid"
   tokenIn: Token!
+  "Token investor get"
   tokenOut: Token!
+  "List of sale purchases"
   purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
 }
 
