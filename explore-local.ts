@@ -203,7 +203,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
   // Launch a FairSale template via the factory
 
   // Launch FixedPriceSale
-  const newFairSaleAddress = await createFixedPriceSale({
+  const newFixedPriceSaleAddress = await createFixedPriceSale({
     templateId: fixedPriceSaleTemplateId,
     mesaFactory,
     saleLauncher,
@@ -212,16 +212,16 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
     saleCreator
   })
 
-  console.log(`Launched a new FixedPriceSale at ${newFairSaleAddress}`)
+  console.log(`Launched a new FixedPriceSale at ${newFixedPriceSaleAddress}`)
 
   // Approve new SaleContract
-  await tokens.biddingToken.connect(saleInvestorA).approve(newFairSaleAddress, ethers.constants.MaxUint256)
-  await tokens.biddingToken.connect(saleInvestorB).approve(newFairSaleAddress, ethers.constants.MaxUint256)
+  await tokens.biddingToken.connect(saleInvestorA).approve(newFixedPriceSaleAddress, ethers.constants.MaxUint256)
+  await tokens.biddingToken.connect(saleInvestorB).approve(newFixedPriceSaleAddress, ethers.constants.MaxUint256)
 
   const sales = {
     fixedPriceSale: {
-      saleInvestorA: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorA),
-      saleInvestorB: FixedPriceSale__factory.connect(newFairSaleAddress, saleInvestorB)
+      saleInvestorA: FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleInvestorA),
+      saleInvestorB: FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleInvestorB)
     }
   }
 
