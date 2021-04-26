@@ -4,7 +4,7 @@ Mesa Subgraph is the main provider for Mesa Interface data.
 
 # Explore
 
-You can explore the subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa).
+You can explore Mesa's xDai subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa-xdai).
 
 ## Local
 
@@ -406,19 +406,20 @@ $ yarn tests
 
 This projects comes with a set of predefined scripts in `package.json`
 
-| Script            | Description                                                                                                                                                                                       |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `test`            | Runs Jest tests                                                                                                                                                                                   |
-| `docker-up`       | Runs Docker services defined in `docker-compose.yaml`                                                                                                                                             |
-| `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet                                                                                                                                                            |
-| `prepare-rinkeby` | Builds `subgraph.yaml` for the Rinkeby testnet                                                                                                                                                    |
-| `prepare-xdai`    | Builds `subgraph.yaml` for the xDai                                                                                                                                                               |
-| `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema.                                                                                                                   |
-| `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                                                                                                                                          |
-| `deploy`          | Deploys the subgraph build to a The Graph Node. Requires a valid access token from the dashbaord. See [`graph auth`](https://github.com/graphprotocol/graph-cli#the-graph-command-line-interface) |
-| `typechain`       | Creates typed-contracts classes.                                                                                                                                                                  |
-| `build-abis`      | Extracts contract ABIs from artifacts in `artifacts` directory.                                                                                                                                   |
-| `deploy-local`    | Deploys the graph build to local graph-node.                                                                                                                                                      |
-| `create-local`    | Creates the graph build in local graph-node.                                                                                                                                                      |
-| `remove-local`    | Removes the graph build from local graph-node.                                                                                                                                                    |
-| `explore-local`   | Starts local graph explorer.                                                                                                                                                                      |
+| Script            | Description                                                                     |
+| ----------------- | ------------------------------------------------------------------------------- |
+| `test`            | Runs Jest tests.                                                                |
+| `docker-up`       | Runs Docker services defined in `docker-compose.yaml`.                          |
+| `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet.                                         |
+| `prepare-rinkeby` | Builds `subgraph.yaml` for the Rinkeby testnet.                                 |
+| `prepare-xdai`    | Builds `subgraph.yaml` for the xDai network.                                    |
+| `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema. |
+| `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                        |
+| `deploy-xdai`     | Deploys the subgraph build to The Graph on the xDai network.                    |
+| `deploy-rinkeby`  | Deploys the subgraph build to The Graph on the Rinkeby testnet.                 |
+| `typechain`       | Creates typed-contracts classes.                                                |
+| `build-abis`      | Extracts contract ABIs from artifacts in `artifacts` directory.                 |
+| `deploy-local`    | Deploys the graph build to local graph-node.                                    |
+| `create-local`    | Creates the graph build in local graph-node.                                    |
+| `remove-local`    | Removes the graph build from local graph-node.                                  |
+| `explore-local`   | Starts local graph explorer.                                                    |
