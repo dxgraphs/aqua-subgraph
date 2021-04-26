@@ -4,7 +4,7 @@ Mesa Subgraph is the main provider for Mesa Interface data.
 
 # Explore
 
-You can explore the subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa).
+You can explore Mesa's xDai subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa-xdai).
 
 ## Local
 
