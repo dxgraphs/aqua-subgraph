@@ -1,5 +1,5 @@
 // Externals
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
@@ -44,7 +44,7 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   // Timestamps
   fairSale.createdAt = event.block.timestamp.toI32()
   fairSale.updatedAt = event.block.timestamp.toI32()
-  fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder().toBigDecimal()
+  fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
   // Start and end dates of the sale
   fairSale.startDate = fairSaleContract.auctionStartedDate().toI32()
   fairSale.endDate = fairSaleContract.endDate().toI32()
@@ -53,7 +53,7 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   /**
    * @todo
    */
-  fairSale.tokenAmount = new BigDecimal(new BigInt(0))
+  fairSale.tokenAmount = new BigInt(0)
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(fairSaleContract.tokenIn())
   // Saleing token / token out
@@ -81,14 +81,14 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.createdAt = event.block.timestamp.toI32()
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
   // Token price and amount
-  fixedPriceSale.tokenPrice = fixedPriceSaleContract.tokenPrice().toBigDecimal()
-  fixedPriceSale.sellAmount = fixedPriceSaleContract.tokensForSale().toBigDecimal()
-  fixedPriceSale.soldAmount = new BigDecimal(new BigInt(0))
+  fixedPriceSale.tokenPrice = fixedPriceSaleContract.tokenPrice()
+  fixedPriceSale.sellAmount = fixedPriceSaleContract.tokensForSale()
+  fixedPriceSale.soldAmount = ew BigInt(0)
   // Minimum raise amount
-  fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise().toBigDecimal()
+  fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise()
   // // Mnimum and maximum tokens per order
-  fixedPriceSale.allocationMin = fixedPriceSaleContract.allocationMin().toBigDecimal()
-  fixedPriceSale.allocationMax = fixedPriceSaleContract.allocationMax().toBigDecimal()
+  fixedPriceSale.allocationMin = fixedPriceSaleContract.allocationMin()
+  fixedPriceSale.allocationMax = fixedPriceSaleContract.allocationMax()
   // Start and end dates of the sale
   fixedPriceSale.startDate = fixedPriceSaleContract.startDate().toI32()
   fixedPriceSale.endDate = fixedPriceSaleContract.endDate().toI32()

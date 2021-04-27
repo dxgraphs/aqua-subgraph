@@ -32,9 +32,9 @@ type MesaFactory @entity {
   # Address of TemplateLauncher contract
   templateLauncher: Bytes!
   # Fees
-  saleFee: BigDecimal!
-  feeNumerator: BigDecimal!
-  templateFee: BigDecimal!
+  saleFee: BigInt!
+  feeNumerator: BigInt!
+  templateFee: BigInt!
 }
 
 #################################################
@@ -55,9 +55,9 @@ type FairSale implements EntityMetadata @entity {
   # Date of the sale end
   endDate: Int!
   # Total amount of tokens available for sale
-  tokenAmount: BigDecimal!
+  tokenAmount: BigInt!
   # Minimum amount per bid
-  minimumBidAmount: BigDecimal!
+  minimumBidAmount: BigInt!
   # Bidding token (ie: DAI, USDC)
   tokenIn: Token!
   # Auctioning token
@@ -82,9 +82,9 @@ type FairSaleBid implements EntityMetadata @entity {
   # The UTC timestamp at which the bid was deleted
   deletedAt: Int
   # Int of tokens the investor wants to buy
-  tokenInAmount: BigDecimal!
+  tokenInAmount: BigInt!
   # Int of tokens the investor wants to buy
-  tokenOutAmount: BigDecimal!
+  tokenOutAmount: BigInt!
   # The bidder's Ethereum address
   address: Bytes!
 }
@@ -106,17 +106,17 @@ type FixedPriceSale implements EntityMetadata @entity {
   "The UTC timestamp at which the sale closes"
   endDate: Int! # Close timestamp
   "Token price"
-  tokenPrice: BigDecimal!
+  tokenPrice: BigInt!
   "Amount of tokens to sell"
-  sellAmount: BigDecimal!
+  sellAmount: BigInt!
   "Amount of tokens sold so far"
-  soldAmount: BigDecimal!
+  soldAmount: BigInt!
   # Minimum amount per bid
-  minimumRaise: BigDecimal!
+  minimumRaise: BigInt!
   "Minimum token amount per purchase"
-  allocationMin: BigDecimal!
+  allocationMin: BigInt!
   "Maximum token amount per purchase"
-  allocationMax: BigDecimal!
+  allocationMax: BigInt!
   "Token investors can use to bid"
   tokenIn: Token!
   "Token investor get"
@@ -136,7 +136,7 @@ type FixedPriceSalePurchase implements EntityMetadata @entity {
   # Address of buyer
   buyer: Bytes!
   # Amount this purchase took
-  amount: BigDecimal!
+  amount: BigInt!
 }
 
 #################################################
