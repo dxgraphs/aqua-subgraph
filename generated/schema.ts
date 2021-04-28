@@ -96,31 +96,31 @@ export class MesaFactory extends Entity {
     this.set("templateLauncher", Value.fromBytes(value));
   }
 
-  get saleFee(): BigDecimal {
+  get saleFee(): BigInt {
     let value = this.get("saleFee");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set saleFee(value: BigDecimal) {
-    this.set("saleFee", Value.fromBigDecimal(value));
+  set saleFee(value: BigInt) {
+    this.set("saleFee", Value.fromBigInt(value));
   }
 
-  get feeNumerator(): BigDecimal {
+  get feeNumerator(): BigInt {
     let value = this.get("feeNumerator");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set feeNumerator(value: BigDecimal) {
-    this.set("feeNumerator", Value.fromBigDecimal(value));
+  set feeNumerator(value: BigInt) {
+    this.set("feeNumerator", Value.fromBigInt(value));
   }
 
-  get templateFee(): BigDecimal {
+  get templateFee(): BigInt {
     let value = this.get("templateFee");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set templateFee(value: BigDecimal) {
-    this.set("templateFee", Value.fromBigDecimal(value));
+  set templateFee(value: BigInt) {
+    this.set("templateFee", Value.fromBigInt(value));
   }
 }
 
@@ -225,22 +225,22 @@ export class FairSale extends Entity {
     this.set("endDate", Value.fromI32(value));
   }
 
-  get tokenAmount(): BigDecimal {
+  get tokenAmount(): BigInt {
     let value = this.get("tokenAmount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set tokenAmount(value: BigDecimal) {
-    this.set("tokenAmount", Value.fromBigDecimal(value));
+  set tokenAmount(value: BigInt) {
+    this.set("tokenAmount", Value.fromBigInt(value));
   }
 
-  get minimumBidAmount(): BigDecimal {
+  get minimumBidAmount(): BigInt {
     let value = this.get("minimumBidAmount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set minimumBidAmount(value: BigDecimal) {
-    this.set("minimumBidAmount", Value.fromBigDecimal(value));
+  set minimumBidAmount(value: BigInt) {
+    this.set("minimumBidAmount", Value.fromBigInt(value));
   }
 
   get tokenIn(): string {
@@ -363,22 +363,22 @@ export class FairSaleBid extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
-  get tokenInAmount(): BigDecimal {
+  get tokenInAmount(): BigInt {
     let value = this.get("tokenInAmount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set tokenInAmount(value: BigDecimal) {
-    this.set("tokenInAmount", Value.fromBigDecimal(value));
+  set tokenInAmount(value: BigInt) {
+    this.set("tokenInAmount", Value.fromBigInt(value));
   }
 
-  get tokenOutAmount(): BigDecimal {
+  get tokenOutAmount(): BigInt {
     let value = this.get("tokenOutAmount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set tokenOutAmount(value: BigDecimal) {
-    this.set("tokenOutAmount", Value.fromBigDecimal(value));
+  set tokenOutAmount(value: BigInt) {
+    this.set("tokenOutAmount", Value.fromBigInt(value));
   }
 
   get address(): Bytes {
@@ -484,58 +484,58 @@ export class FixedPriceSale extends Entity {
     this.set("endDate", Value.fromI32(value));
   }
 
-  get tokenPrice(): BigDecimal {
+  get tokenPrice(): BigInt {
     let value = this.get("tokenPrice");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set tokenPrice(value: BigDecimal) {
-    this.set("tokenPrice", Value.fromBigDecimal(value));
+  set tokenPrice(value: BigInt) {
+    this.set("tokenPrice", Value.fromBigInt(value));
   }
 
-  get sellAmount(): BigDecimal {
+  get sellAmount(): BigInt {
     let value = this.get("sellAmount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set sellAmount(value: BigDecimal) {
-    this.set("sellAmount", Value.fromBigDecimal(value));
+  set sellAmount(value: BigInt) {
+    this.set("sellAmount", Value.fromBigInt(value));
   }
 
-  get soldAmount(): BigDecimal {
+  get soldAmount(): BigInt {
     let value = this.get("soldAmount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set soldAmount(value: BigDecimal) {
-    this.set("soldAmount", Value.fromBigDecimal(value));
+  set soldAmount(value: BigInt) {
+    this.set("soldAmount", Value.fromBigInt(value));
   }
 
-  get minimumRaise(): BigDecimal {
+  get minimumRaise(): BigInt {
     let value = this.get("minimumRaise");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set minimumRaise(value: BigDecimal) {
-    this.set("minimumRaise", Value.fromBigDecimal(value));
+  set minimumRaise(value: BigInt) {
+    this.set("minimumRaise", Value.fromBigInt(value));
   }
 
-  get allocationMin(): BigDecimal {
+  get allocationMin(): BigInt {
     let value = this.get("allocationMin");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set allocationMin(value: BigDecimal) {
-    this.set("allocationMin", Value.fromBigDecimal(value));
+  set allocationMin(value: BigInt) {
+    this.set("allocationMin", Value.fromBigInt(value));
   }
 
-  get allocationMax(): BigDecimal {
+  get allocationMax(): BigInt {
     let value = this.get("allocationMax");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set allocationMax(value: BigDecimal) {
-    this.set("allocationMax", Value.fromBigDecimal(value));
+  set allocationMax(value: BigInt) {
+    this.set("allocationMax", Value.fromBigInt(value));
   }
 
   get tokenIn(): string {
@@ -655,13 +655,13 @@ export class FixedPriceSalePurchase extends Entity {
     this.set("buyer", Value.fromBytes(value));
   }
 
-  get amount(): BigDecimal {
+  get amount(): BigInt {
     let value = this.get("amount");
-    return value.toBigDecimal();
+    return value.toBigInt();
   }
 
-  set amount(value: BigDecimal) {
-    this.set("amount", Value.fromBigDecimal(value));
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
   }
 }
 

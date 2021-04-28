@@ -37,11 +37,11 @@ export function handleNewPurchase(event: NewPurchase): void {
   purchase.sale = event.address.toHexString()
   purchase.createdAt = event.block.timestamp.toI32()
   purchase.updatedAt = event.block.timestamp.toI32()
-  purchase.amount = event.params.amount.toBigDecimal()
+  purchase.amount = event.params.amount
   purchase.buyer = event.params.buyer
   purchase.save()
   // update `soldAmount` field in on auction
-  fixedPriceSale.soldAmount = fixedPriceSaleContract.tokensSold().toBigDecimal()
+  fixedPriceSale.soldAmount = fixedPriceSaleContract.tokensSold()
   fixedPriceSale.save()
 }
 

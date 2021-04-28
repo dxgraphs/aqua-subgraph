@@ -30,11 +30,11 @@ export function handleFactoryInitialized(event: FactoryInitialized): void {
   mesaFactory.address = event.address
   // Fees collector from auctions
   mesaFactory.feeTo = event.params.feeTo
-  mesaFactory.saleFee = mesaFactoryContract.saleFee().toBigDecimal()
+  mesaFactory.saleFee = mesaFactoryContract.saleFee()
   mesaFactory.feeManager = event.params.feeManager
   // Fees
-  mesaFactory.feeNumerator = event.params.feeNumerator.toBigDecimal()
-  mesaFactory.templateFee = event.params.templateFee.toBigDecimal()
+  mesaFactory.feeNumerator = event.params.feeNumerator
+  mesaFactory.templateFee = event.params.templateFee
   // Auction count
   mesaFactory.saleCount = 0
   // Address of TemplateLauncher contract
@@ -63,7 +63,7 @@ export function handleSetFeeNumerator(event: SetFeeNumerator): void {
     return
   }
 
-  mesaFactory.feeNumerator = event.params.feeNumerator.toBigDecimal()
+  mesaFactory.feeNumerator = event.params.feeNumerator
   mesaFactory.save()
 }
 
@@ -85,7 +85,7 @@ export function handleSetSaleFee(event: SetSaleFee): void {
     return
   }
 
-  mesaFactory.saleFee = event.params.saleFee.toBigDecimal()
+  mesaFactory.saleFee = event.params.saleFee
   mesaFactory.save()
 }
 
@@ -96,7 +96,7 @@ export function handleSetTemplateFee(event: SetTemplateFee): void {
     return
   }
 
-  mesaFactory.templateFee = event.params.templateFee.toBigDecimal()
+  mesaFactory.templateFee = event.params.templateFee
   mesaFactory.save()
 }
 

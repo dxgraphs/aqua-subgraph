@@ -86,8 +86,8 @@ export function handleNewOrder(event: NewOrder): void {
   // bid.auction = event.address.toHexString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
-  bid.tokenInAmount = event.params.orderTokenIn.toBigDecimal()
-  bid.tokenOutAmount = event.params.orderTokenOut.toBigDecimal()
+  bid.tokenInAmount = event.params.orderTokenIn
+  bid.tokenOutAmount = event.params.orderTokenOut
   bid.address = event.transaction.from
   bid.status = BID_STATUS.SUBMITTED
   bid.save()
