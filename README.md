@@ -20,7 +20,8 @@ http://localhost:8000/subgraphs/name/adamazad/mesa
 
 Now make a query:
 
-```{
+```
+{
  mesaFactory (id: "MesaFactory") {
    id
    address
