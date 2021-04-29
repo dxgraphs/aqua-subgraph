@@ -1,10 +1,6 @@
 // Contract ABIs and Events
-import {
-  TemplateAdded,
-  TemplateRemoved,
-  TemplateVerified,
-  TemplateLaunched
-} from '../../generated/TemplateLauncher/TemplateLauncher'
+import { TemplateAdded, TemplateRemoved, TemplateVerified } from '../../generated/TemplateLauncher/TemplateLauncher'
+import { getMesaFactory } from '../helpers/factory'
 
 // Helpers
 import { fetchTemplateName } from '../helpers/templates'
@@ -22,7 +18,7 @@ export function handleTemplateAdded(event: TemplateAdded): void {
   saleTemplate.createdAt = event.block.timestamp.toI32()
   saleTemplate.updatedAt = event.block.timestamp.toI32()
   // Factory address
-  saleTemplate.factory = event.address
+  saleTemplate.factory = getMesaFactory().address
   // Template contract address
   saleTemplate.address = event.params.template
   // Auction name: used to resolve ID to contract ABIs
