@@ -30,7 +30,7 @@ describe('TemplateLauncher', function() {
     await mesaJestAfterEach()
   })
   test('Should save new SaleTemplate', async () => {
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    await wait(SUBGRAPH_SYNC_SECONDS * 3)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${templateId}") {
             id
@@ -47,8 +47,8 @@ describe('TemplateLauncher', function() {
     expect(data.data.saleTemplate.verified).toBeFalsy()
   })
   test('Should save update SaleTemplate as verified', async () => {
-    await (await mesa.templateLauncher.verifyTemplate(1)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS * 2)
+    await (await mesa.templateLauncher.verifyTemplate(templateId)).wait(1)
+    await wait(SUBGRAPH_SYNC_SECONDS * 3)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${templateId}") {
             verified
@@ -58,7 +58,7 @@ describe('TemplateLauncher', function() {
   })
   test('Should save update SaleTemplate as verified', async () => {
     await (await mesa.templateLauncher.verifyTemplate(templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS * 2)
+    await wait(SUBGRAPH_SYNC_SECONDS * 3)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${templateId}") {
             verified
@@ -68,7 +68,7 @@ describe('TemplateLauncher', function() {
   })
   test('Should save update SaleTemplate as verified', async () => {
     await (await mesa.templateLauncher.removeTemplate(1)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS * 2)
+    await wait(SUBGRAPH_SYNC_SECONDS * 3)
     const { data } = await mesa.fetchFromTheGraph(`{
           saleTemplate (id: "${templateId}") {
             deleted
