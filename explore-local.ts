@@ -9,11 +9,12 @@ import {
   FairSaleTemplate,
   TemplateLauncher,
   FixedPriceSale,
+  FixedPriceSale__factory,
   ERC20Mintable,
   SaleLauncher,
   MesaFactory,
   FairSale,
-  FixedPriceSale__factory
+  FairSale__factory,
 } from './tests/helpers/contracts'
 
 // Helpers
@@ -30,7 +31,7 @@ import {
 } from './tests/helpers'
 
 // Interfaces
-import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './scripts/helpers'
+import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printTokens } from './scripts/helpers'
 
 // Start explore-local
 ;(async () => {
@@ -62,11 +63,11 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
     },
     {
       address: await saleInvestorA.getAddress(),
-      description: 'Sale Investor'
+      description: 'Sale Investor A'
     },
     {
       address: await saleInvestorB.getAddress(),
-      description: 'Sale Investor'
+      description: 'Sale Investor B'
     }
   ])
 
@@ -174,7 +175,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
       name: 'Fair Sale Token',
       symbol: 'FST',
       addressToApprove: saleLauncher.address,
-      numberOfTokens: utils.parseEther('1000'),
+      numberOfTokens: utils.parseUnits('1000'),
       users: [saleCreator],
       signer: saleCreator
     }),
@@ -183,7 +184,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
       name: 'Fixed Price Sale Token',
       symbol: 'FPST',
       addressToApprove: saleLauncher.address,
-      numberOfTokens: utils.parseEther('1000'),
+      numberOfTokens: utils.parseUnits('1000'),
       users: [saleCreator],
       signer: saleCreator
     }),
@@ -192,7 +193,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
       name: 'Bidding Token',
       symbol: 'BT',
       addressToApprove: saleLauncher.address,
-      numberOfTokens: utils.parseEther('1000'),
+      numberOfTokens: utils.parseUnits('1000'),
       users: [saleCreator, saleInvestorA, saleInvestorB],
       signer: deployer
     })
@@ -200,7 +201,18 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
 
   // Print the token into console
   await printTokens(tokens)
-  // Launch a FairSale template via the factory
+
+  // Launch FairSale
+  const newFairSaleAddress = await createFairSale({
+    templateId: fairSaleTemplateId,
+    mesaFactory,
+    saleLauncher,
+    biddingToken: tokens.biddingToken,
+    saleToken: tokens.fairSaleToken,
+    saleCreator
+  })
+
+  console.log(`Launched a new FairSale at ${newFairSaleAddress}`)
 
   // Launch FixedPriceSale
   const newFixedPriceSaleAddress = await createFixedPriceSale({
@@ -215,10 +227,17 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
   console.log(`Launched a new FixedPriceSale at ${newFixedPriceSaleAddress}`)
 
   // Approve new SaleContract
+  await tokens.biddingToken.connect(saleInvestorA).approve(newFairSaleAddress, ethers.constants.MaxUint256)
+  await tokens.biddingToken.connect(saleInvestorB).approve(newFairSaleAddress, ethers.constants.MaxUint256)
+
   await tokens.biddingToken.connect(saleInvestorA).approve(newFixedPriceSaleAddress, ethers.constants.MaxUint256)
   await tokens.biddingToken.connect(saleInvestorB).approve(newFixedPriceSaleAddress, ethers.constants.MaxUint256)
 
   const sales = {
+    fairSale: {
+      saleInvestorA: FairSale__factory.connect(newFairSaleAddress, saleInvestorA),
+      saleInvestorB: FairSale__factory.connect(newFairSaleAddress, saleInvestorB)
+    },
     fixedPriceSale: {
       saleInvestorA: FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleInvestorA),
       saleInvestorB: FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleInvestorB)
@@ -226,8 +245,16 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, printTokens } from './
   }
 
   // Add one bid by each investor to sale FixedPricesale
-  await sales.fixedPriceSale.saleInvestorA.buyTokens(4)
-  await sales.fixedPriceSale.saleInvestorA.buyTokens(5)
+  // args for placeOrders should be:
+  //     _ordersTokenOut: BigNumberish[],
+  //    _ordersTokenIn: BigNumberish[],
+  //    _prevOrders: BytesLike[],
+  //await sales.fairSale.saleInvestorA.placeOrders(utils.parseUnits('1'), utils.parseUnits('2'))
+  //await sales.fairSale.saleInvestorB.placeOrders(utils.parseUnits('2'), utils.parseUnits('4.1'))
+
+  // Add one bid by each investor to sale FixedPricesale
+  await sales.fixedPriceSale.saleInvestorA.buyTokens(utils.parseUnits('4'))
+  await sales.fixedPriceSale.saleInvestorB.buyTokens(utils.parseUnits('5'))
 
   console.log(`\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Subgraph ready at ${GRAPHQL_ENDPOINT}`)
 

@@ -93,9 +93,9 @@ export async function createFairSale({
     templateId,
     encodeInitDataFairSale({
       duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
-      minBuyAmount: 10, // Each order's bid must be at least 10
-      minPrice: 5, // Minimum price per token
-      minRaise: 100000, // 100k DAI
+      minBuyAmount: utils.parseUnits('10'), // Each order's bid must be at least 10
+      minPrice: utils.parseUnits('1'), // Minimum price per token
+      minRaise: utils.parseUnits('100000'), // 100k DAI
       saleLauncher: saleLauncher.address,
       saleTemplateId: templateId,
       tokenIn: biddingToken.address,
@@ -105,28 +105,25 @@ export async function createFairSale({
     })
   )
 
-  const launchTemplateTxReceipt = await launchFairSaleTemplateTx.wait(1)
+  const launchFairSaleTemplateTxReceipt = await launchFairSaleTemplateTx.wait(1)
 
-  if (launchTemplateTxReceipt.events) {
-    console.log(launchTemplateTxReceipt.events)
-    const launchedTemplateAddress = launchTemplateTxReceipt?.events[0]?.args?.template
-    console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
-    // Connect to the Template and create the sale
-    const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
-
-    console.log('saleTemplateId: ', (await saleTemplate.saleTemplateId()).toNumber)
-
-    try {
-      const createSaleTx = await saleTemplate.createSale({
-        value: utils.parseEther('1')
-      })
-      const createSaleTxReceipt = await createSaleTx.wait(1)
-
-      const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
-    } catch (e) {
-      console.log(`FairSaleTemplate.createSale failed: `, JSON.parse(e.body))
-    }
+  if (!launchFairSaleTemplateTxReceipt.events) {
+    throw new Error('No events for FairSaleTemplateTxReceipt found')
   }
+
+  const launchedTemplateAddress = launchFairSaleTemplateTxReceipt?.events[0]?.args?.template
+  console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
+  
+  // Connect to the Template and create the sale
+  const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
+
+  const createSaleTx = await saleTemplate.createSale({
+    value: utils.parseUnits('1')
+  })
+  const createSaleTxReceipt = await createSaleTx.wait(1)
+  
+  const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+  return newSaleAddress
 }
 
 /**
@@ -157,19 +154,19 @@ export async function createFixedPriceSale({
         saleTemplateId: templateId,
         tokenIn: biddingToken.address,
         tokenOut: saleToken.address,
-        minimumRaise: 100,
+        minimumRaise: utils.parseUnits('100'),
         tokenSupplier: await saleCreator.getAddress(),
-        allocationMax: 10,
-        allocationMin: 1,
+        allocationMax: utils.parseUnits('10'), 
+        allocationMin: utils.parseUnits('1'),
         owner: await saleCreator.getAddress(),
-        tokenPrice: 2,
+        tokenPrice: utils.parseUnits('2'),
         tokensForSale: await saleToken.totalSupply()
       })
     )
     .then(tx => tx.wait(1))
 
   if (!launchFixedPriceSaleTemplateTxReceipt.events) {
-    throw new Error('Not events found')
+    throw new Error('No events for FixedPriceSaleTemplate found')
   }
   const launchedTemplateAddress = launchFixedPriceSaleTemplateTxReceipt?.events[0]?.args?.template
   console.log(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
@@ -177,7 +174,7 @@ export async function createFixedPriceSale({
   const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseEther('1')
+    value: utils.parseUnits('1')
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
   // Extract the newSale from logs
