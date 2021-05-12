@@ -407,9 +407,10 @@ $ yarn tests
 This projects comes with a set of predefined scripts in `package.json`
 
 | Script            | Description                                                                     |
-| ----------------- | ------------------------------------------------------------------------------- |
+| ----------------- | --------------------------------------------------------------------------------|
 | `test`            | Runs Jest tests.                                                                |
 | `docker-up`       | Runs Docker services defined in `docker-compose.yaml`.                          |
+| `docker-clean`    | reset docker kill & rm. Use if subgraph is not working with `explore-local`     |
 | `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet.                                         |
 | `prepare-rinkeby` | Builds `subgraph.yaml` for the Rinkeby testnet.                                 |
 | `prepare-xdai`    | Builds `subgraph.yaml` for the xDai network.                                    |
