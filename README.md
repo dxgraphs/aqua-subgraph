@@ -62,14 +62,61 @@ Now make a query:
      amount
      buyer
    }
+ },
+ fairSales {
+   id
+   createdAt
+   status
+   tokenAmount
+   startDate
+   endDate
+   minimumBidAmount
+   minFundingThreshold
+   tokenAmount
+   tokenIn {
+     id
+     name
+     symbol
+     decimals
+   }
+   tokenOut {
+     id
+     name
+     symbol
+     decimals
+   }
  }
 }
 ```
 
-Result should be:
+Result should look like this:
 
 ```{
   "data": {
+      "fairSales": [
+      {
+        "createdAt": 1620926356,
+        "endDate": 1620937156,
+        "id": "0xfa9869c0dad91919a06ce360808ddd07d3188a31",
+        "minFundingThreshold": null,
+        "minimumBidAmount": "100",
+        "startDate": 1620926356,
+        "status": "upcoming",
+        "tokenAmount": "0",
+        "tokenIn": {
+          "decimals": "18",
+          "id": "0x0f4363145af88fe75267d1b5f2bff196f92dd7ad",
+          "name": "Bidding Token",
+          "symbol": "BT"
+        },
+        "tokenOut": {
+          "decimals": "18",
+          "id": "0xc9e07e658f9a3dd0cc3a69ea8f222f6952a4bafa",
+          "name": "Fair Sale Token",
+          "symbol": "FST"
+        }
+      }
+    ],
     "fixedPriceSales": [
       {
         "allocationMax": "10",
