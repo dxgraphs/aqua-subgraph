@@ -50,10 +50,8 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.endDate = fairSaleContract.endDate().toI32()
   // Sale status
   fairSale.status = SALE_STATUS.UPCOMING
-  /**
-   * @todo
-   */
-  fairSale.tokenAmount = new BigInt(0)
+  // Amount of tokens saled
+  fairSale.tokensForSale = fairSaleContract.tokensForSale()
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(fairSaleContract.tokenIn())
   // Saleing token / token out

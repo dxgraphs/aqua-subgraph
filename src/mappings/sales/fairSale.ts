@@ -1,5 +1,5 @@
 // Externals
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and Events
 import {
@@ -9,8 +9,7 @@ import {
   ClaimedFromOrder,
   SaleCleared,
   NewOrder,
-  NewUser,
-  NewOrder__Params
+  NewUser
 } from '../../../generated/FairSale/FairSale'
 
 // GraphQL Schemas
@@ -81,7 +80,7 @@ export function handleNewOrder(event: NewOrder): void {
     return
   }
 
-  let orderId = encodeOrder(event.params)
+  let orderId = encodeOrderData(event.params.ownerId, event.params.orderTokenOut, event.params.orderTokenIn)
   let bid = new Schemas.FairSaleBid(orderId)
   // bid.auction = event.address.toHexString()
   bid.createdAt = event.block.timestamp.toI32()
@@ -109,19 +108,24 @@ export function handleNewUser(event: NewUser): void {
 
 export function handleUserRegistration(event: UserRegistration): void {}
 
-export function encodeOrder(order: NewOrder__Params): string {
+/**
+ * Encodes a Order into a Bytes string
+ * @param param0
+ * @returns
+ */
+export function encodeOrderData(ownerId: BigInt, orderTokenOut: BigInt, orderTokenIn: BigInt): string {
   return (
     '0x' +
-    order.ownerId
-      .toHexString()
+    ownerId
+      .toString()
       .slice(2)
       .padStart(16, '0') +
-    order.orderTokenOut
-      .toHexString()
+    orderTokenOut
+      .toString()
       .slice(2)
       .padStart(24, '0') +
-    order.orderTokenIn
-      .toHexString()
+    orderTokenIn
+      .toString()
       .slice(2)
       .padStart(24, '0')
   )

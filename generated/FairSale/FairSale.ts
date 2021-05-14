@@ -761,6 +761,25 @@ export class FairSale extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  tokensForSale(): BigInt {
+    let result = super.call("tokensForSale", "tokensForSale():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_tokensForSale(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "tokensForSale",
+      "tokensForSale():(uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   volumeClearingPriceOrder(): BigInt {
     let result = super.call(
       "volumeClearingPriceOrder",

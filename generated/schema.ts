@@ -225,13 +225,13 @@ export class FairSale extends Entity {
     this.set("endDate", Value.fromI32(value));
   }
 
-  get tokenAmount(): BigInt {
-    let value = this.get("tokenAmount");
+  get tokensForSale(): BigInt {
+    let value = this.get("tokensForSale");
     return value.toBigInt();
   }
 
-  set tokenAmount(value: BigInt) {
-    this.set("tokenAmount", Value.fromBigInt(value));
+  set tokensForSale(value: BigInt) {
+    this.set("tokensForSale", Value.fromBigInt(value));
   }
 
   get minimumBidAmount(): BigInt {

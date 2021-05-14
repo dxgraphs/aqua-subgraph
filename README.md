@@ -67,12 +67,11 @@ Now make a query:
    id
    createdAt
    status
-   tokenAmount
+   tokensForSale
    startDate
    endDate
    minimumBidAmount
    minFundingThreshold
-   tokenAmount
    tokenIn {
      id
      name
@@ -102,7 +101,7 @@ Result should look like this:
         "minimumBidAmount": "100",
         "startDate": 1620926356,
         "status": "upcoming",
-        "tokenAmount": "0",
+        "tokensForSale": "0",
         "tokenIn": {
           "decimals": "18",
           "id": "0x0f4363145af88fe75267d1b5f2bff196f92dd7ad",
@@ -455,7 +454,7 @@ $ yarn tests
 This projects comes with a set of predefined scripts in `package.json`
 
 | Script            | Description                                                                     |
-| ----------------- | --------------------------------------------------------------------------------|
+| ----------------- | ------------------------------------------------------------------------------- |
 | `test`            | Runs Jest tests.                                                                |
 | `docker-up`       | Runs Docker services defined in `docker-compose.yaml`.                          |
 | `docker-clean`    | reset docker kill & rm. Use if subgraph is not working with `explore-local`     |
