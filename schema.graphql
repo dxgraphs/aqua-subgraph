@@ -55,7 +55,7 @@ type FairSale implements EntityMetadata @entity {
   # Date of the sale end
   endDate: Int!
   # Total amount of tokens available for sale
-  tokenAmount: BigInt!
+  tokensForSale: BigInt!
   # Minimum amount per bid
   minimumBidAmount: BigInt!
   # Bidding token (ie: DAI, USDC)
