@@ -9,6 +9,7 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 // Helpers
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
 import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
+import { Order } from '../helpers/fairSale'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
@@ -61,7 +62,18 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.tokenOut = tokenOut.id
   // Sale name
   fairSale.name = tokenOut.name || ''
-  // Save
+
+  // Store/save the first order/bid
+  let decodedOrder = Order.decodeFromBytes(fairSaleContract.initialAuctionOrder())
+  let fairSaleBid = new Schemas.FairSaleBid('2324531242')
+  fairSaleBid.tokenInAmount = decodedOrder.tokenIn
+  fairSaleBid.tokenOutAmount = decodedOrder.tokenOut
+  // Update ref of FairSaleUser to ownerId
+  fairSaleBid.ownerId = decodedOrder.ownerId.toString()
+  fairSaleBid.sale = event.params.sale.toString()
+  // Save the bid to the database
+  fairSaleBid.save()
+  // Save the sale
   fairSale.save()
 
   return fairSale
