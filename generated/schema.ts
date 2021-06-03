@@ -288,6 +288,91 @@ export class FairSale extends Entity {
   }
 }
 
+export class FairSaleUser extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save FairSaleUser entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FairSaleUser entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FairSaleUser", id.toString(), this);
+  }
+
+  static load(id: string): FairSaleUser | null {
+    return store.get("FairSaleUser", id) as FairSaleUser | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get ownerId(): i32 {
+    let value = this.get("ownerId");
+    return value.toI32();
+  }
+
+  set ownerId(value: i32) {
+    this.set("ownerId", Value.fromI32(value));
+  }
+}
+
 export class FairSaleBid extends Entity {
   constructor(id: string) {
     super();
@@ -381,13 +466,13 @@ export class FairSaleBid extends Entity {
     this.set("tokenOutAmount", Value.fromBigInt(value));
   }
 
-  get ownerId(): i32 {
+  get ownerId(): string {
     let value = this.get("ownerId");
-    return value.toI32();
+    return value.toString();
   }
 
-  set ownerId(value: i32) {
-    this.set("ownerId", Value.fromI32(value));
+  set ownerId(value: string) {
+    this.set("ownerId", Value.fromString(value));
   }
 }
 
