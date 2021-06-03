@@ -17,6 +17,7 @@ import * as Schemas from '../../../generated/schema'
 
 // Helpers
 import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
+import { encodeOrder } from '../../helpers/fairSale'
 
 /**
  * Handles any Auction that has cleared
@@ -79,16 +80,20 @@ export function handleNewOrder(event: NewOrder): void {
   if (!isFairSaleBelongsToMesa(event.address)) {
     return
   }
-
-  let orderId = encodeOrderData(event.params.ownerId, event.params.orderTokenOut, event.params.orderTokenIn)
+  // Construct entity ID from the parameters
+  let orderId = encodeOrder(event.params.ownerId, event.params.orderTokenOut, event.params.orderTokenIn)
   let bid = new Schemas.FairSaleBid(orderId)
-  // bid.auction = event.address.toHexString()
+  bid.sale = event.address.toHexString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
   bid.tokenInAmount = event.params.orderTokenIn
   bid.tokenOutAmount = event.params.orderTokenOut
-  bid.address = event.transaction.from
+  // Update FairSaleUser ref
+  bid.ownerId = event.transaction.from.toString()
+  // Update FairSale ref
+  bid.sale = event.address.toString()
   bid.status = BID_STATUS.SUBMITTED
+  // Save
   bid.save()
 }
 
@@ -101,35 +106,21 @@ export function handleNewUser(event: NewUser): void {
     return
   }
 
-  let saleUser = new Schemas.SaleUser(event.params.ownerId.toHexString())
+  // Use their address as unique id
+  let saleUser = new Schemas.FairSaleUser(event.params.ownerId.toHexString())
+  // Update ref to FairSale
+  saleUser.sale = event.address.toString()
+  saleUser.ownerId = event.params.ownerId.toI32()
+  saleUser.createdAt = event.block.timestamp.toI32()
+  saleUser.updatedAt = event.block.timestamp.toI32()
   saleUser.address = event.params.userAddress
   saleUser.save()
 }
 
-export function handleUserRegistration(event: UserRegistration): void {}
-
 /**
- * Encodes a Order into a Bytes string
- * @param param0
- * @returns
+ * Does the same as `NewUser` handler. See `handleNewUser`
  */
-export function encodeOrderData(ownerId: BigInt, orderTokenOut: BigInt, orderTokenIn: BigInt): string {
-  return (
-    '0x' +
-    ownerId
-      .toString()
-      .slice(2)
-      .padStart(16, '0') +
-    orderTokenOut
-      .toString()
-      .slice(2)
-      .padStart(24, '0') +
-    orderTokenIn
-      .toString()
-      .slice(2)
-      .padStart(24, '0')
-  )
-}
+export function handleUserRegistration(event: UserRegistration): void {}
 
 /**
  * Checks if the contract that emitted the event belongs to Mesa
