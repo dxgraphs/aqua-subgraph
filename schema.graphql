@@ -70,7 +70,20 @@ type FairSale implements EntityMetadata @entity {
   bids: [FairSaleBid!] @derivedFrom(field: "sale")
 }
 
-# AuctionBid
+# FairSaleUser
+type FairSaleUser implements EntityMetadata @entity {
+  "Time at which the User was registered is the ID"
+  id: ID!
+  "The FairSale this user is associated with"
+  sale: FairSale!
+  createdAt: Int!
+  updatedAt: Int!
+  address: Bytes!
+  "The ownerId in the FairSale contract"
+  ownerId: Int!
+}
+
+# FairSaleBid
 type FairSaleBid implements EntityMetadata @entity {
   id: ID!
   "The FairSale the bid is associated with"
@@ -88,7 +101,7 @@ type FairSaleBid implements EntityMetadata @entity {
   "Number of tokens the investor wants to buy"
   tokenOutAmount: BigInt!
   "The owner of the Bid"
-  address: Bytes!
+  ownerId: FairSaleUser!
 }
 
 #################################################
