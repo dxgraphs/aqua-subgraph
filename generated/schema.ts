@@ -381,13 +381,13 @@ export class FairSaleBid extends Entity {
     this.set("tokenOutAmount", Value.fromBigInt(value));
   }
 
-  get address(): Bytes {
-    let value = this.get("address");
-    return value.toBytes();
+  get ownerId(): i32 {
+    let value = this.get("ownerId");
+    return value.toI32();
   }
 
-  set address(value: Bytes) {
-    this.set("address", Value.fromBytes(value));
+  set ownerId(value: i32) {
+    this.set("ownerId", Value.fromI32(value));
   }
 }
 
