@@ -17,23 +17,24 @@ interface EntityMetadata {
 # Stores critical information the MesaFactory.
 # Allows subgraph function to access the MesaFactory without knowing its address
 type MesaFactory @entity {
-  # ID: should be a unique easy-to-reference
+  "ID: should be a unique easy-to-reference from the subgraph"
   id: ID!
-  # Auction
+  "Number of sales created via the factory"
   saleCount: Int!
-  # Factory address
+  "MesaFactory contract address"
   address: Bytes!
-  # Fee manager: CFO
+  "Fee manager; CFO"
   feeManager: Bytes!
-  # Fee Collector: Treasury
+  "Fee Collector address: DAO/EOA/multisig"
   feeTo: Bytes!
-  # Template manager:
+  "Template manager address"
   templateManager: Bytes!
-  # Address of TemplateLauncher contract
+  "TemplateLauncher contract address"
   templateLauncher: Bytes!
-  # Fees
+  "Fee for launching a new sale"
   saleFee: BigInt!
   feeNumerator: BigInt!
+  "Fee for luanching a new Template fee"
   templateFee: BigInt!
 }
 
@@ -41,52 +42,66 @@ type MesaFactory @entity {
 
 # FairSale entity
 type FairSale implements EntityMetadata @entity {
+  "The sale contract address"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
   # Specific to the EasyAuction
-  # The auction name
+  "The sale name"
   name: String
-  # open/ended/settled/upcoming
+  "Sale status: open/ended/settled/upcoming"
   status: String!
-  # Date of the sale start
+  "Date of the sale start"
   startDate: Int!
-  # Date of the sale end
+  "Date of the sale end"
   endDate: Int!
-  # Total amount of tokens available for sale
+  "Total amount of tokens available for sale"
   tokensForSale: BigInt!
-  # Minimum amount per bid
+  "Minimum amount per bid"
   minimumBidAmount: BigInt!
-  # Bidding token (ie: DAI, USDC)
+  "Accepted bidding token (ie: DAI, USDC)"
   tokenIn: Token!
-  # Auctioning token
+  "Auctioning token"
   tokenOut: Token!
-  # List of bids
-  # The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment
+  "The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment"
   minFundingThreshold: Int
+  "List of bids"
   bids: [FairSaleBid!] @derivedFrom(field: "sale")
 }
 
-# AuctionBid
+# FairSaleUser
+type FairSaleUser implements EntityMetadata @entity {
+  "Time at which the User was registered is the ID"
+  id: ID!
+  "The FairSale this user is associated with"
+  sale: FairSale!
+  createdAt: Int!
+  updatedAt: Int!
+  address: Bytes!
+  "The ownerId in the FairSale contract"
+  ownerId: Int!
+}
+
+# FairSaleBid
 type FairSaleBid implements EntityMetadata @entity {
   id: ID!
-  # Address of sale this bid is associated with
+  "The FairSale the bid is associated with"
   sale: FairSale!
   # submitted/settled/cancelled/claimed
   status: String!
-  # The UTC timestamp at which the bid was placed
+  "The UTC timestamp at which the Bid was placed"
   createdAt: Int!
-  # The UTC timestamp at which the bid was updated
+  "The UTC timestamp at which the Bid was updated"
   updatedAt: Int!
-  # The UTC timestamp at which the bid was deleted
+  "The UTC timestamp at which the Bid was deleted"
   deletedAt: Int
-  # Int of tokens the investor wants to buy
+  "Number of tokens the investor wants to invest"
   tokenInAmount: BigInt!
-  # Int of tokens the investor wants to buy
+  "Number of tokens the investor wants to buy"
   tokenOutAmount: BigInt!
-  # The bidder's Ethereum address
-  address: Bytes!
+  "The owner of the Bid"
+  ownerId: FairSaleUser!
 }
 
 #################################################
@@ -126,16 +141,16 @@ type FixedPriceSale implements EntityMetadata @entity {
 }
 
 type FixedPriceSalePurchase implements EntityMetadata @entity {
-  # Meta
+  "The purchase ID"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  # Address of sale this bid is associated with
+  "FixedPriceSale this purchase is associated with"
   sale: FixedPriceSale!
-  # Address of buyer
+  "Address of buyer"
   buyer: Bytes!
-  # Amount this purchase took
+  "Amount of tokens"
   amount: BigInt!
 }
 
@@ -143,13 +158,13 @@ type FixedPriceSalePurchase implements EntityMetadata @entity {
 
 # Token
 type Token @entity {
-  # Token address
+  "Token address"
   id: ID!
-  # Token name, from the smart contract ERC20.name()
+  "Token name, from the smart contract ERC20.name()"
   name: String
-  # Symbol, from ERC20.symbol()
+  "The token symbol from ERC20.symbol()"
   symbol: String
-  # Decimal, from ERC.decimals()
+  "The token decimals, from ERC.decimals()"
   decimals: BigInt!
 }
 
