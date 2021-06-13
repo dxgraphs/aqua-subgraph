@@ -102,7 +102,7 @@ type FairSaleBid implements EntityMetadata @entity {
   "Number of tokens the investor wants to buy"
   tokenOutAmount: BigInt!
   "The owner of the Bid"
-  ownerId: FairSaleUser!
+  owner: FairSaleUser!
 }
 
 #################################################
