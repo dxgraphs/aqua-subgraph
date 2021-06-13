@@ -1,27 +1,28 @@
-import { Bytes, BigInt } from '@graphprotocol/graph-ts'
+import { Bytes, BigInt, ethereum, Value } from '@graphprotocol/graph-ts'
 
 export class Order {
-  _ownerId: BigInt
-  _tokenIn: BigInt
-  _tokenOut: BigInt
+  _ownerId: ethereum.Value
+  _tokenIn: ethereum.Value
+  _tokenOut: ethereum.Value
 
   private constructor(bytes: Bytes) {
     let byesString = bytes.toString()
-    this._ownerId = BigInt.fromI32(Bytes.fromHexString('0x' + byesString.substring(2, 18)).toI32())
-    this._tokenIn = BigInt.fromI32(Bytes.fromHexString('0x' + byesString.substring(43, 66)).toI32())
-    this._tokenOut = BigInt.fromI32(Bytes.fromHexString('0x' + byesString.substring(19, 42)).toI32())
+
+    this._ownerId = ethereum.Value.fromString('0x' + byesString.substring(2, 18))
+    this._tokenIn = ethereum.Value.fromString('0x' + byesString.substring(43, 66))
+    this._tokenOut = ethereum.Value.fromString('0x' + byesString.substring(19, 42))
   }
 
   get ownerId(): BigInt {
-    return this._ownerId
+    return this._ownerId.toBigInt()
   }
 
   get tokenOut(): BigInt {
-    return this._tokenIn
+    return this._tokenIn.toBigInt()
   }
 
   get tokenIn(): BigInt {
-    return this._tokenIn
+    return this._tokenIn.toBigInt()
   }
 
   static decodeFromBytes(bytes: Bytes): Order {
