@@ -81,17 +81,19 @@ export function handleNewOrder(event: NewOrder): void {
     return
   }
   // Construct entity ID from the parameters
-  let orderId = encodeOrder(event.params.ownerId, event.params.orderTokenOut, event.params.orderTokenIn)
-  let bid = new Schemas.FairSaleBid(orderId)
-  bid.sale = event.address.toHexString()
+  // A bid is <saleAddress>/bids/<ownerId>/<block.timestamp>
+  let bid = new Schemas.FairSaleBid(
+    event.address.toHexString() + '/bids/' + event.params.ownerId.toString() + '/' + event.block.timestamp.toString()
+  )
+  bid.sale = event.address.toString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
   bid.tokenInAmount = event.params.orderTokenIn
   bid.tokenOutAmount = event.params.orderTokenOut
   // Update FairSaleUser ref
-  bid.ownerId = event.transaction.from.toString()
+  bid.owner = event.transaction.from.toHexString()
   // Update FairSale ref
-  bid.sale = event.address.toString()
+  bid.sale = event.address.toHexString()
   bid.status = BID_STATUS.SUBMITTED
   // Save
   bid.save()
@@ -107,7 +109,8 @@ export function handleNewUser(event: NewUser): void {
   }
 
   // Use their address as unique id
-  let saleUser = new Schemas.FairSaleUser(event.params.ownerId.toHexString())
+  // A sale user id is <saleAddress>/users/<ownerId>
+  let saleUser = new Schemas.FairSaleUser(event.address.toHexString() + '/users/' + event.params.ownerId.toString())
   // Update ref to FairSale
   saleUser.sale = event.address.toString()
   saleUser.ownerId = event.params.ownerId.toI32()
