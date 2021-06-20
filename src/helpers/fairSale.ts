@@ -1,4 +1,4 @@
-import { Bytes, BigInt, ethereum, Value } from '@graphprotocol/graph-ts'
+import { Bytes, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 export class Order {
   _ownerId: ethereum.Value
