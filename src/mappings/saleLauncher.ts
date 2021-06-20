@@ -1,6 +1,5 @@
 // Externals
-import { BigInt } from '@graphprotocol/graph-ts'
-
+import { BigInt, store, json, ethereum, Value } from '@graphprotocol/graph-ts'
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
@@ -8,11 +7,11 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 
 // Helpers
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
-import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
+import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
+import { Order } from '../helpers/fairSale'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
-
 /**
  * Handle initializing an (Easy|FixedPrice)Sale via `SaleLauncher.createSale`
  * Determines the sale mechanism from `event.params.templateId` and
@@ -61,7 +60,38 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.tokenOut = tokenOut.id
   // Sale name
   fairSale.name = tokenOut.name || ''
-  // Save
+
+  {
+    let fairSaleUserId = event.address.toHexString() + '/users/1' // The first user is always 1
+    // Register the FairSaleUser
+    // A predictable key is <saleAddress>-<userId>
+    let fairSaleUser = new Schemas.FairSaleUser(fairSaleUserId)
+    fairSaleUser.createdAt = event.block.timestamp.toI32()
+    fairSaleUser.updatedAt = event.block.timestamp.toI32()
+    fairSaleUser.address = event.transaction.from
+    fairSaleUser.ownerId = 1
+    fairSaleUser.sale = event.params.sale.toString()
+    fairSaleUser.save()
+
+    // Store/save the first order/bid
+    // This order has preditable values
+    // owner(Id) is always 1 because the contract registers ID
+    // tokenInAmount is the amount offered in the sale
+    // tokenOutAmount is the
+    let fairSaleBid = new Schemas.FairSaleBid(event.address.toHexString() + '/bids/1') // predictable
+    fairSaleBid.createdAt = event.block.timestamp.toI32()
+    fairSaleBid.updatedAt = event.block.timestamp.toI32()
+    fairSaleBid.tokenInAmount = fairSaleContract.tokensForSale()
+    fairSaleBid.tokenOutAmount = fairSaleContract.minimumBiddingAmountPerOrder()
+    fairSaleBid.status = BID_STATUS.SUBMITTED
+    // Update ref of FairSaleUser to ownerId
+    fairSaleBid.owner = fairSaleUserId // first bid is FairSaleUse always from the owner
+    fairSaleBid.sale = event.params.sale.toHexString()
+    // Save the bid to the database
+    fairSaleBid.save()
+    // Save the sale
+  }
+
   fairSale.save()
 
   return fairSale

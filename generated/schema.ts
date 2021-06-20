@@ -466,13 +466,13 @@ export class FairSaleBid extends Entity {
     this.set("tokenOutAmount", Value.fromBigInt(value));
   }
 
-  get ownerId(): string {
-    let value = this.get("ownerId");
+  get owner(): string {
+    let value = this.get("owner");
     return value.toString();
   }
 
-  set ownerId(value: string) {
-    this.set("ownerId", Value.fromString(value));
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
   }
 }
 
@@ -657,6 +657,23 @@ export class FixedPriceSale extends Entity {
       this.set("purchases", Value.fromStringArray(value as Array<string>));
     }
   }
+
+  get claims(): Array<string> | null {
+    let value = this.get("claims");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set claims(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("claims");
+    } else {
+      this.set("claims", Value.fromStringArray(value as Array<string>));
+    }
+  }
 }
 
 export class FixedPriceSalePurchase extends Entity {
@@ -684,6 +701,91 @@ export class FixedPriceSalePurchase extends Entity {
       "FixedPriceSalePurchase",
       id
     ) as FixedPriceSalePurchase | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get buyer(): Bytes {
+    let value = this.get("buyer");
+    return value.toBytes();
+  }
+
+  set buyer(value: Bytes) {
+    this.set("buyer", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+}
+
+export class FixedPriceSaleClaim extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save FixedPriceSaleClaim entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FixedPriceSaleClaim entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FixedPriceSaleClaim", id.toString(), this);
+  }
+
+  static load(id: string): FixedPriceSaleClaim | null {
+    return store.get("FixedPriceSaleClaim", id) as FixedPriceSaleClaim | null;
   }
 
   get id(): string {
@@ -821,54 +923,6 @@ export class Token extends Entity {
 
   set decimals(value: BigInt) {
     this.set("decimals", Value.fromBigInt(value));
-  }
-}
-
-export class SaleUser extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id !== null, "Cannot save SaleUser entity without an ID");
-    assert(
-      id.kind == ValueKind.STRING,
-      "Cannot save SaleUser entity with non-string ID. " +
-        'Considering using .toHex() to convert the "id" to a string.'
-    );
-    store.set("SaleUser", id.toString(), this);
-  }
-
-  static load(id: string): SaleUser | null {
-    return store.get("SaleUser", id) as SaleUser | null;
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get address(): Bytes | null {
-    let value = this.get("address");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set address(value: Bytes | null) {
-    if (value === null) {
-      this.unset("address");
-    } else {
-      this.set("address", Value.fromBytes(value as Bytes));
-    }
   }
 }
 
