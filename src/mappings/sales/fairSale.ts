@@ -17,7 +17,6 @@ import * as Schemas from '../../../generated/schema'
 
 // Helpers
 import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
-import { encodeOrder } from '../../helpers/fairSale'
 
 /**
  * Handles any Auction that has cleared
