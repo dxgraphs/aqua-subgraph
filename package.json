@@ -1,6 +1,7 @@
 {
   "name": "mesa-subgraph",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0",
+  "version": "0.1.0",
   "scripts": {
     "docker-up": "docker-compose up -d --force-recreate",
     "docker-clean": "docker-compose kill && docker-compose -y rm",
