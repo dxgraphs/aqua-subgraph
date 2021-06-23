@@ -1,12 +1,7 @@
-# This workflow publishes a the new subgraph to The Graph
+# This workflow run integration tests
 name: Test The Subgraph
 
-# Listen for pushes on the main branch
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   build:
