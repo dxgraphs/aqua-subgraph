@@ -1,5 +1,5 @@
 # This workflow run integration tests
-name: Test The Subgraph
+name: Integration Tests
 
 on: [push, pull_request]
 
