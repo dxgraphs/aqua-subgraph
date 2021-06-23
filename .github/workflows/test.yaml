@@ -4,7 +4,7 @@ name: Test The Subgraph
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     env:
       MNEMONIC: ${{ secrets.GANACHE_MNEMONIC }}
