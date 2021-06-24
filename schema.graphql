@@ -139,7 +139,6 @@ type FixedPriceSale implements EntityMetadata @entity {
   tokenOut: Token!
   "List of sale purchases"
   purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
-  claims: [FixedPriceSaleClaim!] @derivedFrom(field: "sale")
 }
 
 enum FixedPriceSalePurchaseStatus {
