@@ -657,23 +657,6 @@ export class FixedPriceSale extends Entity {
       this.set("purchases", Value.fromStringArray(value as Array<string>));
     }
   }
-
-  get claims(): Array<string> | null {
-    let value = this.get("claims");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set claims(value: Array<string> | null) {
-    if (value === null) {
-      this.unset("claims");
-    } else {
-      this.set("claims", Value.fromStringArray(value as Array<string>));
-    }
-  }
 }
 
 export class FixedPriceSalePurchase extends Entity {
@@ -765,9 +748,18 @@ export class FixedPriceSalePurchase extends Entity {
   set amount(value: BigInt) {
     this.set("amount", Value.fromBigInt(value));
   }
+
+  get status(): string {
+    let value = this.get("status");
+    return value.toString();
+  }
+
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
+  }
 }
 
-export class FixedPriceSaleClaim extends Entity {
+export class FixedPriceSaleUser extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -775,17 +767,17 @@ export class FixedPriceSaleClaim extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save FixedPriceSaleClaim entity without an ID");
+    assert(id !== null, "Cannot save FixedPriceSaleUser entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save FixedPriceSaleClaim entity with non-string ID. " +
+      "Cannot save FixedPriceSaleUser entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("FixedPriceSaleClaim", id.toString(), this);
+    store.set("FixedPriceSaleUser", id.toString(), this);
   }
 
-  static load(id: string): FixedPriceSaleClaim | null {
-    return store.get("FixedPriceSaleClaim", id) as FixedPriceSaleClaim | null;
+  static load(id: string): FixedPriceSaleUser | null {
+    return store.get("FixedPriceSaleUser", id) as FixedPriceSaleUser | null;
   }
 
   get id(): string {
@@ -824,6 +816,15 @@ export class FixedPriceSaleClaim extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
+  get totalPurchases(): i32 {
+    let value = this.get("totalPurchases");
+    return value.toI32();
+  }
+
+  set totalPurchases(value: i32) {
+    this.set("totalPurchases", Value.fromI32(value));
+  }
+
   get sale(): string {
     let value = this.get("sale");
     return value.toString();
@@ -833,22 +834,13 @@ export class FixedPriceSaleClaim extends Entity {
     this.set("sale", Value.fromString(value));
   }
 
-  get buyer(): Bytes {
-    let value = this.get("buyer");
+  get address(): Bytes {
+    let value = this.get("address");
     return value.toBytes();
   }
 
-  set buyer(value: Bytes) {
-    this.set("buyer", Value.fromBytes(value));
-  }
-
-  get amount(): BigInt {
-    let value = this.get("amount");
-    return value.toBigInt();
-  }
-
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
   }
 }
 
