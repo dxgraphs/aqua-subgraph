@@ -139,6 +139,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   tokenOut: Token!
   "List of sale purchases"
   purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
+  claims: [FixedPriceSaleClaim!] @derivedFrom(field: "sale")
 }
 
 enum FixedPriceSalePurchaseStatus {
@@ -173,6 +174,20 @@ type FixedPriceSaleUser implements EntityMetadata @entity {
   sale: FixedPriceSale!
   "Address of buyer"
   address: Bytes!
+}
+
+type FixedPriceSaleClaim implements EntityMetadata @entity {
+  "The purchase ID"
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "FixedPriceSale this claim is associated with"
+  sale: FixedPriceSale!
+  "Address of buyer"
+  buyer: Bytes!
+  "Amount of tokens claimed"
+  amount: BigInt!
 }
 
 #################################################
