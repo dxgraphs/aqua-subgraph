@@ -10,7 +10,7 @@ export abstract class PURCHASE_STATUS {
 /**
  * Helper function to construct the `FixedPriceSaleUser` entity IDs
  */
-export function createFixedPriceSaleUserId(saleAddress: Address, userAddres: Address) {
+export function createFixedPriceSaleUserId(saleAddress: Address, userAddres: Address): string {
   let fixedPriceSaleUserId = saleAddress.toHexString() + '/users/' + userAddres.toHexString()
   return fixedPriceSaleUserId
 }
@@ -18,7 +18,11 @@ export function createFixedPriceSaleUserId(saleAddress: Address, userAddres: Add
 /**
  * Helper function to construct the `FixedPriceSalePurchase` entity IDs
  */
-export function createFixedPriceSalePurchaseId(saleAddress: Address, userAddres: Address, purchaseIndex: number) {
+export function createFixedPriceSalePurchaseId(
+  saleAddress: Address,
+  userAddres: Address,
+  purchaseIndex: number
+): string {
   let fixedPriceSalePurchaseId =
     saleAddress.toHexString() + '/purchases/' + userAddres.toHexString() + '/' + purchaseIndex.toString()
   return fixedPriceSalePurchaseId
@@ -40,8 +44,8 @@ export function createOrGetFixedPriceSaleUser(
   if (fixedPriceSaleUser == null) {
     fixedPriceSaleUser = new FixedPriceSaleUser(fixedPriceSaleUserId)
     fixedPriceSaleUser.totalPurchases = 0
-    fixedPriceSaleUser.createdAt = timestamp
-    fixedPriceSaleUser.updatedAt = timestamp
+    fixedPriceSaleUser.createdAt = timestamp.toI32()
+    fixedPriceSaleUser.updatedAt = timestamp.toI32()
     fixedPriceSaleUser.save()
   }
 
