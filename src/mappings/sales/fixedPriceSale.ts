@@ -45,11 +45,7 @@ export function handleNewPurchase(event: NewPurchase): void {
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.address)
 
   // Get the user
-  let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(
-    event.address,
-    event.params.buyer,
-    event.block.timestamp.toI32()
-  )
+  let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.buyer, event.block.timestamp)
   // Increase the total purcahses by one and save
   fixedPriceSaleUser.totalPurchases = fixedPriceSaleUser.totalPurchases + 1
   // Create the FixedPriceSalePurchase entity
