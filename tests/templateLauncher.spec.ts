@@ -5,7 +5,7 @@ import { addSaleTemplateToLauncher } from '../scripts/helpers'
 import { FixedPriceSale } from './helpers/contracts'
 
 // Test block
-describe('TemplateLauncher', function() {
+describe.skip('TemplateLauncher', function() {
   let mesa: MesaJestBeforeEachContext
 
   beforeEach(async () => {
