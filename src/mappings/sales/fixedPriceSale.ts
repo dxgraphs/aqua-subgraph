@@ -47,14 +47,11 @@ export function handleNewPurchase(event: NewPurchase): void {
   // Get the user
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.buyer, event.block.timestamp)
   // Increase the total purcahses by one and save
-  fixedPriceSaleUser.totalPurchases = fixedPriceSaleUser.totalPurchases + 1
+  let newPurchaseIndex = fixedPriceSaleUser.totalPurchases + 1
+  // Push change to FixedPriceSaleUser entity
+  fixedPriceSaleUser.totalPurchases = newPurchaseIndex
   // Construct the purchase id
-  let purchaseId = createFixedPriceSalePurchaseId(
-    event.address,
-    event.params.buyer,
-    fixedPriceSaleUser.totalPurchases + 1
-  )
-
+  let purchaseId = createFixedPriceSalePurchaseId(event.address, event.params.buyer, newPurchaseIndex)
   // Create the FixedPriceSalePurchase entity
   let purchase = new FixedPriceSalePurchase(purchaseId)
   purchase.createdAt = event.block.timestamp.toI32()
