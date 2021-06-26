@@ -1,4 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
+// Schema
 import { FixedPriceSaleUser } from '../../generated/schema'
 
 // Predefined Auction Bid status
@@ -23,8 +24,14 @@ export function createFixedPriceSalePurchaseId(
   userAddres: Address,
   purchaseIndex: number
 ): string {
+  // Convert to string
+  let purchaseIndexAsString = purchaseIndex.toString()
+  // Check if the output is a decimal
+  if (purchaseIndexAsString.indexOf('.') > 0) {
+    purchaseIndexAsString = purchaseIndex.toString().split('.')[0]
+  }
   let fixedPriceSalePurchaseId =
-    saleAddress.toHexString() + '/purchases/' + userAddres.toHexString() + '/' + purchaseIndex.toString()
+    saleAddress.toHexString() + '/purchases/' + userAddres.toHexString() + '/' + purchaseIndexAsString // number is apparently a float in WS
   return fixedPriceSalePurchaseId
 }
 
