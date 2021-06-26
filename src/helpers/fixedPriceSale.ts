@@ -46,6 +46,8 @@ export function createOrGetFixedPriceSaleUser(
     fixedPriceSaleUser.totalPurchases = 0
     fixedPriceSaleUser.createdAt = timestamp.toI32()
     fixedPriceSaleUser.updatedAt = timestamp.toI32()
+    fixedPriceSaleUser.sale = saleAddress.toHexString()
+    fixedPriceSaleUser.address = userAddres
     fixedPriceSaleUser.save()
   }
 
