@@ -48,16 +48,22 @@ export function handleNewPurchase(event: NewPurchase): void {
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.buyer, event.block.timestamp)
   // Increase the total purcahses by one and save
   fixedPriceSaleUser.totalPurchases = fixedPriceSaleUser.totalPurchases + 1
-  // Create the FixedPriceSalePurchase entity
-  let purchase = new FixedPriceSalePurchase(
-    createFixedPriceSalePurchaseId(event.address, event.params.buyer, fixedPriceSaleUser.totalPurchases + 1)
+  // Construct the purchase id
+  let purchaseId = createFixedPriceSalePurchaseId(
+    event.address,
+    event.params.buyer,
+    fixedPriceSaleUser.totalPurchases + 1
   )
-  // Update the reference
-  purchase.sale = event.address.toHexString()
+
+  // Create the FixedPriceSalePurchase entity
+  let purchase = new FixedPriceSalePurchase(purchaseId)
   purchase.createdAt = event.block.timestamp.toI32()
   purchase.updatedAt = event.block.timestamp.toI32()
-  purchase.amount = event.params.amount
+  // Update the reference
+  purchase.sale = event.address.toHexString()
   purchase.buyer = event.params.buyer
+  purchase.amount = event.params.amount
+  purchase.status = PURCHASE_STATUS.SUBMITTED
   // update `soldAmount` field in the sale
   fixedPriceSale.soldAmount = fixedPriceSaleContract.tokensSold()
   // Save all entities
