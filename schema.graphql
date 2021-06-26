@@ -142,7 +142,7 @@ type FixedPriceSale implements EntityMetadata @entity {
 }
 
 enum FixedPriceSalePurchaseStatus {
-  SUBMITED
+  SUBMITTED
   CLAIMED
 }
 

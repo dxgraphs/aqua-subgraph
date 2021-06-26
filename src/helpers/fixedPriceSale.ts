@@ -3,7 +3,7 @@ import { FixedPriceSaleUser } from '../../generated/schema'
 
 // Predefined Auction Bid status
 export abstract class PURCHASE_STATUS {
-  static SUBMITTED: string = 'submitted'
+  static SUBMITTED: string = 'SUBMITTED'
   static CLAIMED: string = 'claimed'
 }
 
