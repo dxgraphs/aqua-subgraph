@@ -141,6 +141,11 @@ type FixedPriceSale implements EntityMetadata @entity {
   purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
 }
 
+enum FixedPriceSalePurchaseStatus {
+  SUBMITTED
+  CLAIMED
+}
+
 type FixedPriceSalePurchase implements EntityMetadata @entity {
   "The purchase ID"
   id: ID!
@@ -153,6 +158,21 @@ type FixedPriceSalePurchase implements EntityMetadata @entity {
   buyer: Bytes!
   "Amount of tokens"
   amount: BigInt!
+  status: FixedPriceSalePurchaseStatus!
+}
+
+type FixedPriceSaleUser implements EntityMetadata @entity {
+  "The user's ID <saleAddress>/users/<saleUserAddress>"
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Total purchases submitted in the sale"
+  totalPurchases: Int!
+  "FixedPriceSale reference"
+  sale: FixedPriceSale!
+  "Address of buyer"
+  address: Bytes!
 }
 
 #################################################
@@ -167,15 +187,6 @@ type Token @entity {
   symbol: String
   "The token decimals, from ERC.decimals()"
   decimals: BigInt!
-}
-
-#################################################
-
-type SaleUser @entity {
-  # User id
-  id: ID!
-  # The bidder's Ethereum address
-  address: Bytes
 }
 
 #################################################
