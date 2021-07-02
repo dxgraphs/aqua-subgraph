@@ -816,13 +816,22 @@ export class FixedPriceSaleUser extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
-  get totalPurchases(): i32 {
-    let value = this.get("totalPurchases");
+  get totalPurchase(): i32 {
+    let value = this.get("totalPurchase");
     return value.toI32();
   }
 
-  set totalPurchases(value: i32) {
-    this.set("totalPurchases", Value.fromI32(value));
+  set totalPurchase(value: i32) {
+    this.set("totalPurchase", Value.fromI32(value));
+  }
+
+  get totalVolume(): BigInt {
+    let value = this.get("totalVolume");
+    return value.toBigInt();
+  }
+
+  set totalVolume(value: BigInt) {
+    this.set("totalVolume", Value.fromBigInt(value));
   }
 
   get sale(): string {

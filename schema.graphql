@@ -168,7 +168,9 @@ type FixedPriceSaleUser implements EntityMetadata @entity {
   updatedAt: Int!
   deletedAt: Int
   "Total purchases submitted in the sale"
-  totalPurchases: Int!
+  totalPurchase: Int!
+  "Total volume for this user"
+  totalVolume: BigInt!
   "FixedPriceSale reference"
   sale: FixedPriceSale!
   "Address of buyer"
