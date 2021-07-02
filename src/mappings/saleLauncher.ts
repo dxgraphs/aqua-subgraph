@@ -1,5 +1,5 @@
 // Externals
-import { BigInt, store, json, ethereum, Value } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
@@ -8,7 +8,6 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 // Helpers
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
 import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
-import { Order } from '../helpers/fairSale'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
