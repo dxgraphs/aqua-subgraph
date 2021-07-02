@@ -1,6 +1,6 @@
 // Contract ABIs and Events
 import {
-  getFixedPriceSaleUserTotalPurchases,
+  getFixedPriceSaleUserTotalPurchase,
   createFixedPriceSalePurchaseId,
   createOrGetFixedPriceSaleUser,
   createFixedPriceSaleUserId,
@@ -47,9 +47,11 @@ export function handleNewPurchase(event: NewPurchase): void {
   // Get the user
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.buyer, event.block.timestamp)
   // Increase the total purcahses by one and save
-  let newPurchaseIndex = fixedPriceSaleUser.totalPurchases + 1
   // Push change to FixedPriceSaleUser entity
-  fixedPriceSaleUser.totalPurchases = newPurchaseIndex
+  let newPurchaseIndex = fixedPriceSaleUser.totalPurchase + 1
+  fixedPriceSaleUser.totalPurchase = newPurchaseIndex
+  // Increase the total volume for user+sale pair
+  fixedPriceSaleUser.totalVolume = event.params.amount.plus(fixedPriceSaleUser.totalVolume)
   // Construct the purchase id
   let purchaseId = createFixedPriceSalePurchaseId(event.address, event.params.buyer, newPurchaseIndex)
   // Create the FixedPriceSalePurchase entity
@@ -74,9 +76,7 @@ export function handleNewPurchase(event: NewPurchase): void {
  */
 export function handleNewTokenClaim(event: NewTokenClaim): void {
   // Get total purchases by the investor/buyer
-  let totalPurchases = getFixedPriceSaleUserTotalPurchases(
-    createFixedPriceSaleUserId(event.address, event.params.buyer)
-  )
+  let totalPurchases = getFixedPriceSaleUserTotalPurchase(createFixedPriceSaleUserId(event.address, event.params.buyer))
   // Loop through the purchases and update their status for the buyer
   for (let purchaseIndex = 1; purchaseIndex <= totalPurchases; purchaseIndex++) {
     let purchase = FixedPriceSalePurchase.load(

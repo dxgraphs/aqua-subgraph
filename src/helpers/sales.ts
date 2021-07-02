@@ -9,10 +9,10 @@ import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from './erc20'
 
 // Predefined Auction status
 export abstract class SALE_STATUS {
-  static UPCOMING: string = 'upcoming'
-  static SETTLED: string = 'settled'
-  static ENDED: string = 'ended'
-  static OPEN: string = 'open'
+  static UPCOMING: string = 'UPCOMING'
+  static SETTLED: string = 'SETTLED'
+  static ENDED: string = 'ENDED'
+  static OPEN: string = 'OPEN'
 }
 
 // Predefined Auction Bid status
