@@ -5,7 +5,7 @@ import { FixedPriceSaleUser } from '../../generated/schema'
 // Predefined Auction Bid status
 export abstract class PURCHASE_STATUS {
   static SUBMITTED: string = 'SUBMITTED'
-  static CLAIMED: string = 'claimed'
+  static CLAIMED: string = 'CLAIMED'
 }
 
 /**
@@ -50,7 +50,8 @@ export function createOrGetFixedPriceSaleUser(
   // Create them
   if (fixedPriceSaleUser == null) {
     fixedPriceSaleUser = new FixedPriceSaleUser(fixedPriceSaleUserId)
-    fixedPriceSaleUser.totalPurchases = 0
+    fixedPriceSaleUser.totalPurchase = 0
+    fixedPriceSaleUser.totalVolume = BigInt.fromI32(0)
     fixedPriceSaleUser.createdAt = timestamp.toI32()
     fixedPriceSaleUser.updatedAt = timestamp.toI32()
     fixedPriceSaleUser.sale = saleAddress.toHexString()
@@ -67,7 +68,7 @@ export function createOrGetFixedPriceSaleUser(
  * @param userAddres
  * @returns
  */
-export function getFixedPriceSaleUserTotalPurchases(fixedPriceSaleUserId: string): number {
+export function getFixedPriceSaleUserTotalPurchase(fixedPriceSaleUserId: string): number {
   // First, fetch or register the new user
   let fixedPriceSaleUser = FixedPriceSaleUser.load(fixedPriceSaleUserId)
 
@@ -75,5 +76,5 @@ export function getFixedPriceSaleUserTotalPurchases(fixedPriceSaleUserId: string
     return 0
   }
 
-  return fixedPriceSaleUser.totalPurchases
+  return fixedPriceSaleUser.totalPurchase
 }
