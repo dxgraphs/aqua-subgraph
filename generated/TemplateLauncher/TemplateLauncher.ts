@@ -10,6 +10,24 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class AllowPublicTemplatesUpdated extends ethereum.Event {
+  get params(): AllowPublicTemplatesUpdated__Params {
+    return new AllowPublicTemplatesUpdated__Params(this);
+  }
+}
+
+export class AllowPublicTemplatesUpdated__Params {
+  _event: AllowPublicTemplatesUpdated;
+
+  constructor(event: AllowPublicTemplatesUpdated) {
+    this._event = event;
+  }
+
+  get allowPublicTemplates(): boolean {
+    return this._event.parameters[0].value.toBoolean();
+  }
+}
+
 export class TemplateAdded extends ethereum.Event {
   get params(): TemplateAdded__Params {
     return new TemplateAdded__Params(this);
@@ -45,12 +63,42 @@ export class TemplateLaunched__Params {
     this._event = event;
   }
 
-  get sale(): Address {
+  get newTemplate(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
   get templateId(): BigInt {
     return this._event.parameters[1].value.toBigInt();
+  }
+
+  get templateDeployer(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
+  get metaDataContentHash(): string {
+    return this._event.parameters[3].value.toString();
+  }
+}
+
+export class TemplateMetaDataContentHashUpdated extends ethereum.Event {
+  get params(): TemplateMetaDataContentHashUpdated__Params {
+    return new TemplateMetaDataContentHashUpdated__Params(this);
+  }
+}
+
+export class TemplateMetaDataContentHashUpdated__Params {
+  _event: TemplateMetaDataContentHashUpdated;
+
+  constructor(event: TemplateMetaDataContentHashUpdated) {
+    this._event = event;
+  }
+
+  get _launchedTemplate(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get _newmetaDataContentHash(): string {
+    return this._event.parameters[1].value.toString();
   }
 }
 
@@ -98,48 +146,19 @@ export class TemplateVerified__Params {
   }
 }
 
-export class UpdatedTemplateRestriction extends ethereum.Event {
-  get params(): UpdatedTemplateRestriction__Params {
-    return new UpdatedTemplateRestriction__Params(this);
-  }
-}
+export class TemplateLauncher__launchedTemplateResult {
+  value0: Address;
+  value1: string;
 
-export class UpdatedTemplateRestriction__Params {
-  _event: UpdatedTemplateRestriction;
-
-  constructor(event: UpdatedTemplateRestriction) {
-    this._event = event;
-  }
-
-  get restrictedTemplates(): boolean {
-    return this._event.parameters[0].value.toBoolean();
-  }
-}
-
-export class TemplateLauncher__templateInfoResult {
-  value0: boolean;
-  value1: BigInt;
-  value2: BigInt;
-  value3: boolean;
-
-  constructor(
-    value0: boolean,
-    value1: BigInt,
-    value2: BigInt,
-    value3: boolean
-  ) {
+  constructor(value0: Address, value1: string) {
     this.value0 = value0;
     this.value1 = value1;
-    this.value2 = value2;
-    this.value3 = value3;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromBoolean(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
-    map.set("value3", ethereum.Value.fromBoolean(this.value3));
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromString(this.value1));
     return map;
   }
 }
@@ -147,6 +166,29 @@ export class TemplateLauncher__templateInfoResult {
 export class TemplateLauncher extends ethereum.SmartContract {
   static bind(address: Address): TemplateLauncher {
     return new TemplateLauncher("TemplateLauncher", address);
+  }
+
+  allowPublicTemplates(): boolean {
+    let result = super.call(
+      "allowPublicTemplates",
+      "allowPublicTemplates():(bool)",
+      []
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_allowPublicTemplates(): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "allowPublicTemplates",
+      "allowPublicTemplates():(bool)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   factory(): Address {
@@ -208,65 +250,25 @@ export class TemplateLauncher extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  restrictedTemplates(): boolean {
+  launchedTemplate(param0: Address): TemplateLauncher__launchedTemplateResult {
     let result = super.call(
-      "restrictedTemplates",
-      "restrictedTemplates():(bool)",
-      []
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_restrictedTemplates(): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "restrictedTemplates",
-      "restrictedTemplates():(bool)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  templateId(): BigInt {
-    let result = super.call("templateId", "templateId():(uint256)", []);
-
-    return result[0].toBigInt();
-  }
-
-  try_templateId(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("templateId", "templateId():(uint256)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  templateInfo(param0: Address): TemplateLauncher__templateInfoResult {
-    let result = super.call(
-      "templateInfo",
-      "templateInfo(address):(bool,uint64,uint128,bool)",
+      "launchedTemplate",
+      "launchedTemplate(address):(address,string)",
       [ethereum.Value.fromAddress(param0)]
     );
 
-    return new TemplateLauncher__templateInfoResult(
-      result[0].toBoolean(),
-      result[1].toBigInt(),
-      result[2].toBigInt(),
-      result[3].toBoolean()
+    return new TemplateLauncher__launchedTemplateResult(
+      result[0].toAddress(),
+      result[1].toString()
     );
   }
 
-  try_templateInfo(
+  try_launchedTemplate(
     param0: Address
-  ): ethereum.CallResult<TemplateLauncher__templateInfoResult> {
+  ): ethereum.CallResult<TemplateLauncher__launchedTemplateResult> {
     let result = super.tryCall(
-      "templateInfo",
-      "templateInfo(address):(bool,uint64,uint128,bool)",
+      "launchedTemplate",
+      "launchedTemplate(address):(address,string)",
       [ethereum.Value.fromAddress(param0)]
     );
     if (result.reverted) {
@@ -274,13 +276,57 @@ export class TemplateLauncher extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new TemplateLauncher__templateInfoResult(
-        value[0].toBoolean(),
-        value[1].toBigInt(),
-        value[2].toBigInt(),
-        value[3].toBoolean()
+      new TemplateLauncher__launchedTemplateResult(
+        value[0].toAddress(),
+        value[1].toString()
       )
     );
+  }
+
+  participantListLaucher(): Address {
+    let result = super.call(
+      "participantListLaucher",
+      "participantListLaucher():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_participantListLaucher(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "participantListLaucher",
+      "participantListLaucher():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  templateVerified(param0: Address): boolean {
+    let result = super.call(
+      "templateVerified",
+      "templateVerified(address):(bool)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_templateVerified(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "templateVerified",
+      "templateVerified(address):(bool)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 }
 
@@ -303,6 +349,10 @@ export class ConstructorCall__Inputs {
 
   get _factory(): Address {
     return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _participantListLaucher(): Address {
+    return this._call.inputValues[1].value.toAddress();
   }
 }
 
@@ -372,6 +422,14 @@ export class LaunchTemplateCall__Inputs {
   get _data(): Bytes {
     return this._call.inputValues[1].value.toBytes();
   }
+
+  get _metaDataContentHash(): string {
+    return this._call.inputValues[2].value.toString();
+  }
+
+  get _templateDeployer(): Address {
+    return this._call.inputValues[3].value.toAddress();
+  }
 }
 
 export class LaunchTemplateCall__Outputs {
@@ -381,7 +439,7 @@ export class LaunchTemplateCall__Outputs {
     this._call = call;
   }
 
-  get newSale(): Address {
+  get newTemplate(): Address {
     return this._call.outputValues[0].value.toAddress();
   }
 }
@@ -416,32 +474,62 @@ export class RemoveTemplateCall__Outputs {
   }
 }
 
-export class UpdateTemplateRestrictionCall extends ethereum.Call {
-  get inputs(): UpdateTemplateRestrictionCall__Inputs {
-    return new UpdateTemplateRestrictionCall__Inputs(this);
+export class ToggleAllowPublicTemplatesCall extends ethereum.Call {
+  get inputs(): ToggleAllowPublicTemplatesCall__Inputs {
+    return new ToggleAllowPublicTemplatesCall__Inputs(this);
   }
 
-  get outputs(): UpdateTemplateRestrictionCall__Outputs {
-    return new UpdateTemplateRestrictionCall__Outputs(this);
+  get outputs(): ToggleAllowPublicTemplatesCall__Outputs {
+    return new ToggleAllowPublicTemplatesCall__Outputs(this);
   }
 }
 
-export class UpdateTemplateRestrictionCall__Inputs {
-  _call: UpdateTemplateRestrictionCall;
+export class ToggleAllowPublicTemplatesCall__Inputs {
+  _call: ToggleAllowPublicTemplatesCall;
 
-  constructor(call: UpdateTemplateRestrictionCall) {
+  constructor(call: ToggleAllowPublicTemplatesCall) {
+    this._call = call;
+  }
+}
+
+export class ToggleAllowPublicTemplatesCall__Outputs {
+  _call: ToggleAllowPublicTemplatesCall;
+
+  constructor(call: ToggleAllowPublicTemplatesCall) {
+    this._call = call;
+  }
+}
+
+export class UpdateTemplateMetaDataContentHashCall extends ethereum.Call {
+  get inputs(): UpdateTemplateMetaDataContentHashCall__Inputs {
+    return new UpdateTemplateMetaDataContentHashCall__Inputs(this);
+  }
+
+  get outputs(): UpdateTemplateMetaDataContentHashCall__Outputs {
+    return new UpdateTemplateMetaDataContentHashCall__Outputs(this);
+  }
+}
+
+export class UpdateTemplateMetaDataContentHashCall__Inputs {
+  _call: UpdateTemplateMetaDataContentHashCall;
+
+  constructor(call: UpdateTemplateMetaDataContentHashCall) {
     this._call = call;
   }
 
-  get _restrictedTemplates(): boolean {
-    return this._call.inputValues[0].value.toBoolean();
+  get _template(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get _newMetaDataContentHash(): string {
+    return this._call.inputValues[1].value.toString();
   }
 }
 
-export class UpdateTemplateRestrictionCall__Outputs {
-  _call: UpdateTemplateRestrictionCall;
+export class UpdateTemplateMetaDataContentHashCall__Outputs {
+  _call: UpdateTemplateMetaDataContentHashCall;
 
-  constructor(call: UpdateTemplateRestrictionCall) {
+  constructor(call: UpdateTemplateMetaDataContentHashCall) {
     this._call = call;
   }
 }
