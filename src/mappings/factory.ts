@@ -6,8 +6,8 @@ import {
   FeeNumeratorUpdated,
   TemplateFeeUpdated,
   FactoryInitialized,
-  SaleFeeUpdated,
   FeeManagerUpdated,
+  SaleFeeUpdated,
   FeeToUpdated
 } from '../../generated/MesaFactory/MesaFactory'
 
