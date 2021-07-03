@@ -18,7 +18,7 @@ describe('SaleLauncher', function() {
     await mesaJestAfterEach()
   })
 
-  test('Should save new FixedPriceSale', async () => {
+  test('Should save new FixedPriceSale with all expected properties', async () => {
     const [deployer, saleCreator, saleInvestorA, saleInvestorB] = getSigners(mesa.provider)
     // Register sale
     const fixedPriceSale = (await getContractFactory('FixedPriceSale', deployer).deploy()) as FixedPriceSale
@@ -95,7 +95,7 @@ describe('SaleLauncher', function() {
     }`)
 
     expect(data.data.fixedPriceSale.id).toMatch(newFixedPriceSaleAddress)
-    expect(data.data.fixedPriceSale.status).toMatch('upcoming')
+    expect(data.data.fixedPriceSale.status).toMatch('UPCOMING')
     expect(data.data.fixedPriceSale.minimumRaise).toMatch((await launchedfixedPriceSale.minimumRaise()).toString())
     expect(data.data.fixedPriceSale.allocationMin).toMatch((await launchedfixedPriceSale.allocationMin()).toString())
     expect(data.data.fixedPriceSale.allocationMax).toMatch((await launchedfixedPriceSale.allocationMax()).toString())
