@@ -26,22 +26,24 @@ dataSources:
       entities:
         - MesaFactory
       eventHandlers:
-        - event: FactoryInitialized(address,address,address,address,uint256,uint256,uint256)
+        - event: FactoryInitialized(address,address,address,uint256,uint256,uint256)
           handler: handleFactoryInitialized
-        - event: SetFeeManager(indexed address)
-          handler: handleSetFeeManager
-        - event: SetFeeNumerator(indexed uint256)
-          handler: handleSetFeeNumerator
-        - event: SetFeeTo(indexed address)
-          handler: handleSetFeeTo
-        - event: SetSaleFee(indexed uint256)
-          handler: handleSetSaleFee
-        - event: SetTemplateFee(indexed uint256)
-          handler: handleSetTemplateFee
-        - event: SetTemplateLauncher(indexed address)
-          handler: handleSetTemplateLauncher
-        - event: SetTemplateManager(indexed address)
-          handler: handleSetTemplateManager
+        - event: FeeManagerUpdated(indexed address)
+          handler: handleFeeManagerUpdated
+        - event: FeeNumeratorUpdated(indexed uint256)
+          handler: handleFeeNumeratorUpdated
+        - event: FeeToUpdated(indexed address)
+          handler: handleFeeToUpdated
+        - event: SaleFeeUpdated(indexed uint256)
+          handler: handleSaleFeeUpdated
+        - event: TemplateFeeUpdated(indexed uint256)
+          handler: handleTemplateFeeUpdated
+        - event: TemplateLaunched(indexed address,uint256)
+          handler: handleTemplateLaunched
+        - event: TemplateLauncherUpdated(indexed address)
+          handler: handleTemplateLauncherUpdated
+        - event: TemplateManagerUpdated(indexed address)
+          handler: handleTemplateManagerUpdated
   - kind: ethereum/contract
     name: SaleLauncher
     network: {{network}}
@@ -117,14 +119,16 @@ dataSources:
         - name: FairSale
           file: ./abis/FairSale.json
       eventHandlers:
-        - event: SaleCleared(uint96,uint96,bytes32)
-          handler: handleSaleCleared
-        - event: CancellationOrder(indexed uint64,uint96,uint96)
-          handler: handleCancellationOrder
+        - event: AuctionCleared(uint96,uint96,bytes32)
+          handler: handleAuctionCleared
+        - event: AuctionInitialized(indexed address,indexed address,uint256,uint256,uint64,uint96,uint96,uint256,uint256)
+          handler: handleAuctionInitialized
+        - event: CancellationSellOrder(indexed uint64,uint96,uint96)
+          handler: handleCancellationSellOrder
         - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
           handler: handleClaimedFromOrder
-        - event: NewOrder(indexed uint64,uint96,uint96)
-          handler: handleNewOrder
+        - event: NewSellOrder(indexed uint64,uint96,uint96)
+          handler: handleNewSellOrder
         - event: NewUser(indexed uint64,indexed address)
           handler: handleNewUser
         - event: UserRegistration(indexed address,uint64)
@@ -147,11 +151,13 @@ dataSources:
         - name: FixedPriceSale
           file: ./abis/FixedPriceSale.json
       eventHandlers:
-        - event: SaleClosed()
-          handler: handleSaleClosed
-        - event: NewPurchase(indexed address,indexed uint256)
-          handler: handleNewPurchase
-        - event: NewTokenClaim(indexed address,indexed uint256)
-          handler: handleNewTokenClaim
+        - event: NewCommitment(indexed address,indexed uint256)
+          handler: handleNewCommitment
         - event: NewTokenRelease(indexed address,indexed uint256)
           handler: handleNewTokenRelease
+        - event: NewTokenWithdraw(indexed address,indexed uint256)
+          handler: handleNewTokenWithdraw
+        - event: SaleClosed()
+          handler: handleSaleClosed
+        - event: SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)
+          handler: handleSaleInitialized
