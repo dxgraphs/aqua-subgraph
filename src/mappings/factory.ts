@@ -24,77 +24,77 @@ import { MESA_FACTORY } from '../helpers/factory'
  * @returns
  */
 export function handleFactoryInitialized(event: FactoryInitialized): void {
-  let mesaFactoryContract = MesaFactoryContract.bind(event.address)
-  let mesaFactory = new Schemas.MesaFactory(MESA_FACTORY.ID)
+  let factoryContract = MesaFactoryContract.bind(event.address)
+  let factory = new Schemas.MesaFactory(MESA_FACTORY.ID)
   // Address of factory
-  mesaFactory.address = event.address
+  factory.address = event.address
   // Fees collector from auctions
-  mesaFactory.feeTo = event.params.feeTo
-  mesaFactory.saleFee = mesaFactoryContract.saleFee()
-  mesaFactory.feeManager = event.params.feeManager
+  factory.feeTo = event.params.feeTo
+  factory.saleFee = factoryContract.saleFee()
+  factory.feeManager = event.params.feeManager
   // Fees
-  mesaFactory.feeNumerator = event.params.feeNumerator
-  mesaFactory.templateFee = event.params.templateFee
+  factory.feeNumerator = event.params.feeNumerator
+  factory.templateFee = event.params.templateFee
   // Auction count
-  mesaFactory.saleCount = 0
+  factory.saleCount = 0
   // Address of TemplateManager contract
-  mesaFactory.templateManager = event.params.templateManager
+  factory.templateManager = event.params.templateManager
   // Save
-  mesaFactory.save()
+  factory.save()
 }
 
 export function handleFeeManagerUpdated(event: FeeManagerUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.feeManager = event.params.feeManager
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.feeManager = event.params.feeManager
+    factory.save()
   }
 }
 
 export function handleFeeNumeratorUpdated(event: FeeNumeratorUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.feeNumerator = event.params.feeNumerator
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.feeNumerator = event.params.feeNumerator
+    factory.save()
   }
 }
 
 export function handleFeeToUpdated(event: FeeToUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.feeTo = event.params.feeTo
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.feeTo = event.params.feeTo
+    factory.save()
   }
 }
 
 export function handleSaleFeeUpdated(event: SaleFeeUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.saleFee = event.params.saleFee
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.saleFee = event.params.saleFee
+    factory.save()
   }
 }
 
 export function handleTemplateFeeUpdated(event: TemplateFeeUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.templateFee = event.params.templateFee
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.templateFee = event.params.templateFee
+    factory.save()
   }
 }
 
 export function handleTemplateManagerUpdated(event: TemplateManagerUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.templateManager = event.params.templateManager
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.templateManager = event.params.templateManager
+    factory.save()
   }
 }
 
 export function handleTemplateLauncherUpdated(event: TemplateLauncherUpdated): void {
-  let mesaFactory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
-  if (mesaFactory) {
-    mesaFactory.templateLauncher = event.params.templateLauncher
-    mesaFactory.save()
+  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  if (factory) {
+    factory.templateLauncher = event.params.templateLauncher
+    factory.save()
   }
 }
