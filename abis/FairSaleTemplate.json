@@ -67,6 +67,19 @@
   },
   {
     "inputs": [],
+    "name": "aquaFactory",
+    "outputs": [
+      {
+        "internalType": "contract IAquaFactory",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "createSale",
     "outputs": [
       {
@@ -125,19 +138,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "mesaFactory",
-    "outputs": [
-      {
-        "internalType": "contract IMesaFactory",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",

@@ -53,7 +53,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "newTemplate",
+        "name": "template",
         "type": "address"
       },
       {
@@ -71,7 +71,7 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "metaDataContentHash",
+        "name": "metadataContentHash",
         "type": "string"
       }
     ],
@@ -84,17 +84,17 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "_launchedTemplate",
+        "name": "template",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "string",
-        "name": "_newmetaDataContentHash",
+        "name": "newdetaDataContentHash",
         "type": "string"
       }
     ],
-    "name": "TemplateMetaDataContentHashUpdated",
+    "name": "TemplateMetadataContentHashUpdated",
     "type": "event"
   },
   {
@@ -232,7 +232,7 @@
       },
       {
         "internalType": "string",
-        "name": "_metaDataContentHash",
+        "name": "_metadataContentHash",
         "type": "string"
       },
       {
@@ -269,7 +269,7 @@
       },
       {
         "internalType": "string",
-        "name": "metaDataContentHash",
+        "name": "metadataContentHash",
         "type": "string"
       }
     ],
@@ -337,11 +337,11 @@
       },
       {
         "internalType": "string",
-        "name": "_newMetaDataContentHash",
+        "name": "_newMetadataContentHash",
         "type": "string"
       }
     ],
-    "name": "updateTemplateMetaDataContentHash",
+    "name": "updateTemplateMetadataContentHash",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
