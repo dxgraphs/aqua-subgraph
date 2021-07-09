@@ -3,11 +3,11 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: MesaFactory
+    name: AquaFactory
     network: {{network}}
     source:
       address: '{{contracts.factory.address}}'
-      abi: MesaFactory
+      abi: AquaFactory
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
@@ -15,8 +15,8 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/factory.ts
       abis:
-        - name: MesaFactory
-          file: ./abis/MesaFactory.json
+        - name: AquaFactory
+          file: ./abis/AquaFactory.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -24,7 +24,7 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       entities:
-        - MesaFactory
+        - AquaFactory
       eventHandlers:
         - event: FactoryInitialized(address,address,address,uint256,uint256,uint256)
           handler: handleFactoryInitialized
