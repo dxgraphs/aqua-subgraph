@@ -196,9 +196,9 @@ export class TemplateManagerUpdated__Params {
   }
 }
 
-export class MesaFactory extends ethereum.SmartContract {
-  static bind(address: Address): MesaFactory {
-    return new MesaFactory("MesaFactory", address);
+export class AquaFactory extends ethereum.SmartContract {
+  static bind(address: Address): AquaFactory {
+    return new AquaFactory("AquaFactory", address);
   }
 
   allTemplates(param0: BigInt): Address {

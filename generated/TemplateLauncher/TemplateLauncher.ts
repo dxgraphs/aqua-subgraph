@@ -63,7 +63,7 @@ export class TemplateLaunched__Params {
     this._event = event;
   }
 
-  get newTemplate(): Address {
+  get template(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
@@ -75,29 +75,29 @@ export class TemplateLaunched__Params {
     return this._event.parameters[2].value.toAddress();
   }
 
-  get metaDataContentHash(): string {
+  get metadataContentHash(): string {
     return this._event.parameters[3].value.toString();
   }
 }
 
-export class TemplateMetaDataContentHashUpdated extends ethereum.Event {
-  get params(): TemplateMetaDataContentHashUpdated__Params {
-    return new TemplateMetaDataContentHashUpdated__Params(this);
+export class TemplateMetadataContentHashUpdated extends ethereum.Event {
+  get params(): TemplateMetadataContentHashUpdated__Params {
+    return new TemplateMetadataContentHashUpdated__Params(this);
   }
 }
 
-export class TemplateMetaDataContentHashUpdated__Params {
-  _event: TemplateMetaDataContentHashUpdated;
+export class TemplateMetadataContentHashUpdated__Params {
+  _event: TemplateMetadataContentHashUpdated;
 
-  constructor(event: TemplateMetaDataContentHashUpdated) {
+  constructor(event: TemplateMetadataContentHashUpdated) {
     this._event = event;
   }
 
-  get _launchedTemplate(): Address {
+  get template(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get _newmetaDataContentHash(): string {
+  get newdetaDataContentHash(): string {
     return this._event.parameters[1].value.toString();
   }
 }
@@ -423,7 +423,7 @@ export class LaunchTemplateCall__Inputs {
     return this._call.inputValues[1].value.toBytes();
   }
 
-  get _metaDataContentHash(): string {
+  get _metadataContentHash(): string {
     return this._call.inputValues[2].value.toString();
   }
 
@@ -500,20 +500,20 @@ export class ToggleAllowPublicTemplatesCall__Outputs {
   }
 }
 
-export class UpdateTemplateMetaDataContentHashCall extends ethereum.Call {
-  get inputs(): UpdateTemplateMetaDataContentHashCall__Inputs {
-    return new UpdateTemplateMetaDataContentHashCall__Inputs(this);
+export class UpdateTemplateMetadataContentHashCall extends ethereum.Call {
+  get inputs(): UpdateTemplateMetadataContentHashCall__Inputs {
+    return new UpdateTemplateMetadataContentHashCall__Inputs(this);
   }
 
-  get outputs(): UpdateTemplateMetaDataContentHashCall__Outputs {
-    return new UpdateTemplateMetaDataContentHashCall__Outputs(this);
+  get outputs(): UpdateTemplateMetadataContentHashCall__Outputs {
+    return new UpdateTemplateMetadataContentHashCall__Outputs(this);
   }
 }
 
-export class UpdateTemplateMetaDataContentHashCall__Inputs {
-  _call: UpdateTemplateMetaDataContentHashCall;
+export class UpdateTemplateMetadataContentHashCall__Inputs {
+  _call: UpdateTemplateMetadataContentHashCall;
 
-  constructor(call: UpdateTemplateMetaDataContentHashCall) {
+  constructor(call: UpdateTemplateMetadataContentHashCall) {
     this._call = call;
   }
 
@@ -521,15 +521,15 @@ export class UpdateTemplateMetaDataContentHashCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get _newMetaDataContentHash(): string {
+  get _newMetadataContentHash(): string {
     return this._call.inputValues[1].value.toString();
   }
 }
 
-export class UpdateTemplateMetaDataContentHashCall__Outputs {
-  _call: UpdateTemplateMetaDataContentHashCall;
+export class UpdateTemplateMetadataContentHashCall__Outputs {
+  _call: UpdateTemplateMetadataContentHashCall;
 
-  constructor(call: UpdateTemplateMetaDataContentHashCall) {
+  constructor(call: UpdateTemplateMetadataContentHashCall) {
     this._call = call;
   }
 }
