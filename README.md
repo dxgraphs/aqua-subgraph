@@ -1,10 +1,10 @@
-# Mesa Subgraph
+# Aqua Subgraph
 
-Mesa Subgraph is the main provider for Mesa Interface data.
+Aqua Subgraph is the main provider for Aqua Interface data.
 
 # Explore
 
-You can explore Mesa's xDai subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa-xdai).
+You can explore Aqua's xDai subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/aqua-xdai).
 
 ## Local
 
@@ -16,13 +16,13 @@ $ npm run explore-local
 
 After starting, a local version of the graph, with a web front-end,shows up:
 
-http://localhost:8000/subgraphs/name/adamazad/mesa
+http://localhost:8000/subgraphs/name/adamazad/aqua
 
 Now make a query:
 
 ```
 {
- mesaFactory (id: "MesaFactory") {
+ aquaFactory (id: "AquaFactory") {
    id
    address
    feeManager
@@ -153,12 +153,12 @@ Result should look like this:
         }
       }
     ],
-    "mesaFactory": {
+    "aquaFactory": {
       "address": "0x8a529455833c9cd31aa1be9f44e4761f6a588745",
       "feeManager": "0x1ba9e7349fe36032fd07809aca800125cddb296f",
       "feeNumerator": "0",
       "feeTo": "0x1ba9e7349fe36032fd07809aca800125cddb296f",
-      "id": "MesaFactory",
+      "id": "AquaFactory",
       "saleCount": 0,
       "saleFee": "0",
       "templateFee": "0",
@@ -187,24 +187,24 @@ $ yarn install
 
 The subgraph listens for events from three fixed contracts; they are deployed once:
 
-1. `MesaFactory`
+1. `AquaFactory`
 2. `SaleLauncher`
 3. `TemplateLauncher`
 
 **Dynamic Contracts**
 
-These contracts are deployed from the factory for every new sale. Their address is resolved from `Event.address` and compared against `MesaFactory.allSales` array. If the address does not belong to Mesa's sale, the handler exits:
+These contracts are deployed from the factory for every new sale. Their address is resolved from `Event.address` and compared against `AquaFactory.allSales` array. If the address does not belong to Aqua's sale, the handler exits:
 
 1. `FairSale`
 2. `FixedPriceSale`
 
 ## Contracts
 
-### `MesaFactory`
+### `AquaFactory`
 
 <sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
 
-#### 1. `FactoryInitialized` from `MesaFactory.initialize`
+#### 1. `FactoryInitialized` from `AquaFactory.initialize`
 
 ```typescript
 interface FactoryInitialized {
@@ -214,11 +214,11 @@ interface FactoryInitialized {
   templateLauncher: Address // Address of TemplateLauncher  contract
   templateFee: number // Template fee
   feeNumerator: number // Fee numerator; because Solidity
-  saleFee: number // A fixed sale fee paid to Mesa
+  saleFee: number // A fixed sale fee paid to Aqua
 }
 ```
 
-#### 2. `SetFeeManager` from `MesaFactory.setFeeManager`
+#### 2. `SetFeeManager` from `AquaFactory.setFeeManager`
 
 ```typescript
 interface SetFeeManager {
@@ -226,7 +226,7 @@ interface SetFeeManager {
 }
 ```
 
-#### 3. `SetFeeNumerator` from `MesaFactory.setFeeNumerator`
+#### 3. `SetFeeNumerator` from `AquaFactory.setFeeNumerator`
 
 ```typescript
 interface SetFeeNumerator {
@@ -234,7 +234,7 @@ interface SetFeeNumerator {
 }
 ```
 
-#### 4. `SetFeeTo` from `MesaFactory.setFeeTo`
+#### 4. `SetFeeTo` from `AquaFactory.setFeeTo`
 
 ```typescript
 interface SetFeeTo {
@@ -242,7 +242,7 @@ interface SetFeeTo {
 }
 ```
 
-#### 5. `SetSaleFee` from `MesaFactory.setSaleFee`
+#### 5. `SetSaleFee` from `AquaFactory.setSaleFee`
 
 ```typescript
 interface SetSaleFee {
@@ -250,7 +250,7 @@ interface SetSaleFee {
 }
 ```
 
-#### 6. `SetTemplateFee` from `MesaFactory.setTemplateFee`
+#### 6. `SetTemplateFee` from `AquaFactory.setTemplateFee`
 
 ```typescript
 interface SetTemplateFee {
@@ -258,7 +258,7 @@ interface SetTemplateFee {
 }
 ```
 
-#### 7. `SetTemplateLauncher` from `MesaFactory.setTemplateLauncher`
+#### 7. `SetTemplateLauncher` from `AquaFactory.setTemplateLauncher`
 
 ```typescript
 interface SetTemplateLauncher {
@@ -266,7 +266,7 @@ interface SetTemplateLauncher {
 }
 ```
 
-#### 8. `SetTemplateManager` from `MesaFactory.setTemplateManager`
+#### 8. `SetTemplateManager` from `AquaFactory.setTemplateManager`
 
 ```typescript
 interface SetTemplateManager {
@@ -405,7 +405,7 @@ Registered sale mechanisms in `TemplateLauncher` contract.
 
 ### Token
 
-Stores information about ERC20 tokens that interact with Mesa contracts.
+Stores information about ERC20 tokens that interact with Aqua contracts.
 
 # Deployment
 
