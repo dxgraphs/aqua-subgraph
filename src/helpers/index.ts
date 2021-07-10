@@ -1,4 +1,3 @@
-import { BigInt } from '@graphprotocol/graph-ts'
 import { MesaLog } from '../../generated/schema'
 /**
  * Checks if value is equal to zero

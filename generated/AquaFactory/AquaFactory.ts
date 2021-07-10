@@ -35,33 +35,29 @@ export class FactoryInitialized__Params {
     return this._event.parameters[2].value.toAddress();
   }
 
-  get templateLauncher(): Address {
-    return this._event.parameters[3].value.toAddress();
-  }
-
   get templateFee(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[3].value.toBigInt();
   }
 
   get feeNumerator(): BigInt {
-    return this._event.parameters[5].value.toBigInt();
+    return this._event.parameters[4].value.toBigInt();
   }
 
   get saleFee(): BigInt {
-    return this._event.parameters[6].value.toBigInt();
+    return this._event.parameters[5].value.toBigInt();
   }
 }
 
-export class SetFeeManager extends ethereum.Event {
-  get params(): SetFeeManager__Params {
-    return new SetFeeManager__Params(this);
+export class FeeManagerUpdated extends ethereum.Event {
+  get params(): FeeManagerUpdated__Params {
+    return new FeeManagerUpdated__Params(this);
   }
 }
 
-export class SetFeeManager__Params {
-  _event: SetFeeManager;
+export class FeeManagerUpdated__Params {
+  _event: FeeManagerUpdated;
 
-  constructor(event: SetFeeManager) {
+  constructor(event: FeeManagerUpdated) {
     this._event = event;
   }
 
@@ -70,16 +66,16 @@ export class SetFeeManager__Params {
   }
 }
 
-export class SetFeeNumerator extends ethereum.Event {
-  get params(): SetFeeNumerator__Params {
-    return new SetFeeNumerator__Params(this);
+export class FeeNumeratorUpdated extends ethereum.Event {
+  get params(): FeeNumeratorUpdated__Params {
+    return new FeeNumeratorUpdated__Params(this);
   }
 }
 
-export class SetFeeNumerator__Params {
-  _event: SetFeeNumerator;
+export class FeeNumeratorUpdated__Params {
+  _event: FeeNumeratorUpdated;
 
-  constructor(event: SetFeeNumerator) {
+  constructor(event: FeeNumeratorUpdated) {
     this._event = event;
   }
 
@@ -88,16 +84,16 @@ export class SetFeeNumerator__Params {
   }
 }
 
-export class SetFeeTo extends ethereum.Event {
-  get params(): SetFeeTo__Params {
-    return new SetFeeTo__Params(this);
+export class FeeToUpdated extends ethereum.Event {
+  get params(): FeeToUpdated__Params {
+    return new FeeToUpdated__Params(this);
   }
 }
 
-export class SetFeeTo__Params {
-  _event: SetFeeTo;
+export class FeeToUpdated__Params {
+  _event: FeeToUpdated;
 
-  constructor(event: SetFeeTo) {
+  constructor(event: FeeToUpdated) {
     this._event = event;
   }
 
@@ -106,16 +102,16 @@ export class SetFeeTo__Params {
   }
 }
 
-export class SetSaleFee extends ethereum.Event {
-  get params(): SetSaleFee__Params {
-    return new SetSaleFee__Params(this);
+export class SaleFeeUpdated extends ethereum.Event {
+  get params(): SaleFeeUpdated__Params {
+    return new SaleFeeUpdated__Params(this);
   }
 }
 
-export class SetSaleFee__Params {
-  _event: SetSaleFee;
+export class SaleFeeUpdated__Params {
+  _event: SaleFeeUpdated;
 
-  constructor(event: SetSaleFee) {
+  constructor(event: SaleFeeUpdated) {
     this._event = event;
   }
 
@@ -124,57 +120,21 @@ export class SetSaleFee__Params {
   }
 }
 
-export class SetTemplateFee extends ethereum.Event {
-  get params(): SetTemplateFee__Params {
-    return new SetTemplateFee__Params(this);
+export class TemplateFeeUpdated extends ethereum.Event {
+  get params(): TemplateFeeUpdated__Params {
+    return new TemplateFeeUpdated__Params(this);
   }
 }
 
-export class SetTemplateFee__Params {
-  _event: SetTemplateFee;
+export class TemplateFeeUpdated__Params {
+  _event: TemplateFeeUpdated;
 
-  constructor(event: SetTemplateFee) {
+  constructor(event: TemplateFeeUpdated) {
     this._event = event;
   }
 
   get templateFee(): BigInt {
     return this._event.parameters[0].value.toBigInt();
-  }
-}
-
-export class SetTemplateLauncher extends ethereum.Event {
-  get params(): SetTemplateLauncher__Params {
-    return new SetTemplateLauncher__Params(this);
-  }
-}
-
-export class SetTemplateLauncher__Params {
-  _event: SetTemplateLauncher;
-
-  constructor(event: SetTemplateLauncher) {
-    this._event = event;
-  }
-
-  get templateLauncher(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-}
-
-export class SetTemplateManager extends ethereum.Event {
-  get params(): SetTemplateManager__Params {
-    return new SetTemplateManager__Params(this);
-  }
-}
-
-export class SetTemplateManager__Params {
-  _event: SetTemplateManager;
-
-  constructor(event: SetTemplateManager) {
-    this._event = event;
-  }
-
-  get templateManager(): Address {
-    return this._event.parameters[0].value.toAddress();
   }
 }
 
@@ -200,23 +160,61 @@ export class TemplateLaunched__Params {
   }
 }
 
-export class MesaFactory extends ethereum.SmartContract {
-  static bind(address: Address): MesaFactory {
-    return new MesaFactory("MesaFactory", address);
+export class TemplateLauncherUpdated extends ethereum.Event {
+  get params(): TemplateLauncherUpdated__Params {
+    return new TemplateLauncherUpdated__Params(this);
+  }
+}
+
+export class TemplateLauncherUpdated__Params {
+  _event: TemplateLauncherUpdated;
+
+  constructor(event: TemplateLauncherUpdated) {
+    this._event = event;
   }
 
-  allSales(param0: BigInt): Address {
-    let result = super.call("allSales", "allSales(uint256):(address)", [
+  get templateLauncher(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class TemplateManagerUpdated extends ethereum.Event {
+  get params(): TemplateManagerUpdated__Params {
+    return new TemplateManagerUpdated__Params(this);
+  }
+}
+
+export class TemplateManagerUpdated__Params {
+  _event: TemplateManagerUpdated;
+
+  constructor(event: TemplateManagerUpdated) {
+    this._event = event;
+  }
+
+  get templateManager(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class AquaFactory extends ethereum.SmartContract {
+  static bind(address: Address): AquaFactory {
+    return new AquaFactory("AquaFactory", address);
+  }
+
+  allTemplates(param0: BigInt): Address {
+    let result = super.call("allTemplates", "allTemplates(uint256):(address)", [
       ethereum.Value.fromUnsignedBigInt(param0)
     ]);
 
     return result[0].toAddress();
   }
 
-  try_allSales(param0: BigInt): ethereum.CallResult<Address> {
-    let result = super.tryCall("allSales", "allSales(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
+  try_allTemplates(param0: BigInt): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "allTemplates",
+      "allTemplates(uint256):(address)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -288,16 +286,35 @@ export class MesaFactory extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  numberOfSales(): BigInt {
-    let result = super.call("numberOfSales", "numberOfSales():(uint256)", []);
+  initialized(): boolean {
+    let result = super.call("initialized", "initialized():(bool)", []);
+
+    return result[0].toBoolean();
+  }
+
+  try_initialized(): ethereum.CallResult<boolean> {
+    let result = super.tryCall("initialized", "initialized():(bool)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  numberOfTemplates(): BigInt {
+    let result = super.call(
+      "numberOfTemplates",
+      "numberOfTemplates():(uint256)",
+      []
+    );
 
     return result[0].toBigInt();
   }
 
-  try_numberOfSales(): ethereum.CallResult<BigInt> {
+  try_numberOfTemplates(): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "numberOfSales",
-      "numberOfSales():(uint256)",
+      "numberOfTemplates",
+      "numberOfTemplates():(uint256)",
       []
     );
     if (result.reverted) {
@@ -415,32 +432,6 @@ export class ConstructorCall__Inputs {
   constructor(call: ConstructorCall) {
     this._call = call;
   }
-}
-
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-}
-
-export class InitializeCall extends ethereum.Call {
-  get inputs(): InitializeCall__Inputs {
-    return new InitializeCall__Inputs(this);
-  }
-
-  get outputs(): InitializeCall__Outputs {
-    return new InitializeCall__Outputs(this);
-  }
-}
-
-export class InitializeCall__Inputs {
-  _call: InitializeCall;
-
-  constructor(call: InitializeCall) {
-    this._call = call;
-  }
 
   get _feeManager(): Address {
     return this._call.inputValues[0].value.toAddress();
@@ -454,27 +445,23 @@ export class InitializeCall__Inputs {
     return this._call.inputValues[2].value.toAddress();
   }
 
-  get _templateLauncher(): Address {
-    return this._call.inputValues[3].value.toAddress();
-  }
-
   get _templateFee(): BigInt {
-    return this._call.inputValues[4].value.toBigInt();
+    return this._call.inputValues[3].value.toBigInt();
   }
 
   get _feeNumerator(): BigInt {
-    return this._call.inputValues[5].value.toBigInt();
+    return this._call.inputValues[4].value.toBigInt();
   }
 
   get _saleFee(): BigInt {
-    return this._call.inputValues[6].value.toBigInt();
+    return this._call.inputValues[5].value.toBigInt();
   }
 }
 
-export class InitializeCall__Outputs {
-  _call: InitializeCall;
+export class ConstructorCall__Outputs {
+  _call: ConstructorCall;
 
-  constructor(call: InitializeCall) {
+  constructor(call: ConstructorCall) {
     this._call = call;
   }
 }
@@ -503,6 +490,10 @@ export class LaunchTemplateCall__Inputs {
   get _data(): Bytes {
     return this._call.inputValues[1].value.toBytes();
   }
+
+  get _metaData(): string {
+    return this._call.inputValues[2].value.toString();
+  }
 }
 
 export class LaunchTemplateCall__Outputs {
@@ -512,7 +503,7 @@ export class LaunchTemplateCall__Outputs {
     this._call = call;
   }
 
-  get newSale(): Address {
+  get newTemplate(): Address {
     return this._call.outputValues[0].value.toAddress();
   }
 }
