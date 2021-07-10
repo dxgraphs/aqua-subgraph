@@ -64,14 +64,14 @@ export async function wait(ms: number) {
 }
 
 // The Graph GraphQL endpoint
-export const GRAPHQL_ENDPOINT = 'http://localhost:8000/subgraphs/name/adamazad/mesa'
+export const GRAPHQL_ENDPOINT = 'http://localhost:8000/subgraphs/name/adamazad/aqua'
 
 // Ganache EVM endpoint
 export const EVM_ENDPOINT = 'http://localhost:8545'
 
 export type ContractFactories =
   | 'FairSale'
-  | 'MesaFactory'
+  | 'AquaFactory'
   | 'ERC20Mintable'
   | 'SaleLauncher'
   | 'TemplateLauncher'
