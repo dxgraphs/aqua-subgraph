@@ -2,33 +2,33 @@
 import { Address } from '@graphprotocol/graph-ts'
 
 // Contracts ABIs and types
-import { MesaFactory as MesaFactoryContract } from '../../generated/MesaFactory/MesaFactory'
-// MesaFactory Schema
-import { MesaFactory } from '../../generated/schema'
+import { AquaFactory as AquaFactoryContract } from '../../generated/AquaFactory/AquaFactory'
+// AquaFactory Schema
+import { AquaFactory } from '../../generated/schema'
 
 // Used for ID in GraphlQL
-export abstract class MESA_FACTORY {
-  static ID: string = 'MesaFactory'
-  static NAME: string = 'MesaFactory'
+export abstract class AQUA_FACTORY {
+  static ID: string = 'AquaFactory'
+  static NAME: string = 'AquaFactory'
 }
 
 /**
- * Returns the MesaFactory. Use this inside any function to access the factory.
+ * Returns the AquaFactory. Use this inside any function to access the factory.
  * @param auctionAddress
  * @returns
  */
-export function getMesaFactory(): MesaFactory {
-  return MesaFactory.load(MESA_FACTORY.NAME) as MesaFactory
+export function getAquaFactory(): AquaFactory {
+  return AquaFactory.load(AQUA_FACTORY.NAME) as AquaFactory
 }
 
 /**
- * Returns the MesaFactory Contract. Use this inside any function to access the factory contract.
+ * Returns the AquaFactory Contract. Use this inside any function to access the factory contract.
  * @param auctionAddress
  * @returns
  */
-export function getMesaFactoryContract(): MesaFactoryContract {
+export function getAquaFactoryContract(): AquaFactoryContract {
   // Get the factory entity from postgres
-  let mesaFactory = getMesaFactory()
+  let aquaFactory = getAquaFactory()
   // Use that to connect to the contract on the chain
-  return MesaFactoryContract.bind(Address.fromString(mesaFactory.address))
+  return AquaFactoryContract.bind(Address.fromString(aquaFactory.address))
 }
