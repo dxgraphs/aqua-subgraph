@@ -53,8 +53,8 @@ describe('SaleLauncher', function() {
     // Launch FixedPriceSale
     const newFixedPriceSaleAddress = await createFixedPriceSale({
       templateId: 1,
-      aquaFactory: mesa.mesaFactory,
-      saleLauncher: mesa.saleLauncher,
+      aquaFactory: aqua.aquaFactory,
+      saleLauncher: aqua.saleLauncher,
       biddingToken: biddingToken,
       saleToken: fixedPriceSaleToken,
       saleCreator
@@ -63,7 +63,7 @@ describe('SaleLauncher', function() {
 
     await wait(SUBGRAPH_SYNC_SECONDS * 5)
 
-    const { data } = await mesa.fetchFromTheGraph(`{
+    const { data } = await aqua.fetchFromTheGraph(`{
       fixedPriceSale (id: "${newFixedPriceSaleAddress}") {
           id
           status

@@ -1,31 +1,31 @@
 // Helpers
-import { mesaJestAfterEach, mesaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
+import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { getContractFactory, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
 import { addSaleTemplateToLauncher } from '../scripts/helpers'
 import { FixedPriceSale } from './helpers/contracts'
 
 // Test block
 describe.skip('TemplateLauncher', function() {
-  let mesa: AquaJestBeforeEachContext
+  let aqua: AquaJestBeforeEachContext
 
   beforeEach(async () => {
-    mesa = await mesaJestBeforeEach()
+    aqua = await aquaJestBeforeEach()
   })
 
   afterEach(async () => {
-    await mesaJestAfterEach()
+    await aquaJestAfterEach()
   })
   test('Should save new SaleTemplate', async () => {
     const fixedPriceSaleTemplate = (await getContractFactory(
       'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
+      aqua.provider.getSigner(0)
     ).deploy()) as FixedPriceSale
     const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
+      launcher: aqua.templateLauncher,
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
+    const { data } = await aqua.fetchFromTheGraph(`{
           saleTemplate (id: "${event.template}") {
             address
             factory
@@ -34,22 +34,22 @@ describe.skip('TemplateLauncher', function() {
           }
         }`)
     expect(data.data.saleTemplate.address.toLowerCase()).toMatch(fixedPriceSaleTemplate.address)
-    expect(data.data.saleTemplate.factory.toLowerCase()).toMatch(mesa.mesaFactory.address)
+    expect(data.data.saleTemplate.factory.toLowerCase()).toMatch(aqua.aquaFactory.address)
     expect(data.data.saleTemplate.name.toLowerCase()).toMatch('FixedPriceSaleTemplate')
     expect(data.data.saleTemplate.verified).toBeFalsy()
   })
   test('Should save update SaleTemplate as verified', async () => {
     const fixedPriceSaleTemplate = (await getContractFactory(
       'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
+      aqua.provider.getSigner(0)
     ).deploy()) as FixedPriceSale
     const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
+      launcher: aqua.templateLauncher,
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
-    await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
+    await (await aqua.templateLauncher.verifyTemplate(event.templateId)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
+    const { data } = await aqua.fetchFromTheGraph(`{
           saleTemplate (id: "${event.templateId}") {
             verified
           }
@@ -59,15 +59,15 @@ describe.skip('TemplateLauncher', function() {
   test('Should save update SaleTemplate as verified', async () => {
     const fixedPriceSaleTemplate = (await getContractFactory(
       'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
+      aqua.provider.getSigner(0)
     ).deploy()) as FixedPriceSale
     const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
+      launcher: aqua.templateLauncher,
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
-    await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
+    await (await aqua.templateLauncher.verifyTemplate(event.templateId)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
+    const { data } = await aqua.fetchFromTheGraph(`{
           saleTemplate (id: "${event.templateId}") {
             verified
           }
@@ -77,15 +77,15 @@ describe.skip('TemplateLauncher', function() {
   test('Should save update SaleTemplate as verified', async () => {
     const fixedPriceSaleTemplate = (await getContractFactory(
       'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
+      aqua.provider.getSigner(0)
     ).deploy()) as FixedPriceSale
     const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
+      launcher: aqua.templateLauncher,
       saleTemplateAddress: fixedPriceSaleTemplate.address
     })
-    await (await mesa.templateLauncher.removeTemplate(event.templateId)).wait(1)
+    await (await aqua.templateLauncher.removeTemplate(event.templateId)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
+    const { data } = await aqua.fetchFromTheGraph(`{
           saleTemplate (id: "${event.templateId}") {
             deleted
           }
