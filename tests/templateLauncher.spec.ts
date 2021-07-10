@@ -1,12 +1,12 @@
 // Helpers
-import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
+import { mesaJestAfterEach, mesaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { getContractFactory, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
 import { addSaleTemplateToLauncher } from '../scripts/helpers'
 import { FixedPriceSale } from './helpers/contracts'
 
 // Test block
 describe.skip('TemplateLauncher', function() {
-  let mesa: MesaJestBeforeEachContext
+  let mesa: AquaJestBeforeEachContext
 
   beforeEach(async () => {
     mesa = await mesaJestBeforeEach()

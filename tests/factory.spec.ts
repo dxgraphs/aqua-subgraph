@@ -1,10 +1,10 @@
 // Helpers
-import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
+import { mesaJestAfterEach, mesaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { ETH_ZERO_ADDRESS, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
 
 // Test block
-describe('MesaFactory', function() {
-  let mesa: MesaJestBeforeEachContext
+describe('AquaFactory', function() {
+  let mesa: AquaJestBeforeEachContext
 
   beforeEach(async () => {
     mesa = await mesaJestBeforeEach()
@@ -13,9 +13,9 @@ describe('MesaFactory', function() {
   afterEach(async () => {
     await mesaJestAfterEach()
   })
-  test('Should return MesaFactory upon initialization', async () => {
+  test('Should return AquaFactory upon initialization', async () => {
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             saleFee
             feeTo
             feeNumerator
@@ -42,7 +42,7 @@ describe('MesaFactory', function() {
     await (await mesa.mesaFactory.setSaleFee(3)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             saleFee
           }
         }`)
@@ -52,7 +52,7 @@ describe('MesaFactory', function() {
     await (await mesa.mesaFactory.setFeeTo(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             feeTo
           }
         }`)
@@ -62,7 +62,7 @@ describe('MesaFactory', function() {
     await (await mesa.mesaFactory.setFeeNumerator(2)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             feeNumerator
           }
         }`)
@@ -72,7 +72,7 @@ describe('MesaFactory', function() {
     await (await mesa.mesaFactory.setFeeManager(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             feeManager
           }
         }`)
@@ -83,7 +83,7 @@ describe('MesaFactory', function() {
     await wait(SUBGRAPH_SYNC_SECONDS)
 
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             templateLauncher
           }
         }`)
@@ -93,7 +93,7 @@ describe('MesaFactory', function() {
     await (await mesa.mesaFactory.setTemplateManager(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             templateManager
           }
         }`)
@@ -105,7 +105,7 @@ describe('MesaFactory', function() {
     await (await mesa.mesaFactory.setTemplateFee(10)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
     const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+          mesaFactory (id: "AquaFactory") {
             templateFee
           }
         }`)
