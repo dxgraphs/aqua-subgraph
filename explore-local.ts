@@ -12,9 +12,9 @@ import {
   FixedPriceSale__factory,
   ERC20Mintable,
   SaleLauncher,
-  MesaFactory,
+  AquaFactory,
   FairSale,
-  FairSale__factory,
+  FairSale__factory
 } from './tests/helpers/contracts'
 
 // Helpers
@@ -71,24 +71,24 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printT
     }
   ])
 
-  // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher FairSale contract is deployed to ganache
+  // Before each unit test, a new AquaFactory, TemplateLauncher, and AuctionLauncher FairSale contract is deployed to ganache
   // then followed by deploying its subgraph to the Graph node
   const weth = (await getContractFactory('ERC20Mintable', deployer).deploy('WETH', 'WETH')) as ERC20Mintable
-  // Deploy MesaFactory
-  const mesaFactory = (await getContractFactory('MesaFactory', deployer).deploy()) as MesaFactory
+  // Deploy AquaFactory
+  const aquaFactory = (await getContractFactory('AquaFactory', deployer).deploy()) as AquaFactory
   // Deploy TemplateLauncher
   const templateLauncher = (await getContractFactory('TemplateLauncher', deployer).deploy(
-    mesaFactory.address
+    aquaFactory.address
   )) as TemplateLauncher
   // Deploy AuctionLauncher
-  const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(mesaFactory.address)) as SaleLauncher
+  const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(aquaFactory.address)) as SaleLauncher
 
   const buildSubgraphYamlConfig = {
     network: 'local',
-    startBlock: mesaFactory.deployTransaction.blockNumber as number,
+    startBlock: aquaFactory.deployTransaction.blockNumber as number,
     contracts: {
       factory: {
-        address: mesaFactory.address
+        address: aquaFactory.address
       },
       saleLauncher: {
         address: saleLauncher.address
@@ -118,16 +118,16 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printT
 
   {
     // Initilize the Factory
-    const mesaFactoryInitalizeTx = await mesaFactory.initialize(
+    const aquaFactoryInitalizeTx = await aquaFactory.initialize(
       await deployer.getAddress(), // Fee Manager
       await deployer.getAddress(), // Fee Collector; treasury
       await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
       templateLauncher.address, // TemplateLauncher address
-      0, // Template fee: cost to submit a new Sale Template to the Mesa Factory
+      0, // Template fee: cost to submit a new Sale Template to the Aqua Factory
       0, // zero sale fees
       0 // zero fees
     )
-    console.log(`Factory initialized in block ${mesaFactoryInitalizeTx.blockNumber}`)
+    console.log(`Factory initialized in block ${aquaFactoryInitalizeTx.blockNumber}`)
   }
 
   const templates = {
@@ -205,7 +205,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printT
   // Launch FairSale
   const newFairSaleAddress = await createFairSale({
     templateId: fairSaleTemplateId,
-    mesaFactory,
+    aquaFactory,
     saleLauncher,
     biddingToken: tokens.biddingToken,
     saleToken: tokens.fairSaleToken,
@@ -217,7 +217,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printT
   // Launch FixedPriceSale
   const newFixedPriceSaleAddress = await createFixedPriceSale({
     templateId: fixedPriceSaleTemplateId,
-    mesaFactory,
+    aquaFactory,
     saleLauncher,
     biddingToken: tokens.biddingToken,
     saleToken: tokens.fixedPriceSaleToken,
@@ -259,7 +259,7 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printT
   console.log(`\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Subgraph ready at ${GRAPHQL_ENDPOINT}`)
 
   console.log(
-    `You can access ${['mesaFactory', 'templateLauncher', 'saleLauncher', 'helpers', 'templates', 'sales'].join(', ')}`
+    `You can access ${['aquaFactory', 'templateLauncher', 'saleLauncher', 'helpers', 'templates', 'sales'].join(', ')}`
   )
 
   // Attach contracts to the REPL context
@@ -267,13 +267,13 @@ import { addSaleTemplateToLauncher, createFixedPriceSale, createFairSale, printT
   const replInstance = startREPL({
     preview: true,
     useColors: true,
-    prompt: `Mesa > `
+    prompt: `Aqua > `
   })
   // Attach to context
   replInstance.context.helpers = require('./tests/helpers')
   replInstance.context.templateLauncher = templateLauncher
   replInstance.context.saleLauncher = saleLauncher
-  replInstance.context.mesaFactory = mesaFactory
+  replInstance.context.aquaFactory = aquaFactory
   replInstance.context.templates = templates
   replInstance.context.tokens = tokens
   replInstance.context.sales = sales
