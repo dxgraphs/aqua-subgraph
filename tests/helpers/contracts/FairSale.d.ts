@@ -22,48 +22,46 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface FairSaleInterface extends ethers.utils.Interface {
   functions: {
-    "FEE_DENOMINATOR()": FunctionFragment;
-    "auctionStartedDate()": FunctionFragment;
-    "cancelOrders(bytes32[])": FunctionFragment;
+    "TEMPLATE_NAME()": FunctionFragment;
+    "auctionEndDate()": FunctionFragment;
+    "cancelSellOrders(bytes32[])": FunctionFragment;
     "claimFromParticipantOrder(bytes32[])": FunctionFragment;
     "clearingPriceOrder()": FunctionFragment;
     "containsOrder(bytes32)": FunctionFragment;
-    "endDate()": FunctionFragment;
-    "feeNumerator()": FunctionFragment;
-    "feeReceiverUserId()": FunctionFragment;
     "getSecondsRemainingInBatch()": FunctionFragment;
     "getUserId(address)": FunctionFragment;
     "init(bytes)": FunctionFragment;
     "initialAuctionOrder()": FunctionFragment;
+    "initialized()": FunctionFragment;
     "interimOrder()": FunctionFragment;
     "interimSumBidAmount()": FunctionFragment;
     "isAtomicClosureAllowed()": FunctionFragment;
-    "minSellThreshold()": FunctionFragment;
-    "minSellThresholdNotReached()": FunctionFragment;
+    "minFundingThreshold()": FunctionFragment;
+    "minFundingThresholdNotReached()": FunctionFragment;
     "minimumBiddingAmountPerOrder()": FunctionFragment;
     "numUsers()": FunctionFragment;
     "orderCancellationEndDate()": FunctionFragment;
-    "placeOrders(uint96[],uint96[],bytes32[])": FunctionFragment;
+    "placeSellOrders(uint96[],uint96[],bytes32[])": FunctionFragment;
+    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)": FunctionFragment;
     "precalculateSellAmountSum(uint256)": FunctionFragment;
     "registerUser(address)": FunctionFragment;
     "settleAuction()": FunctionFragment;
     "settleAuctionAtomically(uint96[],uint96[],bytes32[])": FunctionFragment;
-    "templateName()": FunctionFragment;
     "tokenIn()": FunctionFragment;
     "tokenOut()": FunctionFragment;
     "volumeClearingPriceOrder()": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "FEE_DENOMINATOR",
+    functionFragment: "TEMPLATE_NAME",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "auctionStartedDate",
+    functionFragment: "auctionEndDate",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "cancelOrders",
+    functionFragment: "cancelSellOrders",
     values: [BytesLike[]]
   ): string;
   encodeFunctionData(
@@ -78,15 +76,6 @@ interface FairSaleInterface extends ethers.utils.Interface {
     functionFragment: "containsOrder",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "endDate", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "feeNumerator",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "feeReceiverUserId",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "getSecondsRemainingInBatch",
     values?: undefined
@@ -95,6 +84,10 @@ interface FairSaleInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "init", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "initialAuctionOrder",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialized",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -110,11 +103,11 @@ interface FairSaleInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "minSellThreshold",
+    functionFragment: "minFundingThreshold",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "minSellThresholdNotReached",
+    functionFragment: "minFundingThresholdNotReached",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -127,8 +120,12 @@ interface FairSaleInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "placeOrders",
+    functionFragment: "placeSellOrders",
     values: [BigNumberish[], BigNumberish[], BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "placeSellOrdersOnBehalf",
+    values: [BigNumberish[], BigNumberish[], BytesLike[], string]
   ): string;
   encodeFunctionData(
     functionFragment: "precalculateSellAmountSum",
@@ -146,10 +143,6 @@ interface FairSaleInterface extends ethers.utils.Interface {
     functionFragment: "settleAuctionAtomically",
     values: [BigNumberish[], BigNumberish[], BytesLike[]]
   ): string;
-  encodeFunctionData(
-    functionFragment: "templateName",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "tokenIn", values?: undefined): string;
   encodeFunctionData(functionFragment: "tokenOut", values?: undefined): string;
   encodeFunctionData(
@@ -158,15 +151,15 @@ interface FairSaleInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "FEE_DENOMINATOR",
+    functionFragment: "TEMPLATE_NAME",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "auctionStartedDate",
+    functionFragment: "auctionEndDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "cancelOrders",
+    functionFragment: "cancelSellOrders",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -181,15 +174,6 @@ interface FairSaleInterface extends ethers.utils.Interface {
     functionFragment: "containsOrder",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "endDate", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "feeNumerator",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "feeReceiverUserId",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "getSecondsRemainingInBatch",
     data: BytesLike
@@ -198,6 +182,10 @@ interface FairSaleInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "initialAuctionOrder",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initialized",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -213,11 +201,11 @@ interface FairSaleInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "minSellThreshold",
+    functionFragment: "minFundingThreshold",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "minSellThresholdNotReached",
+    functionFragment: "minFundingThresholdNotReached",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -230,7 +218,11 @@ interface FairSaleInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "placeOrders",
+    functionFragment: "placeSellOrders",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "placeSellOrdersOnBehalf",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -249,10 +241,6 @@ interface FairSaleInterface extends ethers.utils.Interface {
     functionFragment: "settleAuctionAtomically",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "templateName",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "tokenIn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenOut", data: BytesLike): Result;
   decodeFunctionResult(
@@ -261,21 +249,21 @@ interface FairSaleInterface extends ethers.utils.Interface {
   ): Result;
 
   events: {
-    "CancellationOrder(uint64,uint96,uint96)": EventFragment;
+    "AuctionCleared(uint96,uint96,bytes32)": EventFragment;
+    "AuctionInitialized(address,address,uint256,uint256,uint64,uint96,uint96,uint256,uint256)": EventFragment;
+    "CancellationSellOrder(uint64,uint96,uint96)": EventFragment;
     "ClaimedFromOrder(uint64,uint96,uint96)": EventFragment;
-    "InitializedSale(address,address,uint256,uint256,uint96,uint96,uint256,uint256)": EventFragment;
-    "NewOrder(uint64,uint96,uint96)": EventFragment;
+    "NewSellOrder(uint64,uint96,uint96)": EventFragment;
     "NewUser(uint64,address)": EventFragment;
-    "SaleCleared(uint96,uint96,bytes32)": EventFragment;
     "UserRegistration(address,uint64)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "CancellationOrder"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AuctionCleared"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AuctionInitialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CancellationSellOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ClaimedFromOrder"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "InitializedSale"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NewOrder"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewSellOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewUser"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SaleCleared"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UserRegistration"): EventFragment;
 }
 
@@ -293,31 +281,31 @@ export class FairSale extends Contract {
   interface: FairSaleInterface;
 
   functions: {
-    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<[BigNumber]>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<[string]>;
 
-    "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<[string]>;
 
-    auctionStartedDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+    auctionEndDate(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "auctionStartedDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "auctionEndDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    cancelOrders(
-      _orders: BytesLike[],
+    cancelSellOrders(
+      _sellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "cancelOrders(bytes32[])"(
-      _orders: BytesLike[],
+    "cancelSellOrders(bytes32[])"(
+      _sellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     claimFromParticipantOrder(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "claimFromParticipantOrder(bytes32[])"(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -326,26 +314,14 @@ export class FairSale extends Contract {
     "clearingPriceOrder()"(overrides?: CallOverrides): Promise<[string]>;
 
     containsOrder(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     "containsOrder(bytes32)"(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    endDate(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "endDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    feeNumerator(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "feeNumerator()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    feeReceiverUserId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "feeReceiverUserId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -374,6 +350,10 @@ export class FairSale extends Contract {
 
     "initialAuctionOrder()"(overrides?: CallOverrides): Promise<[string]>;
 
+    initialized(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "initialized()"(overrides?: CallOverrides): Promise<[boolean]>;
+
     interimOrder(overrides?: CallOverrides): Promise<[string]>;
 
     "interimOrder()"(overrides?: CallOverrides): Promise<[string]>;
@@ -386,13 +366,15 @@ export class FairSale extends Contract {
 
     "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<[boolean]>;
 
-    minSellThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
+    minFundingThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "minSellThreshold()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "minFundingThreshold()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    minSellThresholdNotReached(overrides?: CallOverrides): Promise<[boolean]>;
+    minFundingThresholdNotReached(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
-    "minSellThresholdNotReached()"(
+    "minFundingThresholdNotReached()"(
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -414,17 +396,33 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    placeOrders(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    placeSellOrders(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "placeOrders(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    "placeSellOrders(uint96[],uint96[],bytes32[])"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    placeSellOrdersOnBehalf(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -453,22 +451,18 @@ export class FairSale extends Contract {
     "settleAuction()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     settleAuctionAtomically(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    templateName(overrides?: CallOverrides): Promise<[string]>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<[string]>;
 
     tokenIn(overrides?: CallOverrides): Promise<[string]>;
 
@@ -485,31 +479,31 @@ export class FairSale extends Contract {
     ): Promise<[BigNumber]>;
   };
 
-  FEE_DENOMINATOR(overrides?: CallOverrides): Promise<BigNumber>;
+  TEMPLATE_NAME(overrides?: CallOverrides): Promise<string>;
 
-  "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<string>;
 
-  auctionStartedDate(overrides?: CallOverrides): Promise<BigNumber>;
+  auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "auctionStartedDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  cancelOrders(
-    _orders: BytesLike[],
+  cancelSellOrders(
+    _sellOrders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "cancelOrders(bytes32[])"(
-    _orders: BytesLike[],
+  "cancelSellOrders(bytes32[])"(
+    _sellOrders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   claimFromParticipantOrder(
-    _orders: BytesLike[],
+    orders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "claimFromParticipantOrder(bytes32[])"(
-    _orders: BytesLike[],
+    orders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -517,24 +511,12 @@ export class FairSale extends Contract {
 
   "clearingPriceOrder()"(overrides?: CallOverrides): Promise<string>;
 
-  containsOrder(_order: BytesLike, overrides?: CallOverrides): Promise<boolean>;
+  containsOrder(order: BytesLike, overrides?: CallOverrides): Promise<boolean>;
 
   "containsOrder(bytes32)"(
-    _order: BytesLike,
+    order: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  endDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "endDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  feeNumerator(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "feeNumerator()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  feeReceiverUserId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "feeReceiverUserId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -558,6 +540,10 @@ export class FairSale extends Contract {
 
   "initialAuctionOrder()"(overrides?: CallOverrides): Promise<string>;
 
+  initialized(overrides?: CallOverrides): Promise<boolean>;
+
+  "initialized()"(overrides?: CallOverrides): Promise<boolean>;
+
   interimOrder(overrides?: CallOverrides): Promise<string>;
 
   "interimOrder()"(overrides?: CallOverrides): Promise<string>;
@@ -570,13 +556,15 @@ export class FairSale extends Contract {
 
   "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<boolean>;
 
-  minSellThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+  minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "minSellThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  minSellThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
+  minFundingThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
 
-  "minSellThresholdNotReached()"(overrides?: CallOverrides): Promise<boolean>;
+  "minFundingThresholdNotReached()"(
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -592,17 +580,33 @@ export class FairSale extends Contract {
 
   "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  placeOrders(
-    _ordersTokenOut: BigNumberish[],
-    _ordersTokenIn: BigNumberish[],
-    _prevOrders: BytesLike[],
+  placeSellOrders(
+    _minBuyAmounts: BigNumberish[],
+    _sellAmounts: BigNumberish[],
+    _prevSellOrders: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "placeOrders(uint96[],uint96[],bytes32[])"(
-    _ordersTokenOut: BigNumberish[],
-    _ordersTokenIn: BigNumberish[],
-    _prevOrders: BytesLike[],
+  "placeSellOrders(uint96[],uint96[],bytes32[])"(
+    _minBuyAmounts: BigNumberish[],
+    _sellAmounts: BigNumberish[],
+    _prevSellOrders: BytesLike[],
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  placeSellOrdersOnBehalf(
+    _minBuyAmounts: BigNumberish[],
+    _sellAmounts: BigNumberish[],
+    _prevSellOrders: BytesLike[],
+    orderSubmitter: string,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
+    _minBuyAmounts: BigNumberish[],
+    _sellAmounts: BigNumberish[],
+    _prevSellOrders: BytesLike[],
+    orderSubmitter: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -631,22 +635,18 @@ export class FairSale extends Contract {
   "settleAuction()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   settleAuctionAtomically(
-    _ordersTokenOut: BigNumberish[],
-    _ordersTokenIn: BigNumberish[],
-    _prevOrder: BytesLike[],
+    _minBuyAmount: BigNumberish[],
+    _sellAmount: BigNumberish[],
+    _prevSellOrder: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-    _ordersTokenOut: BigNumberish[],
-    _ordersTokenIn: BigNumberish[],
-    _prevOrder: BytesLike[],
+    _minBuyAmount: BigNumberish[],
+    _sellAmount: BigNumberish[],
+    _prevSellOrder: BytesLike[],
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  templateName(overrides?: CallOverrides): Promise<string>;
-
-  "templateName()"(overrides?: CallOverrides): Promise<string>;
 
   tokenIn(overrides?: CallOverrides): Promise<string>;
 
@@ -661,26 +661,26 @@ export class FairSale extends Contract {
   "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
-    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<BigNumber>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<string>;
 
-    "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<string>;
 
-    auctionStartedDate(overrides?: CallOverrides): Promise<BigNumber>;
+    auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "auctionStartedDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    cancelOrders(
-      _orders: BytesLike[],
+    cancelSellOrders(
+      _sellOrders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "cancelOrders(bytes32[])"(
-      _orders: BytesLike[],
+    "cancelSellOrders(bytes32[])"(
+      _sellOrders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     claimFromParticipantOrder(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -690,7 +690,7 @@ export class FairSale extends Contract {
     >;
 
     "claimFromParticipantOrder(bytes32[])"(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -704,26 +704,14 @@ export class FairSale extends Contract {
     "clearingPriceOrder()"(overrides?: CallOverrides): Promise<string>;
 
     containsOrder(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "containsOrder(bytes32)"(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    endDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "endDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeNumerator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "feeNumerator()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeReceiverUserId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "feeReceiverUserId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -746,6 +734,10 @@ export class FairSale extends Contract {
 
     "initialAuctionOrder()"(overrides?: CallOverrides): Promise<string>;
 
+    initialized(overrides?: CallOverrides): Promise<boolean>;
+
+    "initialized()"(overrides?: CallOverrides): Promise<boolean>;
+
     interimOrder(overrides?: CallOverrides): Promise<string>;
 
     "interimOrder()"(overrides?: CallOverrides): Promise<string>;
@@ -758,13 +750,15 @@ export class FairSale extends Contract {
 
     "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<boolean>;
 
-    minSellThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "minSellThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minSellThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
+    minFundingThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
 
-    "minSellThresholdNotReached()"(overrides?: CallOverrides): Promise<boolean>;
+    "minFundingThresholdNotReached()"(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -780,17 +774,33 @@ export class FairSale extends Contract {
 
     "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    placeOrders(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    placeSellOrders(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "placeOrders(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    "placeSellOrders(uint96[],uint96[],bytes32[])"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    placeSellOrdersOnBehalf(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -816,22 +826,18 @@ export class FairSale extends Contract {
     "settleAuction()"(overrides?: CallOverrides): Promise<string>;
 
     settleAuctionAtomically(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    templateName(overrides?: CallOverrides): Promise<string>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<string>;
 
     tokenIn(overrides?: CallOverrides): Promise<string>;
 
@@ -847,75 +853,76 @@ export class FairSale extends Contract {
   };
 
   filters: {
-    CancellationOrder(
-      ownerId: BigNumberish | null,
-      orderTokenOut: null,
-      orderTokenIn: null
+    AuctionCleared(
+      soldTokenOuts: null,
+      soldTokenIns: null,
+      clearingPriceOrder: null
+    ): EventFilter;
+
+    AuctionInitialized(
+      tokenOut: string | null,
+      tokenIn: string | null,
+      orderCancellationEndDate: null,
+      auctionEndDate: null,
+      userId: null,
+      auctionedSellAmount: null,
+      minBuyAmount: null,
+      minimumBiddingAmountPerOrder: null,
+      minFundingThreshold: null
+    ): EventFilter;
+
+    CancellationSellOrder(
+      userId: BigNumberish | null,
+      buyAmount: null,
+      sellAmount: null
     ): EventFilter;
 
     ClaimedFromOrder(
-      ownerId: BigNumberish | null,
-      orderTokenOut: null,
-      orderTokenIn: null
+      userId: BigNumberish | null,
+      buyAmount: null,
+      sellAmount: null
     ): EventFilter;
 
-    InitializedSale(
-      _tokenIn: string | null,
-      _tokenOut: string | null,
-      orderCancellationEndDate: null,
-      endDate: null,
-      _totalTokenOutAmount: null,
-      _minBidAmountToReceive: null,
-      minimumBiddingAmountPerOrder: null,
-      minSellThreshold: null
-    ): EventFilter;
-
-    NewOrder(
-      ownerId: BigNumberish | null,
-      orderTokenOut: null,
-      orderTokenIn: null
+    NewSellOrder(
+      userId: BigNumberish | null,
+      buyAmount: null,
+      sellAmount: null
     ): EventFilter;
 
     NewUser(
-      ownerId: BigNumberish | null,
+      userId: BigNumberish | null,
       userAddress: string | null
     ): EventFilter;
 
-    SaleCleared(
-      auctionedTokens: null,
-      soldBiddingTokens: null,
-      clearingOrder: null
-    ): EventFilter;
-
-    UserRegistration(user: string | null, ownerId: null): EventFilter;
+    UserRegistration(user: string | null, userId: null): EventFilter;
   };
 
   estimateGas: {
-    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<BigNumber>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "FEE_DENOMINATOR()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    auctionStartedDate(overrides?: CallOverrides): Promise<BigNumber>;
+    auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "auctionStartedDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    cancelOrders(
-      _orders: BytesLike[],
+    cancelSellOrders(
+      _sellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "cancelOrders(bytes32[])"(
-      _orders: BytesLike[],
+    "cancelSellOrders(bytes32[])"(
+      _sellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     claimFromParticipantOrder(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "claimFromParticipantOrder(bytes32[])"(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -924,26 +931,14 @@ export class FairSale extends Contract {
     "clearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     containsOrder(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "containsOrder(bytes32)"(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    endDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "endDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeNumerator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "feeNumerator()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeReceiverUserId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "feeReceiverUserId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -966,6 +961,10 @@ export class FairSale extends Contract {
 
     "initialAuctionOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
 
+    initialized(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "initialized()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     interimOrder(overrides?: CallOverrides): Promise<BigNumber>;
 
     "interimOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -978,13 +977,15 @@ export class FairSale extends Contract {
 
     "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minSellThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "minSellThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minSellThresholdNotReached(overrides?: CallOverrides): Promise<BigNumber>;
+    minFundingThresholdNotReached(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
-    "minSellThresholdNotReached()"(
+    "minFundingThresholdNotReached()"(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1002,17 +1003,33 @@ export class FairSale extends Contract {
 
     "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    placeOrders(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    placeSellOrders(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    "placeOrders(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    "placeSellOrders(uint96[],uint96[],bytes32[])"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    placeSellOrdersOnBehalf(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1038,22 +1055,18 @@ export class FairSale extends Contract {
     "settleAuction()"(overrides?: Overrides): Promise<BigNumber>;
 
     settleAuctionAtomically(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    templateName(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenIn(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1069,37 +1082,33 @@ export class FairSale extends Contract {
   };
 
   populateTransaction: {
-    FEE_DENOMINATOR(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "FEE_DENOMINATOR()"(
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    auctionEndDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "auctionEndDate()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    auctionStartedDate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "auctionStartedDate()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cancelOrders(
-      _orders: BytesLike[],
+    cancelSellOrders(
+      _sellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "cancelOrders(bytes32[])"(
-      _orders: BytesLike[],
+    "cancelSellOrders(bytes32[])"(
+      _sellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     claimFromParticipantOrder(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "claimFromParticipantOrder(bytes32[])"(
-      _orders: BytesLike[],
+      orders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1112,26 +1121,12 @@ export class FairSale extends Contract {
     ): Promise<PopulatedTransaction>;
 
     containsOrder(
-      _order: BytesLike,
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "containsOrder(bytes32)"(
-      _order: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    endDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "endDate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    feeNumerator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "feeNumerator()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    feeReceiverUserId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "feeReceiverUserId()"(
+      order: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1171,6 +1166,10 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    initialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "initialized()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     interimOrder(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "interimOrder()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1191,17 +1190,19 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    minSellThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "minSellThreshold()"(
+    minFundingThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    minSellThresholdNotReached(
+    "minFundingThreshold()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "minSellThresholdNotReached()"(
+    minFundingThresholdNotReached(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "minFundingThresholdNotReached()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1225,17 +1226,33 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    placeOrders(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    placeSellOrders(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "placeOrders(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrders: BytesLike[],
+    "placeSellOrders(uint96[],uint96[],bytes32[])"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    placeSellOrdersOnBehalf(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
+      _minBuyAmounts: BigNumberish[],
+      _sellAmounts: BigNumberish[],
+      _prevSellOrders: BytesLike[],
+      orderSubmitter: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1264,22 +1281,18 @@ export class FairSale extends Contract {
     "settleAuction()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     settleAuctionAtomically(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _ordersTokenOut: BigNumberish[],
-      _ordersTokenIn: BigNumberish[],
-      _prevOrder: BytesLike[],
+      _minBuyAmount: BigNumberish[],
+      _sellAmount: BigNumberish[],
+      _prevSellOrder: BytesLike[],
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
-
-    templateName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenIn(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

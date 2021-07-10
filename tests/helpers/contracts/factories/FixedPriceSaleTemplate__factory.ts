@@ -32,13 +32,13 @@ const _abi = [
       {
         indexed: false,
         internalType: "address",
-        name: "tokenOut",
+        name: "tokenIn",
         type: "address",
       },
       {
         indexed: false,
         internalType: "address",
-        name: "tokenIn",
+        name: "tokenOut",
         type: "address",
       },
       {
@@ -68,30 +68,43 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "allocationMin",
+        name: "minCommitment",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "allocationMax",
+        name: "maxCommitment",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "minimumRaise",
+        name: "minRaise",
         type: "uint256",
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "owner",
-        type: "address",
+        internalType: "bool",
+        name: "participantList",
+        type: "bool",
       },
     ],
     name: "TemplateInitialized",
     type: "event",
+  },
+  {
+    inputs: [],
+    name: "aquaFactory",
+    outputs: [
+      {
+        internalType: "contract IAquaFactory",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
@@ -104,6 +117,19 @@ const _abi = [
       },
     ],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "encodedInitData",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -121,12 +147,38 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "mesaFactory",
+    name: "isInitialized",
     outputs: [
       {
-        internalType: "contract IMesaFactory",
+        internalType: "bool",
         name: "",
-        type: "address",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isSaleCreated",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "metaDataContentHash",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
     stateMutability: "view",
@@ -160,12 +212,77 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "templateLauncher",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "templateManager",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "templateName",
     outputs: [
       {
         internalType: "string",
         name: "",
         type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "tokenOut",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "tokenSupplier",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "tokensForSale",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
