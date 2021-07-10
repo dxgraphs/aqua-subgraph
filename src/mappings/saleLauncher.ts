@@ -6,8 +6,8 @@ import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
 import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 
 // Helpers
-import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
 import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
+import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
