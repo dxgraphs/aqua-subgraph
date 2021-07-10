@@ -12,7 +12,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class MesaFactory extends Entity {
+export class AquaFactory extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -20,17 +20,17 @@ export class MesaFactory extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save MesaFactory entity without an ID");
+    assert(id !== null, "Cannot save AquaFactory entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save MesaFactory entity with non-string ID. " +
+      "Cannot save AquaFactory entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("MesaFactory", id.toString(), this);
+    store.set("AquaFactory", id.toString(), this);
   }
 
-  static load(id: string): MesaFactory | null {
-    return store.get("MesaFactory", id) as MesaFactory | null;
+  static load(id: string): AquaFactory | null {
+    return store.get("AquaFactory", id) as AquaFactory | null;
   }
 
   get id(): string {
@@ -1021,7 +1021,7 @@ export class SaleTemplate extends Entity {
   }
 }
 
-export class MesaLog extends Entity {
+export class AquaLog extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1029,17 +1029,17 @@ export class MesaLog extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save MesaLog entity without an ID");
+    assert(id !== null, "Cannot save AquaLog entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save MesaLog entity with non-string ID. " +
+      "Cannot save AquaLog entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("MesaLog", id.toString(), this);
+    store.set("AquaLog", id.toString(), this);
   }
 
-  static load(id: string): MesaLog | null {
-    return store.get("MesaLog", id) as MesaLog | null;
+  static load(id: string): AquaLog | null {
+    return store.get("AquaLog", id) as AquaLog | null;
   }
 
   get id(): string {

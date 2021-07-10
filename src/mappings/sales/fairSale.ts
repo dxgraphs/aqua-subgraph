@@ -23,7 +23,7 @@ import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
  * @param event
  */
 export function handleSaleCleared(event: SaleCleared): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
@@ -39,7 +39,7 @@ export function handleSaleCleared(event: SaleCleared): void {
 }
 
 export function handleCancellationOrder(event: CancellationOrder): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
@@ -57,7 +57,7 @@ export function handleCancellationOrder(event: CancellationOrder): void {
 }
 
 export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
@@ -76,7 +76,7 @@ export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
  * @param event
  */
 export function handleNewOrder(event: NewOrder): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
   // Construct entity ID from the parameters
@@ -103,16 +103,16 @@ export function handleNewOrder(event: NewOrder): void {
  * @param event
  */
 export function handleNewUser(event: NewUser): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
   // Use their address as unique id
   // A sale user id is <saleAddress>/users/<ownerId>
-  let saleUser = new Schemas.FairSaleUser(event.address.toHexString() + '/users/' + event.params.ownerId.toString())
+  let saleUser = new Schemas.FairSaleUser(event.address.toHexString() + '/users/' + event.params.userId.toString())
   // Update ref to FairSale
   saleUser.sale = event.address.toString()
-  saleUser.ownerId = event.params.ownerId.toI32()
+  saleUser.ownerId = event.params.userId.toI32()
   saleUser.createdAt = event.block.timestamp.toI32()
   saleUser.updatedAt = event.block.timestamp.toI32()
   saleUser.address = event.params.userAddress
@@ -125,10 +125,10 @@ export function handleNewUser(event: NewUser): void {
 export function handleUserRegistration(event: UserRegistration): void {}
 
 /**
- * Checks if the contract that emitted the event belongs to Mesa
+ * Checks if the contract that emitted the event belongs to Aqua
  * @param auctionAddress
  */
-function isFairSaleBelongsToMesa(fairSaleContractAddress: Address): boolean {
+function isFairSaleBelongsToAqua(fairSaleContractAddress: Address): boolean {
   // Find the from
   let fairSale = Schemas.FairSale.load(fairSaleContractAddress.toHexString())
 

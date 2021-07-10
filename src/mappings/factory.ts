@@ -1,6 +1,6 @@
 // Contract ABIs and Events
 import {
-  MesaFactory as MesaFactoryContract,
+  AquaFactory as AquaFactoryContract,
   TemplateLauncherUpdated,
   TemplateManagerUpdated,
   FeeNumeratorUpdated,
@@ -9,23 +9,23 @@ import {
   FeeManagerUpdated,
   SaleFeeUpdated,
   FeeToUpdated
-} from '../../generated/MesaFactory/MesaFactory'
+} from '../../generated/AquaFactory/AquaFactory'
 
 // GraphQL Schemas
 import * as Schemas from '../../generated/schema'
 
 // Mapping helpers
-import { MESA_FACTORY } from '../helpers/factory'
+import { AQUA_FACTORY } from '../helpers/factory'
 
 /**
- * Handle initilizing the MesaFactory.
+ * Handle initilizing the AquaFactory.
  * Presumely, this handler is called once
  * @param event
  * @returns
  */
 export function handleFactoryInitialized(event: FactoryInitialized): void {
-  let factoryContract = MesaFactoryContract.bind(event.address)
-  let factory = new Schemas.MesaFactory(MESA_FACTORY.ID)
+  let factoryContract = AquaFactoryContract.bind(event.address)
+  let factory = new Schemas.AquaFactory(AQUA_FACTORY.ID)
   // Address of factory
   factory.address = event.address
   // Fees collector from auctions
@@ -44,7 +44,7 @@ export function handleFactoryInitialized(event: FactoryInitialized): void {
 }
 
 export function handleFeeManagerUpdated(event: FeeManagerUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.feeManager = event.params.feeManager
     factory.save()
@@ -52,7 +52,7 @@ export function handleFeeManagerUpdated(event: FeeManagerUpdated): void {
 }
 
 export function handleFeeNumeratorUpdated(event: FeeNumeratorUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.feeNumerator = event.params.feeNumerator
     factory.save()
@@ -60,7 +60,7 @@ export function handleFeeNumeratorUpdated(event: FeeNumeratorUpdated): void {
 }
 
 export function handleFeeToUpdated(event: FeeToUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.feeTo = event.params.feeTo
     factory.save()
@@ -68,7 +68,7 @@ export function handleFeeToUpdated(event: FeeToUpdated): void {
 }
 
 export function handleSaleFeeUpdated(event: SaleFeeUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.saleFee = event.params.saleFee
     factory.save()
@@ -76,7 +76,7 @@ export function handleSaleFeeUpdated(event: SaleFeeUpdated): void {
 }
 
 export function handleTemplateFeeUpdated(event: TemplateFeeUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.templateFee = event.params.templateFee
     factory.save()
@@ -84,7 +84,7 @@ export function handleTemplateFeeUpdated(event: TemplateFeeUpdated): void {
 }
 
 export function handleTemplateManagerUpdated(event: TemplateManagerUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.templateManager = event.params.templateManager
     factory.save()
@@ -92,7 +92,7 @@ export function handleTemplateManagerUpdated(event: TemplateManagerUpdated): voi
 }
 
 export function handleTemplateLauncherUpdated(event: TemplateLauncherUpdated): void {
-  let factory = Schemas.MesaFactory.load(MESA_FACTORY.ID)
+  let factory = Schemas.AquaFactory.load(AQUA_FACTORY.ID)
   if (factory) {
     factory.templateLauncher = event.params.templateLauncher
     factory.save()

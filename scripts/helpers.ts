@@ -14,7 +14,7 @@ import {
   TemplateLauncher,
   FixedPriceSale,
   ERC20Mintable,
-  MesaFactory,
+  AquaFactory,
   SaleLauncher
 } from '../tests/helpers/contracts'
 
@@ -23,7 +23,7 @@ import { NewPurchase, TemplateAdded } from './interfaces'
 
 export interface CreateSaleOptions {
   templateId: BigNumberish
-  mesaFactory: MesaFactory
+  aquaFactory: AquaFactory
   saleLauncher: SaleLauncher
   biddingToken: ERC20Mintable
   saleToken: ERC20Mintable
@@ -83,13 +83,13 @@ export function getEvent<T>(event: Event): T {
  */
 export async function createFairSale({
   templateId,
-  mesaFactory,
+  aquaFactory,
   saleLauncher,
   biddingToken,
   saleToken,
   saleCreator
 }: CreateSaleOptions) {
-  const launchFairSaleTemplateTx = await mesaFactory.launchTemplate(
+  const launchFairSaleTemplateTx = await aquaFactory.launchTemplate(
     templateId,
     encodeInitDataFairSale({
       duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
@@ -113,7 +113,7 @@ export async function createFairSale({
 
   const launchedTemplateAddress = launchFairSaleTemplateTxReceipt?.events[0]?.args?.template
   console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
-  
+
   // Connect to the Template and create the sale
   const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
@@ -121,7 +121,7 @@ export async function createFairSale({
     value: utils.parseUnits('1')
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
-  
+
   const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
   return newSaleAddress
 }
@@ -132,19 +132,19 @@ export async function createFairSale({
  */
 export async function createFixedPriceSale({
   templateId,
-  mesaFactory,
+  aquaFactory,
   saleLauncher,
   biddingToken,
   saleToken,
   saleCreator
 }: CreateSaleOptions): Promise<string> {
   // Get blocktimestamp from Ganache
-  const lastBlock = await getLastBlock(mesaFactory.provider)
+  const lastBlock = await getLastBlock(aquaFactory.provider)
   // Sale lasts for one hour
   const startDate = lastBlock.timestamp + 3600 // One hour from last block timestamp
   const endDate = lastBlock.timestamp + 3600 * 2 // One hour from last block timestamp
 
-  const launchFixedPriceSaleTemplateTxReceipt = await mesaFactory
+  const launchFixedPriceSaleTemplateTxReceipt = await aquaFactory
     .launchTemplate(
       templateId, // FixedPriceSale templateId
       encodeInitDataFixedPrice({
@@ -156,7 +156,7 @@ export async function createFixedPriceSale({
         tokenOut: saleToken.address,
         minimumRaise: utils.parseUnits('100'),
         tokenSupplier: await saleCreator.getAddress(),
-        allocationMax: utils.parseUnits('10'), 
+        allocationMax: utils.parseUnits('10'),
         allocationMin: utils.parseUnits('1'),
         owner: await saleCreator.getAddress(),
         tokenPrice: utils.parseUnits('2'),

@@ -3,39 +3,39 @@ import { utils } from 'ethers'
 // Helpers
 import { createTokenAndMintAndApprove, getContractFactory, SUBGRAPH_SYNC_SECONDS, wait, getSigners } from './helpers'
 import { FixedPriceSale, FixedPriceSaleTemplate, FixedPriceSale__factory } from './helpers/contracts'
-import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
+import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { createFixedPriceSale } from '../scripts/helpers'
 
 // Test block
 describe('SaleLauncher', function() {
-  let mesa: MesaJestBeforeEachContext
+  let aqua: AquaJestBeforeEachContext
 
   beforeEach(async () => {
-    mesa = await mesaJestBeforeEach()
+    aqua = await aquaJestBeforeEach()
   })
 
   afterEach(async () => {
-    await mesaJestAfterEach()
+    await aquaJestAfterEach()
   })
 
   test('Should save new FixedPriceSale with all expected properties', async () => {
-    const [deployer, saleCreator, saleInvestorA, saleInvestorB] = getSigners(mesa.provider)
+    const [deployer, saleCreator, saleInvestorA, saleInvestorB] = getSigners(aqua.provider)
     // Register sale
     const fixedPriceSale = (await getContractFactory('FixedPriceSale', deployer).deploy()) as FixedPriceSale
     // Register FixedPriceSale in SaleLauncher
     const fixedPriceSaleTemplate = (await getContractFactory(
       'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
+      aqua.provider.getSigner(0)
     ).deploy()) as FixedPriceSaleTemplate
     // Register sale in SaleLauncher
-    const txReceipt1 = await (await mesa.saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
+    const txReceipt1 = await (await aqua.saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
     // Regiter template in TemplateLauncher
-    const txReceipt2 = await (await mesa.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait(1)
+    const txReceipt2 = await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait(1)
     // Deploy, mint and approve Auctioning Token
     const fixedPriceSaleToken = await createTokenAndMintAndApprove({
       name: 'Fixed Price Sale Token',
       symbol: 'FPST',
-      addressToApprove: mesa.saleLauncher.address,
+      addressToApprove: aqua.saleLauncher.address,
       numberOfTokens: utils.parseEther('1000'),
       users: [saleCreator],
       signer: saleCreator
@@ -45,7 +45,7 @@ describe('SaleLauncher', function() {
     const biddingToken = await createTokenAndMintAndApprove({
       name: 'Bidding Token',
       symbol: 'BT',
-      addressToApprove: mesa.saleLauncher.address,
+      addressToApprove: aqua.saleLauncher.address,
       numberOfTokens: utils.parseEther('1000'),
       users: [saleCreator, saleInvestorA, saleInvestorB],
       signer: deployer
@@ -53,8 +53,8 @@ describe('SaleLauncher', function() {
     // Launch FixedPriceSale
     const newFixedPriceSaleAddress = await createFixedPriceSale({
       templateId: 1,
-      mesaFactory: mesa.mesaFactory,
-      saleLauncher: mesa.saleLauncher,
+      aquaFactory: aqua.aquaFactory,
+      saleLauncher: aqua.saleLauncher,
       biddingToken: biddingToken,
       saleToken: fixedPriceSaleToken,
       saleCreator
@@ -63,7 +63,7 @@ describe('SaleLauncher', function() {
 
     await wait(SUBGRAPH_SYNC_SECONDS * 5)
 
-    const { data } = await mesa.fetchFromTheGraph(`{
+    const { data } = await aqua.fetchFromTheGraph(`{
       fixedPriceSale (id: "${newFixedPriceSaleAddress}") {
           id
           status

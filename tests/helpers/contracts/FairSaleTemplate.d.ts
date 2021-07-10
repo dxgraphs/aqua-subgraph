@@ -23,21 +23,44 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
 interface FairSaleTemplateInterface extends ethers.utils.Interface {
   functions: {
+    "aquaFactory()": FunctionFragment;
     "createSale()": FunctionFragment;
+    "encodedInitData()": FunctionFragment;
     "init(bytes)": FunctionFragment;
-    "mesaFactory()": FunctionFragment;
+    "isInitialized()": FunctionFragment;
+    "isSaleCreated()": FunctionFragment;
+    "metaDataContentHash()": FunctionFragment;
     "saleLauncher()": FunctionFragment;
     "saleTemplateId()": FunctionFragment;
     "templateName()": FunctionFragment;
+    "tokenOut()": FunctionFragment;
+    "tokenSupplier()": FunctionFragment;
+    "tokensForSale()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "aquaFactory",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "createSale",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "encodedInitData",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "init", values: [BytesLike]): string;
   encodeFunctionData(
-    functionFragment: "mesaFactory",
+    functionFragment: "isInitialized",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSaleCreated",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "metaDataContentHash",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -50,13 +73,38 @@ interface FairSaleTemplateInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "templateName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "tokenOut", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "tokenSupplier",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokensForSale",
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "aquaFactory",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "createSale", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "encodedInitData",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "mesaFactory",
+    functionFragment: "isInitialized",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isSaleCreated",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "metaDataContentHash",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -69,11 +117,20 @@ interface FairSaleTemplateInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "templateName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "tokenOut", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenSupplier",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokensForSale",
     data: BytesLike
   ): Result;
 
   events: {
-    "TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256)": EventFragment;
+    "TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256,uint256,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "TemplateInitialized"): EventFragment;
@@ -93,9 +150,17 @@ export class FairSaleTemplate extends Contract {
   interface: FairSaleTemplateInterface;
 
   functions: {
+    aquaFactory(overrides?: CallOverrides): Promise<[string]>;
+
+    "aquaFactory()"(overrides?: CallOverrides): Promise<[string]>;
+
     createSale(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
     "createSale()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
+
+    encodedInitData(overrides?: CallOverrides): Promise<[string]>;
+
+    "encodedInitData()"(overrides?: CallOverrides): Promise<[string]>;
 
     init(_data: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -104,9 +169,17 @@ export class FairSaleTemplate extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    mesaFactory(overrides?: CallOverrides): Promise<[string]>;
+    isInitialized(overrides?: CallOverrides): Promise<[boolean]>;
 
-    "mesaFactory()"(overrides?: CallOverrides): Promise<[string]>;
+    "isInitialized()"(overrides?: CallOverrides): Promise<[boolean]>;
+
+    isSaleCreated(overrides?: CallOverrides): Promise<[boolean]>;
+
+    "isSaleCreated()"(overrides?: CallOverrides): Promise<[boolean]>;
+
+    metaDataContentHash(overrides?: CallOverrides): Promise<[string]>;
+
+    "metaDataContentHash()"(overrides?: CallOverrides): Promise<[string]>;
 
     saleLauncher(overrides?: CallOverrides): Promise<[string]>;
 
@@ -119,11 +192,31 @@ export class FairSaleTemplate extends Contract {
     templateName(overrides?: CallOverrides): Promise<[string]>;
 
     "templateName()"(overrides?: CallOverrides): Promise<[string]>;
+
+    tokenOut(overrides?: CallOverrides): Promise<[string]>;
+
+    "tokenOut()"(overrides?: CallOverrides): Promise<[string]>;
+
+    tokenSupplier(overrides?: CallOverrides): Promise<[string]>;
+
+    "tokenSupplier()"(overrides?: CallOverrides): Promise<[string]>;
+
+    tokensForSale(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "tokensForSale()"(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
+
+  aquaFactory(overrides?: CallOverrides): Promise<string>;
+
+  "aquaFactory()"(overrides?: CallOverrides): Promise<string>;
 
   createSale(overrides?: PayableOverrides): Promise<ContractTransaction>;
 
   "createSale()"(overrides?: PayableOverrides): Promise<ContractTransaction>;
+
+  encodedInitData(overrides?: CallOverrides): Promise<string>;
+
+  "encodedInitData()"(overrides?: CallOverrides): Promise<string>;
 
   init(_data: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -132,9 +225,17 @@ export class FairSaleTemplate extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  mesaFactory(overrides?: CallOverrides): Promise<string>;
+  isInitialized(overrides?: CallOverrides): Promise<boolean>;
 
-  "mesaFactory()"(overrides?: CallOverrides): Promise<string>;
+  "isInitialized()"(overrides?: CallOverrides): Promise<boolean>;
+
+  isSaleCreated(overrides?: CallOverrides): Promise<boolean>;
+
+  "isSaleCreated()"(overrides?: CallOverrides): Promise<boolean>;
+
+  metaDataContentHash(overrides?: CallOverrides): Promise<string>;
+
+  "metaDataContentHash()"(overrides?: CallOverrides): Promise<string>;
 
   saleLauncher(overrides?: CallOverrides): Promise<string>;
 
@@ -148,18 +249,46 @@ export class FairSaleTemplate extends Contract {
 
   "templateName()"(overrides?: CallOverrides): Promise<string>;
 
+  tokenOut(overrides?: CallOverrides): Promise<string>;
+
+  "tokenOut()"(overrides?: CallOverrides): Promise<string>;
+
+  tokenSupplier(overrides?: CallOverrides): Promise<string>;
+
+  "tokenSupplier()"(overrides?: CallOverrides): Promise<string>;
+
+  tokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "tokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
+    aquaFactory(overrides?: CallOverrides): Promise<string>;
+
+    "aquaFactory()"(overrides?: CallOverrides): Promise<string>;
+
     createSale(overrides?: CallOverrides): Promise<string>;
 
     "createSale()"(overrides?: CallOverrides): Promise<string>;
+
+    encodedInitData(overrides?: CallOverrides): Promise<string>;
+
+    "encodedInitData()"(overrides?: CallOverrides): Promise<string>;
 
     init(_data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "init(bytes)"(_data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
-    mesaFactory(overrides?: CallOverrides): Promise<string>;
+    isInitialized(overrides?: CallOverrides): Promise<boolean>;
 
-    "mesaFactory()"(overrides?: CallOverrides): Promise<string>;
+    "isInitialized()"(overrides?: CallOverrides): Promise<boolean>;
+
+    isSaleCreated(overrides?: CallOverrides): Promise<boolean>;
+
+    "isSaleCreated()"(overrides?: CallOverrides): Promise<boolean>;
+
+    metaDataContentHash(overrides?: CallOverrides): Promise<string>;
+
+    "metaDataContentHash()"(overrides?: CallOverrides): Promise<string>;
 
     saleLauncher(overrides?: CallOverrides): Promise<string>;
 
@@ -172,32 +301,62 @@ export class FairSaleTemplate extends Contract {
     templateName(overrides?: CallOverrides): Promise<string>;
 
     "templateName()"(overrides?: CallOverrides): Promise<string>;
+
+    tokenOut(overrides?: CallOverrides): Promise<string>;
+
+    "tokenOut()"(overrides?: CallOverrides): Promise<string>;
+
+    tokenSupplier(overrides?: CallOverrides): Promise<string>;
+
+    "tokenSupplier()"(overrides?: CallOverrides): Promise<string>;
+
+    tokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "tokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
     TemplateInitialized(
-      tokenOut: null,
       tokenIn: null,
+      tokenOut: null,
       duration: null,
-      tokenOutSupply: null,
+      tokensForSale: null,
       minPrice: null,
       minBuyAmount: null,
-      minRaise: null
+      minRaise: null,
+      orderCancelationPeriodDuration: null,
+      minimumBiddingAmountPerOrder: null
     ): EventFilter;
   };
 
   estimateGas: {
+    aquaFactory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "aquaFactory()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     createSale(overrides?: PayableOverrides): Promise<BigNumber>;
 
     "createSale()"(overrides?: PayableOverrides): Promise<BigNumber>;
+
+    encodedInitData(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "encodedInitData()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     init(_data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "init(bytes)"(_data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
-    mesaFactory(overrides?: CallOverrides): Promise<BigNumber>;
+    isInitialized(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "mesaFactory()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "isInitialized()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isSaleCreated(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "isSaleCreated()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    metaDataContentHash(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "metaDataContentHash()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     saleLauncher(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -210,12 +369,34 @@ export class FairSaleTemplate extends Contract {
     templateName(overrides?: CallOverrides): Promise<BigNumber>;
 
     "templateName()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tokenOut(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "tokenOut()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tokenSupplier(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "tokenSupplier()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    tokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "tokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    aquaFactory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "aquaFactory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     createSale(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
 
     "createSale()"(overrides?: PayableOverrides): Promise<PopulatedTransaction>;
+
+    encodedInitData(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "encodedInitData()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     init(
       _data: BytesLike,
@@ -227,9 +408,21 @@ export class FairSaleTemplate extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    mesaFactory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    isInitialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "mesaFactory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "isInitialized()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    isSaleCreated(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "isSaleCreated()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    metaDataContentHash(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "metaDataContentHash()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     saleLauncher(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -244,5 +437,17 @@ export class FairSaleTemplate extends Contract {
     templateName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "templateName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    tokenOut(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "tokenOut()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    tokenSupplier(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "tokenSupplier()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    tokensForSale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "tokensForSale()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

@@ -24,33 +24,19 @@ interface FixedPriceSaleInterface extends ethers.utils.Interface {
   functions: {
     "ERC20Withdraw(address,uint256)": FunctionFragment;
     "ETHWithdraw(uint256)": FunctionFragment;
-    "allocationMax()": FunctionFragment;
-    "allocationMin()": FunctionFragment;
-    "buyTokens(uint256)": FunctionFragment;
-    "claimTokens()": FunctionFragment;
+    "TEMPLATE_NAME()": FunctionFragment;
     "closeSale()": FunctionFragment;
-    "distributeAllTokens()": FunctionFragment;
-    "endDate()": FunctionFragment;
+    "commitTokens(uint256)": FunctionFragment;
+    "commitment(address)": FunctionFragment;
     "init(bytes)": FunctionFragment;
-    "isClosed()": FunctionFragment;
-    "minimumRaise()": FunctionFragment;
-    "orderOwners(uint256)": FunctionFragment;
-    "ordersCount()": FunctionFragment;
+    "isMinRaiseReached()": FunctionFragment;
+    "isSaleEnded()": FunctionFragment;
     "owner()": FunctionFragment;
-    "releaseTokens()": FunctionFragment;
+    "remainingTokensForSale()": FunctionFragment;
+    "saleInfo()": FunctionFragment;
+    "saleStatus()": FunctionFragment;
     "secondsRemainingInSale()": FunctionFragment;
-    "startDate()": FunctionFragment;
-    "templateName()": FunctionFragment;
-    "tokenIn()": FunctionFragment;
-    "tokenOut()": FunctionFragment;
-    "tokenPrice()": FunctionFragment;
-    "tokensForSale()": FunctionFragment;
-    "tokensPurchased(address)": FunctionFragment;
-    "tokensRemaining()": FunctionFragment;
-    "tokensSold()": FunctionFragment;
-    "withdrawFunds()": FunctionFragment;
-    "withdrawFundsWithParams(bytes)": FunctionFragment;
-    "withdrawUnsoldFunds()": FunctionFragment;
+    "withdrawTokens(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -62,88 +48,41 @@ interface FixedPriceSaleInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "allocationMax",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "allocationMin",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "buyTokens",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "claimTokens",
+    functionFragment: "TEMPLATE_NAME",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "closeSale", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "distributeAllTokens",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "endDate", values?: undefined): string;
-  encodeFunctionData(functionFragment: "init", values: [BytesLike]): string;
-  encodeFunctionData(functionFragment: "isClosed", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "minimumRaise",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "orderOwners",
+    functionFragment: "commitTokens",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "commitment", values: [string]): string;
+  encodeFunctionData(functionFragment: "init", values: [BytesLike]): string;
   encodeFunctionData(
-    functionFragment: "ordersCount",
+    functionFragment: "isMinRaiseReached",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isSaleEnded",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "releaseTokens",
+    functionFragment: "remainingTokensForSale",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "saleInfo", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "saleStatus",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "secondsRemainingInSale",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "startDate", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "templateName",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "tokenIn", values?: undefined): string;
-  encodeFunctionData(functionFragment: "tokenOut", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "tokenPrice",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokensForSale",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokensPurchased",
+    functionFragment: "withdrawTokens",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokensRemaining",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "tokensSold",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawFunds",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawFundsWithParams",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "withdrawUnsoldFunds",
-    values?: undefined
   ): string;
 
   decodeFunctionResult(
@@ -155,96 +94,53 @@ interface FixedPriceSaleInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "allocationMax",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "allocationMin",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "buyTokens", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "claimTokens",
+    functionFragment: "TEMPLATE_NAME",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "closeSale", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "distributeAllTokens",
+    functionFragment: "commitTokens",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "endDate", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "commitment", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "isClosed", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "minimumRaise",
+    functionFragment: "isMinRaiseReached",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "orderOwners",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "ordersCount",
+    functionFragment: "isSaleEnded",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "releaseTokens",
+    functionFragment: "remainingTokensForSale",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "saleInfo", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "saleStatus", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "secondsRemainingInSale",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "startDate", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "templateName",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokenIn", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenOut", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "tokenPrice", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "tokensForSale",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokensPurchased",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "tokensRemaining",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "tokensSold", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawFunds",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawFundsWithParams",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawUnsoldFunds",
+    functionFragment: "withdrawTokens",
     data: BytesLike
   ): Result;
 
   events: {
-    "NewPurchase(address,uint256)": EventFragment;
-    "NewTokenClaim(address,uint256)": EventFragment;
+    "NewCommitment(address,uint256)": EventFragment;
     "NewTokenRelease(address,uint256)": EventFragment;
+    "NewTokenWithdraw(address,uint256)": EventFragment;
     "SaleClosed()": EventFragment;
-    "SaleInitalized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)": EventFragment;
-    "distributeAllTokensLeft(uint256)": EventFragment;
+    "SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "NewPurchase"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "NewTokenClaim"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewCommitment"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewTokenRelease"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewTokenWithdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SaleClosed"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SaleInitalized"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "distributeAllTokensLeft"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SaleInitialized"): EventFragment;
 }
 
 export class FixedPriceSale extends Contract {
@@ -283,41 +179,30 @@ export class FixedPriceSale extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    allocationMax(overrides?: CallOverrides): Promise<[BigNumber]>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<[string]>;
 
-    "allocationMax()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    allocationMin(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "allocationMin()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    buyTokens(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "buyTokens(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    claimTokens(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "claimTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<[string]>;
 
     closeSale(overrides?: Overrides): Promise<ContractTransaction>;
 
     "closeSale()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-    distributeAllTokens(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "distributeAllTokens()"(
+    commitTokens(
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    endDate(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "commitTokens(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
 
-    "endDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    commitment(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    "commitment(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     init(_data: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -326,99 +211,115 @@ export class FixedPriceSale extends Contract {
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    isClosed(overrides?: CallOverrides): Promise<[boolean]>;
+    isMinRaiseReached(overrides?: CallOverrides): Promise<[boolean]>;
 
-    "isClosed()"(overrides?: CallOverrides): Promise<[boolean]>;
+    "isMinRaiseReached()"(overrides?: CallOverrides): Promise<[boolean]>;
 
-    minimumRaise(overrides?: CallOverrides): Promise<[BigNumber]>;
+    isSaleEnded(overrides?: CallOverrides): Promise<[boolean]>;
 
-    "minimumRaise()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    orderOwners(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    "orderOwners(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    ordersCount(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "ordersCount()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+    "isSaleEnded()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     "owner()"(overrides?: CallOverrides): Promise<[string]>;
 
-    releaseTokens(overrides?: Overrides): Promise<ContractTransaction>;
+    remainingTokensForSale(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "releaseTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
+    "remainingTokensForSale()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    saleInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        string
+      ] & {
+        tokenIn: string;
+        tokenOut: string;
+        tokenPrice: BigNumber;
+        tokensForSale: BigNumber;
+        startDate: BigNumber;
+        endDate: BigNumber;
+        minCommitment: BigNumber;
+        maxCommitment: BigNumber;
+        minRaise: BigNumber;
+        hasParticipantList: boolean;
+        participantList: string;
+      }
+    >;
+
+    "saleInfo()"(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        string
+      ] & {
+        tokenIn: string;
+        tokenOut: string;
+        tokenPrice: BigNumber;
+        tokensForSale: BigNumber;
+        startDate: BigNumber;
+        endDate: BigNumber;
+        minCommitment: BigNumber;
+        maxCommitment: BigNumber;
+        minRaise: BigNumber;
+        hasParticipantList: boolean;
+        participantList: string;
+      }
+    >;
+
+    saleStatus(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, boolean, boolean, boolean] & {
+        tokensCommitted: BigNumber;
+        isClosed: boolean;
+        saleSucceeded: boolean;
+        initialized: boolean;
+      }
+    >;
+
+    "saleStatus()"(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, boolean, boolean, boolean] & {
+        tokensCommitted: BigNumber;
+        isClosed: boolean;
+        saleSucceeded: boolean;
+        initialized: boolean;
+      }
+    >;
 
     secondsRemainingInSale(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "secondsRemainingInSale()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    startDate(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "startDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    templateName(overrides?: CallOverrides): Promise<[string]>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<[string]>;
-
-    tokenIn(overrides?: CallOverrides): Promise<[string]>;
-
-    "tokenIn()"(overrides?: CallOverrides): Promise<[string]>;
-
-    tokenOut(overrides?: CallOverrides): Promise<[string]>;
-
-    "tokenOut()"(overrides?: CallOverrides): Promise<[string]>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    tokensForSale(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "tokensForSale()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    tokensPurchased(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "tokensPurchased(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    tokensRemaining(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "tokensRemaining()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    tokensSold(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "tokensSold()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    withdrawFunds(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "withdrawFunds()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    withdrawFundsWithParams(
-      _data: BytesLike,
+    withdrawTokens(
+      user: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
-    "withdrawFundsWithParams(bytes)"(
-      _data: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    withdrawUnsoldFunds(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "withdrawUnsoldFunds()"(
+    "withdrawTokens(address)"(
+      user: string,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
   };
@@ -445,39 +346,30 @@ export class FixedPriceSale extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  allocationMax(overrides?: CallOverrides): Promise<BigNumber>;
+  TEMPLATE_NAME(overrides?: CallOverrides): Promise<string>;
 
-  "allocationMax()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  allocationMin(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "allocationMin()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  buyTokens(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "buyTokens(uint256)"(
-    amount: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  claimTokens(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "claimTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<string>;
 
   closeSale(overrides?: Overrides): Promise<ContractTransaction>;
 
   "closeSale()"(overrides?: Overrides): Promise<ContractTransaction>;
 
-  distributeAllTokens(overrides?: Overrides): Promise<ContractTransaction>;
+  commitTokens(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  "distributeAllTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "commitTokens(uint256)"(
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
 
-  endDate(overrides?: CallOverrides): Promise<BigNumber>;
+  commitment(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  "endDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "commitment(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   init(_data: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
 
@@ -486,93 +378,117 @@ export class FixedPriceSale extends Contract {
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  isClosed(overrides?: CallOverrides): Promise<boolean>;
+  isMinRaiseReached(overrides?: CallOverrides): Promise<boolean>;
 
-  "isClosed()"(overrides?: CallOverrides): Promise<boolean>;
+  "isMinRaiseReached()"(overrides?: CallOverrides): Promise<boolean>;
 
-  minimumRaise(overrides?: CallOverrides): Promise<BigNumber>;
+  isSaleEnded(overrides?: CallOverrides): Promise<boolean>;
 
-  "minimumRaise()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  orderOwners(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "orderOwners(uint256)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  ordersCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "ordersCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+  "isSaleEnded()"(overrides?: CallOverrides): Promise<boolean>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
   "owner()"(overrides?: CallOverrides): Promise<string>;
 
-  releaseTokens(overrides?: Overrides): Promise<ContractTransaction>;
+  remainingTokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "releaseTokens()"(overrides?: Overrides): Promise<ContractTransaction>;
+  "remainingTokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+  saleInfo(
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      string
+    ] & {
+      tokenIn: string;
+      tokenOut: string;
+      tokenPrice: BigNumber;
+      tokensForSale: BigNumber;
+      startDate: BigNumber;
+      endDate: BigNumber;
+      minCommitment: BigNumber;
+      maxCommitment: BigNumber;
+      minRaise: BigNumber;
+      hasParticipantList: boolean;
+      participantList: string;
+    }
+  >;
+
+  "saleInfo()"(
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      string,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      BigNumber,
+      boolean,
+      string
+    ] & {
+      tokenIn: string;
+      tokenOut: string;
+      tokenPrice: BigNumber;
+      tokensForSale: BigNumber;
+      startDate: BigNumber;
+      endDate: BigNumber;
+      minCommitment: BigNumber;
+      maxCommitment: BigNumber;
+      minRaise: BigNumber;
+      hasParticipantList: boolean;
+      participantList: string;
+    }
+  >;
+
+  saleStatus(
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, boolean, boolean, boolean] & {
+      tokensCommitted: BigNumber;
+      isClosed: boolean;
+      saleSucceeded: boolean;
+      initialized: boolean;
+    }
+  >;
+
+  "saleStatus()"(
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, boolean, boolean, boolean] & {
+      tokensCommitted: BigNumber;
+      isClosed: boolean;
+      saleSucceeded: boolean;
+      initialized: boolean;
+    }
+  >;
 
   secondsRemainingInSale(overrides?: CallOverrides): Promise<BigNumber>;
 
   "secondsRemainingInSale()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-  startDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "startDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  templateName(overrides?: CallOverrides): Promise<string>;
-
-  "templateName()"(overrides?: CallOverrides): Promise<string>;
-
-  tokenIn(overrides?: CallOverrides): Promise<string>;
-
-  "tokenIn()"(overrides?: CallOverrides): Promise<string>;
-
-  tokenOut(overrides?: CallOverrides): Promise<string>;
-
-  "tokenOut()"(overrides?: CallOverrides): Promise<string>;
-
-  tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "tokenPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  tokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "tokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  tokensPurchased(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "tokensPurchased(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokensRemaining(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "tokensRemaining()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  tokensSold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "tokensSold()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  withdrawFunds(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "withdrawFunds()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  withdrawFundsWithParams(
-    _data: BytesLike,
+  withdrawTokens(
+    user: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
-  "withdrawFundsWithParams(bytes)"(
-    _data: BytesLike,
+  "withdrawTokens(address)"(
+    user: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
-
-  withdrawUnsoldFunds(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "withdrawUnsoldFunds()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   callStatic: {
     ERC20Withdraw(
@@ -594,161 +510,176 @@ export class FixedPriceSale extends Contract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    allocationMax(overrides?: CallOverrides): Promise<BigNumber>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<string>;
 
-    "allocationMax()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    allocationMin(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "allocationMin()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    buyTokens(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    "buyTokens(uint256)"(
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    claimTokens(overrides?: CallOverrides): Promise<void>;
-
-    "claimTokens()"(overrides?: CallOverrides): Promise<void>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<string>;
 
     closeSale(overrides?: CallOverrides): Promise<void>;
 
     "closeSale()"(overrides?: CallOverrides): Promise<void>;
 
-    distributeAllTokens(overrides?: CallOverrides): Promise<void>;
+    commitTokens(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    "distributeAllTokens()"(overrides?: CallOverrides): Promise<void>;
+    "commitTokens(uint256)"(
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    endDate(overrides?: CallOverrides): Promise<BigNumber>;
+    commitment(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "endDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "commitment(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     init(_data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
     "init(bytes)"(_data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
-    isClosed(overrides?: CallOverrides): Promise<boolean>;
+    isMinRaiseReached(overrides?: CallOverrides): Promise<boolean>;
 
-    "isClosed()"(overrides?: CallOverrides): Promise<boolean>;
+    "isMinRaiseReached()"(overrides?: CallOverrides): Promise<boolean>;
 
-    minimumRaise(overrides?: CallOverrides): Promise<BigNumber>;
+    isSaleEnded(overrides?: CallOverrides): Promise<boolean>;
 
-    "minimumRaise()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    orderOwners(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    "orderOwners(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ordersCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "ordersCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "isSaleEnded()"(overrides?: CallOverrides): Promise<boolean>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     "owner()"(overrides?: CallOverrides): Promise<string>;
 
-    releaseTokens(overrides?: CallOverrides): Promise<void>;
+    remainingTokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "releaseTokens()"(overrides?: CallOverrides): Promise<void>;
+    "remainingTokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    saleInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        string
+      ] & {
+        tokenIn: string;
+        tokenOut: string;
+        tokenPrice: BigNumber;
+        tokensForSale: BigNumber;
+        startDate: BigNumber;
+        endDate: BigNumber;
+        minCommitment: BigNumber;
+        maxCommitment: BigNumber;
+        minRaise: BigNumber;
+        hasParticipantList: boolean;
+        participantList: string;
+      }
+    >;
+
+    "saleInfo()"(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        boolean,
+        string
+      ] & {
+        tokenIn: string;
+        tokenOut: string;
+        tokenPrice: BigNumber;
+        tokensForSale: BigNumber;
+        startDate: BigNumber;
+        endDate: BigNumber;
+        minCommitment: BigNumber;
+        maxCommitment: BigNumber;
+        minRaise: BigNumber;
+        hasParticipantList: boolean;
+        participantList: string;
+      }
+    >;
+
+    saleStatus(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, boolean, boolean, boolean] & {
+        tokensCommitted: BigNumber;
+        isClosed: boolean;
+        saleSucceeded: boolean;
+        initialized: boolean;
+      }
+    >;
+
+    "saleStatus()"(
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, boolean, boolean, boolean] & {
+        tokensCommitted: BigNumber;
+        isClosed: boolean;
+        saleSucceeded: boolean;
+        initialized: boolean;
+      }
+    >;
 
     secondsRemainingInSale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "secondsRemainingInSale()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    startDate(overrides?: CallOverrides): Promise<BigNumber>;
+    withdrawTokens(user: string, overrides?: CallOverrides): Promise<void>;
 
-    "startDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    templateName(overrides?: CallOverrides): Promise<string>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<string>;
-
-    tokenIn(overrides?: CallOverrides): Promise<string>;
-
-    "tokenIn()"(overrides?: CallOverrides): Promise<string>;
-
-    tokenOut(overrides?: CallOverrides): Promise<string>;
-
-    "tokenOut()"(overrides?: CallOverrides): Promise<string>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokensPurchased(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokensPurchased(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokensRemaining(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokensRemaining()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokensSold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokensSold()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdrawFunds(overrides?: CallOverrides): Promise<void>;
-
-    "withdrawFunds()"(overrides?: CallOverrides): Promise<void>;
-
-    withdrawFundsWithParams(
-      _data: BytesLike,
+    "withdrawTokens(address)"(
+      user: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    "withdrawFundsWithParams(bytes)"(
-      _data: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdrawUnsoldFunds(overrides?: CallOverrides): Promise<void>;
-
-    "withdrawUnsoldFunds()"(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    NewPurchase(buyer: string | null, amount: BigNumberish | null): EventFilter;
-
-    NewTokenClaim(
-      buyer: string | null,
+    NewCommitment(
+      user: string | null,
       amount: BigNumberish | null
     ): EventFilter;
 
     NewTokenRelease(
-      buyer: string | null,
+      user: string | null,
+      amount: BigNumberish | null
+    ): EventFilter;
+
+    NewTokenWithdraw(
+      user: string | null,
       amount: BigNumberish | null
     ): EventFilter;
 
     SaleClosed(): EventFilter;
 
-    SaleInitalized(
+    SaleInitialized(
       tokenIn: null,
       tokenOut: null,
       tokenPrice: null,
       tokensForSale: null,
       startDate: null,
       endDate: null,
-      allocationMin: null,
-      allocationMax: null,
-      minimumRaise: null
+      minCommitment: null,
+      maxCommitment: null,
+      minRaise: null,
+      owner: null,
+      participantList: null
     ): EventFilter;
-
-    distributeAllTokensLeft(amount: BigNumberish | null): EventFilter;
   };
 
   estimateGas: {
@@ -774,134 +705,69 @@ export class FixedPriceSale extends Contract {
       overrides?: Overrides
     ): Promise<BigNumber>;
 
-    allocationMax(overrides?: CallOverrides): Promise<BigNumber>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "allocationMax()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    allocationMin(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "allocationMin()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    buyTokens(amount: BigNumberish, overrides?: Overrides): Promise<BigNumber>;
-
-    "buyTokens(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    claimTokens(overrides?: Overrides): Promise<BigNumber>;
-
-    "claimTokens()"(overrides?: Overrides): Promise<BigNumber>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     closeSale(overrides?: Overrides): Promise<BigNumber>;
 
     "closeSale()"(overrides?: Overrides): Promise<BigNumber>;
 
-    distributeAllTokens(overrides?: Overrides): Promise<BigNumber>;
+    commitTokens(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    "distributeAllTokens()"(overrides?: Overrides): Promise<BigNumber>;
+    "commitTokens(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<BigNumber>;
 
-    endDate(overrides?: CallOverrides): Promise<BigNumber>;
+    commitment(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "endDate()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "commitment(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     init(_data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
     "init(bytes)"(_data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
 
-    isClosed(overrides?: CallOverrides): Promise<BigNumber>;
+    isMinRaiseReached(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isClosed()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "isMinRaiseReached()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    minimumRaise(overrides?: CallOverrides): Promise<BigNumber>;
+    isSaleEnded(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "minimumRaise()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    orderOwners(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "orderOwners(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ordersCount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "ordersCount()"(overrides?: CallOverrides): Promise<BigNumber>;
+    "isSaleEnded()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    releaseTokens(overrides?: Overrides): Promise<BigNumber>;
+    remainingTokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "releaseTokens()"(overrides?: Overrides): Promise<BigNumber>;
+    "remainingTokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    saleInfo(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "saleInfo()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    saleStatus(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "saleStatus()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     secondsRemainingInSale(overrides?: CallOverrides): Promise<BigNumber>;
 
     "secondsRemainingInSale()"(overrides?: CallOverrides): Promise<BigNumber>;
 
-    startDate(overrides?: CallOverrides): Promise<BigNumber>;
+    withdrawTokens(user: string, overrides?: Overrides): Promise<BigNumber>;
 
-    "startDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    templateName(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenIn(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenIn()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenOut(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenOut()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokensForSale(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokensForSale()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokensPurchased(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokensPurchased(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokensRemaining(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokensRemaining()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokensSold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "tokensSold()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdrawFunds(overrides?: Overrides): Promise<BigNumber>;
-
-    "withdrawFunds()"(overrides?: Overrides): Promise<BigNumber>;
-
-    withdrawFundsWithParams(
-      _data: BytesLike,
+    "withdrawTokens(address)"(
+      user: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
-
-    "withdrawFundsWithParams(bytes)"(
-      _data: BytesLike,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    withdrawUnsoldFunds(overrides?: Overrides): Promise<BigNumber>;
-
-    "withdrawUnsoldFunds()"(overrides?: Overrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -927,41 +793,33 @@ export class FixedPriceSale extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    allocationMax(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    TEMPLATE_NAME(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "allocationMax()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    allocationMin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "allocationMin()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    buyTokens(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "buyTokens(uint256)"(
-      amount: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    claimTokens(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "claimTokens()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     closeSale(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     "closeSale()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
-    distributeAllTokens(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "distributeAllTokens()"(
+    commitTokens(
+      amount: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    endDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "commitTokens(uint256)"(
+      amount: BigNumberish,
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
 
-    "endDate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    commitment(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "commitment(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     init(
       _data: BytesLike,
@@ -973,35 +831,35 @@ export class FixedPriceSale extends Contract {
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    isClosed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    isMinRaiseReached(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "isClosed()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    minimumRaise(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "minimumRaise()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    orderOwners(
-      arg0: BigNumberish,
+    "isMinRaiseReached()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "orderOwners(uint256)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    isSaleEnded(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    ordersCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "ordersCount()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    "isSaleEnded()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    releaseTokens(overrides?: Overrides): Promise<PopulatedTransaction>;
+    remainingTokensForSale(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
-    "releaseTokens()"(overrides?: Overrides): Promise<PopulatedTransaction>;
+    "remainingTokensForSale()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    saleInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "saleInfo()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    saleStatus(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "saleStatus()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     secondsRemainingInSale(
       overrides?: CallOverrides
@@ -1011,67 +869,13 @@ export class FixedPriceSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    startDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "startDate()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    templateName(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "templateName()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenIn(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokenIn()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenOut(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokenOut()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokenPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokenPrice()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokensForSale(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokensForSale()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    tokensPurchased(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokensPurchased(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokensRemaining(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokensRemaining()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokensSold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "tokensSold()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    withdrawFunds(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "withdrawFunds()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    withdrawFundsWithParams(
-      _data: BytesLike,
+    withdrawTokens(
+      user: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
-    "withdrawFundsWithParams(bytes)"(
-      _data: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    withdrawUnsoldFunds(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "withdrawUnsoldFunds()"(
+    "withdrawTokens(address)"(
+      user: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

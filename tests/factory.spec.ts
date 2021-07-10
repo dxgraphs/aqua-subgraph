@@ -1,21 +1,21 @@
 // Helpers
-import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
+import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { ETH_ZERO_ADDRESS, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
 
 // Test block
-describe('MesaFactory', function() {
-  let mesa: MesaJestBeforeEachContext
+describe('AquaFactory', function() {
+  let aqua: AquaJestBeforeEachContext
 
   beforeEach(async () => {
-    mesa = await mesaJestBeforeEach()
+    aqua = await aquaJestBeforeEach()
   })
 
   afterEach(async () => {
-    await mesaJestAfterEach()
+    await aquaJestAfterEach()
   })
-  test('Should return MesaFactory upon initialization', async () => {
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+  test('Should return AquaFactory upon initialization', async () => {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             saleFee
             feeTo
             feeNumerator
@@ -25,90 +25,90 @@ describe('MesaFactory', function() {
             templateFee
           }
         }`)
-    expect(data.data.mesaFactory.saleFee).toMatch((await mesa.mesaFactory.saleFee()).toString())
-    expect(data.data.mesaFactory.feeTo.toLowerCase()).toMatch((await mesa.mesaFactory.feeTo()).toLowerCase())
-    expect(data.data.mesaFactory.feeNumerator).toMatch((await mesa.mesaFactory.feeNumerator()).toString())
-    expect(data.data.mesaFactory.feeManager.toLowerCase()).toMatch((await mesa.mesaFactory.feeManager()).toLowerCase())
-    expect(data.data.mesaFactory.templateLauncher.toLowerCase()).toMatch(
-      (await mesa.mesaFactory.templateLauncher()).toLowerCase()
+    expect(data.data.aquaFactory.saleFee).toMatch((await aqua.aquaFactory.saleFee()).toString())
+    expect(data.data.aquaFactory.feeTo.toLowerCase()).toMatch((await aqua.aquaFactory.feeTo()).toLowerCase())
+    expect(data.data.aquaFactory.feeNumerator).toMatch((await aqua.aquaFactory.feeNumerator()).toString())
+    expect(data.data.aquaFactory.feeManager.toLowerCase()).toMatch((await aqua.aquaFactory.feeManager()).toLowerCase())
+    expect(data.data.aquaFactory.templateLauncher.toLowerCase()).toMatch(
+      (await aqua.aquaFactory.templateLauncher()).toLowerCase()
     )
-    expect(data.data.mesaFactory.templateManager.toLowerCase()).toMatch(
-      (await mesa.mesaFactory.templateManager()).toLowerCase()
+    expect(data.data.aquaFactory.templateManager.toLowerCase()).toMatch(
+      (await aqua.aquaFactory.templateManager()).toLowerCase()
     )
-    expect(data.data.mesaFactory.templateFee).toMatch((await mesa.mesaFactory.templateFee()).toString())
+    expect(data.data.aquaFactory.templateFee).toMatch((await aqua.aquaFactory.templateFee()).toString())
   })
 
   test('Should return new saleFee', async () => {
-    await (await mesa.mesaFactory.setSaleFee(3)).wait(1)
+    await (await aqua.aquaFactory.setSaleFee(3)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             saleFee
           }
         }`)
-    expect(data.data.mesaFactory.saleFee).toMatch((await mesa.mesaFactory.saleFee()).toString())
+    expect(data.data.aquaFactory.saleFee).toMatch((await aqua.aquaFactory.saleFee()).toString())
   })
   test('Should return new feeTo', async () => {
-    await (await mesa.mesaFactory.setFeeTo(ETH_ZERO_ADDRESS)).wait(1)
+    await (await aqua.aquaFactory.setFeeTo(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             feeTo
           }
         }`)
-    expect(data.data.mesaFactory.feeTo.toLowerCase()).toMatch((await mesa.mesaFactory.feeTo()).toLowerCase())
+    expect(data.data.aquaFactory.feeTo.toLowerCase()).toMatch((await aqua.aquaFactory.feeTo()).toLowerCase())
   })
   test('Should return new feeNumerator', async () => {
-    await (await mesa.mesaFactory.setFeeNumerator(2)).wait(1)
+    await (await aqua.aquaFactory.setFeeNumerator(2)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             feeNumerator
           }
         }`)
-    expect(data.data.mesaFactory.feeNumerator).toMatch((await mesa.mesaFactory.feeNumerator()).toString())
+    expect(data.data.aquaFactory.feeNumerator).toMatch((await aqua.aquaFactory.feeNumerator()).toString())
   })
   test('Should return new feeManager', async () => {
-    await (await mesa.mesaFactory.setFeeManager(ETH_ZERO_ADDRESS)).wait(1)
+    await (await aqua.aquaFactory.setFeeManager(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             feeManager
           }
         }`)
-    expect(data.data.mesaFactory.feeManager.toLowerCase()).toMatch((await mesa.mesaFactory.feeManager()).toLowerCase())
+    expect(data.data.aquaFactory.feeManager.toLowerCase()).toMatch((await aqua.aquaFactory.feeManager()).toLowerCase())
   })
   test('Should return new templateLauncher', async () => {
-    await (await mesa.mesaFactory.setTemplateLauncher(ETH_ZERO_ADDRESS)).wait(1)
+    await (await aqua.aquaFactory.setTemplateLauncher(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
 
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             templateLauncher
           }
         }`)
-    expect(data.data.mesaFactory.templateLauncher).toMatch((await mesa.mesaFactory.templateLauncher()).toLowerCase())
+    expect(data.data.aquaFactory.templateLauncher).toMatch((await aqua.aquaFactory.templateLauncher()).toLowerCase())
   })
   test('Should return new templateManager', async () => {
-    await (await mesa.mesaFactory.setTemplateManager(ETH_ZERO_ADDRESS)).wait(1)
+    await (await aqua.aquaFactory.setTemplateManager(ETH_ZERO_ADDRESS)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             templateManager
           }
         }`)
-    expect(data.data.mesaFactory.templateManager.toLowerCase()).toMatch(
-      (await mesa.mesaFactory.templateManager()).toLowerCase()
+    expect(data.data.aquaFactory.templateManager.toLowerCase()).toMatch(
+      (await aqua.aquaFactory.templateManager()).toLowerCase()
     )
   })
   test('Should return new templateFee', async () => {
-    await (await mesa.mesaFactory.setTemplateFee(10)).wait(1)
+    await (await aqua.aquaFactory.setTemplateFee(10)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          mesaFactory (id: "MesaFactory") {
+    const { data } = await aqua.fetchFromTheGraph(`{
+          aquaFactory (id: "AquaFactory") {
             templateFee
           }
         }`)
-    expect(data.data.mesaFactory.templateFee).toMatch((await mesa.mesaFactory.templateFee()).toString())
+    expect(data.data.aquaFactory.templateFee).toMatch((await aqua.aquaFactory.templateFee()).toString())
   })
 })

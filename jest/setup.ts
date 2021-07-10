@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
 
 // Contract types
-import { MesaFactory, SaleLauncher, TemplateLauncher } from '../tests/helpers/contracts'
+import { AquaFactory, SaleLauncher, TemplateLauncher } from '../tests/helpers/contracts'
 import {
   buildSubgraphYaml,
   EVM_ENDPOINT,
@@ -13,30 +13,30 @@ import {
   wait
 } from '../tests/helpers'
 
-export async function mesaJestBeforeEach(): Promise<MesaJestBeforeEachContext> {
+export async function aquaJestBeforeEach(): Promise<AquaJestBeforeEachContext> {
   await upDockerCompose()
   // Connect to local ganache instance
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
   // Wallets/Signers
   const deployer = provider.getSigner(0)
-  // Before each unit test, a new MesaFactory, TemplateLauncher, and AuctionLauncher EasyAuction contract is deployed to ganache
+  // Before each unit test, a new AquaFactory, TemplateLauncher, and AuctionLauncher EasyAuction contract is deployed to ganache
   // then followed by deploying its subgraph to the Graph node
-  // Deploy MesaFactory
-  const mesaFactory = (await getContractFactory('MesaFactory', deployer).deploy()) as MesaFactory
+  // Deploy AquaFactory
+  const aquaFactory = (await getContractFactory('AquaFactory', deployer).deploy()) as AquaFactory
   // Deploy TemplateLauncher
   const templateLauncher = (await getContractFactory('TemplateLauncher', deployer).deploy(
-    mesaFactory.address
+    aquaFactory.address
   )) as TemplateLauncher
   // Deploy AuctionLauncher
-  const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(mesaFactory.address)) as SaleLauncher
+  const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(aquaFactory.address)) as SaleLauncher
 
   // Prepare subgraph.yaml
   await buildSubgraphYaml({
     network: 'local',
-    startBlock: mesaFactory.deployTransaction.blockNumber as number,
+    startBlock: aquaFactory.deployTransaction.blockNumber as number,
     contracts: {
       factory: {
-        address: mesaFactory.address
+        address: aquaFactory.address
       },
       saleLauncher: {
         address: saleLauncher.address
@@ -48,12 +48,12 @@ export async function mesaJestBeforeEach(): Promise<MesaJestBeforeEachContext> {
   })
 
   // Initilize the Factory
-  await mesaFactory.initialize(
+  await aquaFactory.initialize(
     await deployer.getAddress(), // Fee Manager
     await deployer.getAddress(), // Fee Collector; treasury
     await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
     templateLauncher.address, // TemplateLauncher address
-    0, // Template fee: cost to submit a new Sale Template to the Mesa Factory
+    0, // Template fee: cost to submit a new Sale Template to the Aqua Factory
     0, // zero sale fees
     0 // zero fees
   )
@@ -83,20 +83,20 @@ export async function mesaJestBeforeEach(): Promise<MesaJestBeforeEachContext> {
   return {
     fetchFromTheGraph,
     provider,
-    mesaFactory,
+    aquaFactory,
     saleLauncher,
     templateLauncher
   }
 }
 
-export async function mesaJestAfterEach() {
+export async function aquaJestAfterEach() {
   await execAsync('npm run remove-local')
 }
 
-export interface MesaJestBeforeEachContext {
+export interface AquaJestBeforeEachContext {
   provider: providers.JsonRpcProvider
   fetchFromTheGraph: (query: string) => Promise<AxiosResponse>
-  mesaFactory: MesaFactory
+  aquaFactory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
 }
