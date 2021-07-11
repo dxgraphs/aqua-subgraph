@@ -238,6 +238,21 @@ type SaleTemplate @entity {
   verified: Boolean!
 }
 
+# Sale Templates
+# Each Sale contract implements a template
+type LaunchedSaleTemplate @entity {
+  # TemplatesId from the event
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
+  address: Bytes!
+  factory: AquaFactory!
+  template: SaleTemplate!
+  metadataContentHash: String
+}
+
 enum SaleTemplateNames {
   FairSaleTemplate
   FixedPriceSaleTemplate

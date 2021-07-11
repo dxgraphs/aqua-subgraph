@@ -1163,6 +1163,111 @@ export class SaleTemplate extends Entity {
   }
 }
 
+export class LaunchedSaleTemplate extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save LaunchedSaleTemplate entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save LaunchedSaleTemplate entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("LaunchedSaleTemplate", id.toString(), this);
+  }
+
+  static load(id: string): LaunchedSaleTemplate | null {
+    return store.get("LaunchedSaleTemplate", id) as LaunchedSaleTemplate | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get factory(): string {
+    let value = this.get("factory");
+    return value.toString();
+  }
+
+  set factory(value: string) {
+    this.set("factory", Value.fromString(value));
+  }
+
+  get template(): string {
+    let value = this.get("template");
+    return value.toString();
+  }
+
+  set template(value: string) {
+    this.set("template", Value.fromString(value));
+  }
+
+  get metadataContentHash(): string | null {
+    let value = this.get("metadataContentHash");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set metadataContentHash(value: string | null) {
+    if (value === null) {
+      this.unset("metadataContentHash");
+    } else {
+      this.set("metadataContentHash", Value.fromString(value as string));
+    }
+  }
+}
+
 export class AquaLog extends Entity {
   constructor(id: string) {
     super();
