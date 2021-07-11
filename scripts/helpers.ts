@@ -1,7 +1,7 @@
 // Externals
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { Event } from '@ethersproject/contracts'
-import { providers, utils } from 'ethers'
+import { ContractReceipt, providers, utils } from 'ethers'
 import DayJSUTC from 'dayjs/plugin/utc'
 import dayjs from 'dayjs'
 
@@ -89,29 +89,30 @@ export async function createFairSale({
   saleToken,
   saleCreator
 }: CreateSaleOptions) {
-  const launchFairSaleTemplateTx = await aquaFactory.launchTemplate(
-    templateId,
-    encodeInitDataFairSale({
-      duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
-      minBuyAmount: utils.parseUnits('10'), // Each order's bid must be at least 10
-      minPrice: utils.parseUnits('1'), // Minimum price per token
-      minRaise: utils.parseUnits('100000'), // 100k DAI
-      saleLauncher: saleLauncher.address,
-      saleTemplateId: templateId,
-      tokenIn: biddingToken.address,
-      tokenOut: saleToken.address,
-      tokenOutSupply: await saleToken.totalSupply(),
-      tokenSupplier: await saleCreator.getAddress()
-    })
-  )
+  const launchSaleTemplateTxReceipt = await aquaFactory
+    .launchTemplate(
+      templateId,
+      encodeInitDataFairSale({
+        duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
+        minBuyAmount: utils.parseUnits('10'), // Each order's bid must be at least 10
+        minPrice: utils.parseUnits('1'), // Minimum price per token
+        minRaise: utils.parseUnits('100000'), // 100k DAI
+        saleLauncher: saleLauncher.address,
+        saleTemplateId: templateId,
+        tokenIn: biddingToken.address,
+        tokenOut: saleToken.address,
+        tokenOutSupply: await saleToken.totalSupply(),
+        tokenSupplier: await saleCreator.getAddress()
+      }),
+      'explore-metahash'
+    )
+    .then(tx => tx.wait(1))
 
-  const launchFairSaleTemplateTxReceipt = await launchFairSaleTemplateTx.wait(1)
+  const launchedTemplateAddress = getTemplateAddressFromTransactionReceipt(launchSaleTemplateTxReceipt)
 
-  if (!launchFairSaleTemplateTxReceipt.events) {
-    throw new Error('No events for FairSaleTemplateTxReceipt found')
+  if (!launchedTemplateAddress) {
+    throw new Error('Could not find launched FixedPriceSaleTemplate address')
   }
-
-  const launchedTemplateAddress = launchFairSaleTemplateTxReceipt?.events[0]?.args?.template
   console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
 
   // Connect to the Template and create the sale
@@ -141,7 +142,7 @@ export async function createFixedPriceSale({
   // Get blocktimestamp from Ganache
   const lastBlock = await getLastBlock(aquaFactory.provider)
   // Sale lasts for one hour
-  const startDate = lastBlock.timestamp + 3600 // One hour from last block timestamp
+  const startDate = lastBlock.timestamp + 5 // 5 seconds from from last block timestamp
   const endDate = lastBlock.timestamp + 3600 * 2 // One hour from last block timestamp
 
   const launchFixedPriceSaleTemplateTxReceipt = await aquaFactory
@@ -154,21 +155,23 @@ export async function createFixedPriceSale({
         saleTemplateId: templateId,
         tokenIn: biddingToken.address,
         tokenOut: saleToken.address,
-        minimumRaise: utils.parseUnits('100'),
-        tokenSupplier: await saleCreator.getAddress(),
-        allocationMax: utils.parseUnits('10'),
-        allocationMin: utils.parseUnits('1'),
+        minCommitment: utils.parseUnits('1'),
+        maxCommitment: utils.parseUnits('10'),
+        minRaise: utils.parseUnits('100'),
         owner: await saleCreator.getAddress(),
         tokenPrice: utils.parseUnits('2'),
+        tokenSupplier: await saleCreator.getAddress(),
         tokensForSale: await saleToken.totalSupply()
-      })
+      }),
+      'explore-metahash'
     )
     .then(tx => tx.wait(1))
 
-  if (!launchFixedPriceSaleTemplateTxReceipt.events) {
-    throw new Error('No events for FixedPriceSaleTemplate found')
+  const launchedTemplateAddress = getTemplateAddressFromTransactionReceipt(launchFixedPriceSaleTemplateTxReceipt)
+
+  if (!launchedTemplateAddress) {
+    throw new Error('Could not find launched FixedPriceSaleTemplate address')
   }
-  const launchedTemplateAddress = launchFixedPriceSaleTemplateTxReceipt?.events[0]?.args?.template
   console.log(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
   // Connect to the Template and create the sale
   const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
@@ -198,10 +201,9 @@ export async function addSaleTemplateToLauncher({
 
 /**
  * Buys tokens from a FixedPriceSale
- * @param param0
  */
-export async function purchaseToken({ fixedPriceSale, amount }: PurchaseTokenOptions) {
-  const buyTokensTx = await fixedPriceSale.buyTokens(amount)
+export async function commitTokens({ fixedPriceSale, amount }: PurchaseTokenOptions) {
+  const buyTokensTx = await fixedPriceSale.commitTokens(amount)
   const buyTokensReceipt = await buyTokensTx.wait(1)
   if (buyTokensReceipt.events) {
     return getEvent<NewPurchase>(buyTokensReceipt.events[0] as Event)
@@ -210,8 +212,29 @@ export async function purchaseToken({ fixedPriceSale, amount }: PurchaseTokenOpt
   }
 }
 
+/**
+ * Gets the last block from passed provider
+ */
 export async function getLastBlock(provider: providers.Provider) {
-  const lastBlockNumber = await provider.getBlockNumber()
+  return provider.getBlock(await provider.getBlockNumber())
+}
 
-  return provider.getBlock(lastBlockNumber)
+/**
+ * Extracts the Launched <Type>SaleTemplate contract address from
+ */
+export function getTemplateAddressFromTransactionReceipt(txReceipt: ContractReceipt): string | undefined {
+  if (!txReceipt.events) {
+    return
+  }
+  // filter target event by signature
+  const templateLaunchedEvent = txReceipt.events.find(event => event.event == 'TemplateLaunched')
+  // Attempt to get mapped argument/param
+  return templateLaunchedEvent?.args?.template
+}
+
+/**
+ * Advances EVNM block timestamp to a custom one
+ */
+export function increaseBockTimestamp(provider: providers.JsonRpcProvider, timestamp: number) {
+  return provider.send('evm_increaseTime', [timestamp])
 }
