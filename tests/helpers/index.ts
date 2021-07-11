@@ -78,6 +78,8 @@ export type ContractFactories =
   | 'FixedPriceSale'
   | 'FairSaleTemplate'
   | 'FixedPriceSaleTemplate'
+  | 'ParticipantListLauncher'
+  | 'ParticipantList'
 /**
  * Creates and returns a `ContractFactory` from ethers
  * @param contract the contract name. See `ContractFactories`
@@ -219,9 +221,9 @@ interface EncodeInitDataFixedPriceOptions {
   tokensForSale: BigNumberish
   startDate: BigNumberish
   endDate: BigNumberish
-  allocationMin: BigNumberish
-  allocationMax: BigNumberish
-  minimumRaise: BigNumberish
+  minCommitment: BigNumberish
+  maxCommitment: BigNumberish
+  minRaise: BigNumberish
   owner: string
 }
 
@@ -235,9 +237,9 @@ export function encodeInitDataFixedPrice({
   tokensForSale,
   startDate,
   endDate,
-  allocationMin,
-  allocationMax,
-  minimumRaise,
+  minCommitment,
+  maxCommitment,
+  minRaise,
   owner
 }: EncodeInitDataFixedPriceOptions) {
   return ethers.utils.defaultAbiCoder.encode(
@@ -266,9 +268,9 @@ export function encodeInitDataFixedPrice({
       tokensForSale,
       startDate,
       endDate,
-      allocationMin,
-      allocationMax,
-      minimumRaise,
+      minCommitment,
+      maxCommitment,
+      minRaise,
       owner
     ]
   )
