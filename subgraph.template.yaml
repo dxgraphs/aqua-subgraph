@@ -101,6 +101,8 @@ dataSources:
           handler: handleTemplateRemoved
         - event: TemplateVerified(indexed address,uint256)
           handler: handleTemplateVerified
+        - event: TemplateLaunched(indexed address,uint256,address,string)
+          handler: handleTemplateLaunched
   - kind: ethereum/contract
     name: FairSale
     network: {{network}}

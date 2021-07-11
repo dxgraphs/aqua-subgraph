@@ -98,3 +98,8 @@ export function handleTemplateLauncherUpdated(event: TemplateLauncherUpdated): v
     factory.save()
   }
 }
+
+/**
+ * See TemplateLauncher for this implementation
+ */
+export function handleTemplateLaunched(): void {}
