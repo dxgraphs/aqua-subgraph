@@ -641,8 +641,8 @@ export class FixedPriceSale extends Entity {
     this.set("tokenOut", Value.fromString(value));
   }
 
-  get purchases(): Array<string> | null {
-    let value = this.get("purchases");
+  get commitments(): Array<string> | null {
+    let value = this.get("commitments");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -650,16 +650,50 @@ export class FixedPriceSale extends Entity {
     }
   }
 
-  set purchases(value: Array<string> | null) {
+  set commitments(value: Array<string> | null) {
     if (value === null) {
-      this.unset("purchases");
+      this.unset("commitments");
     } else {
-      this.set("purchases", Value.fromStringArray(value as Array<string>));
+      this.set("commitments", Value.fromStringArray(value as Array<string>));
+    }
+  }
+
+  get users(): Array<string> | null {
+    let value = this.get("users");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set users(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("users");
+    } else {
+      this.set("users", Value.fromStringArray(value as Array<string>));
+    }
+  }
+
+  get withdrawals(): Array<string> | null {
+    let value = this.get("withdrawals");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set withdrawals(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("withdrawals");
+    } else {
+      this.set("withdrawals", Value.fromStringArray(value as Array<string>));
     }
   }
 }
 
-export class FixedPriceSalePurchase extends Entity {
+export class FixedPriceSaleCommitment extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -669,21 +703,21 @@ export class FixedPriceSalePurchase extends Entity {
     let id = this.get("id");
     assert(
       id !== null,
-      "Cannot save FixedPriceSalePurchase entity without an ID"
+      "Cannot save FixedPriceSaleCommitment entity without an ID"
     );
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save FixedPriceSalePurchase entity with non-string ID. " +
+      "Cannot save FixedPriceSaleCommitment entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("FixedPriceSalePurchase", id.toString(), this);
+    store.set("FixedPriceSaleCommitment", id.toString(), this);
   }
 
-  static load(id: string): FixedPriceSalePurchase | null {
+  static load(id: string): FixedPriceSaleCommitment | null {
     return store.get(
-      "FixedPriceSalePurchase",
+      "FixedPriceSaleCommitment",
       id
-    ) as FixedPriceSalePurchase | null;
+    ) as FixedPriceSaleCommitment | null;
   }
 
   get id(): string {
@@ -731,13 +765,113 @@ export class FixedPriceSalePurchase extends Entity {
     this.set("sale", Value.fromString(value));
   }
 
-  get buyer(): Bytes {
-    let value = this.get("buyer");
-    return value.toBytes();
+  get user(): string {
+    let value = this.get("user");
+    return value.toString();
   }
 
-  set buyer(value: Bytes) {
-    this.set("buyer", Value.fromBytes(value));
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get status(): string {
+    let value = this.get("status");
+    return value.toString();
+  }
+
+  set status(value: string) {
+    this.set("status", Value.fromString(value));
+  }
+}
+
+export class FixedPriceSaleWithdrawal extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save FixedPriceSaleWithdrawal entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FixedPriceSaleWithdrawal entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FixedPriceSaleWithdrawal", id.toString(), this);
+  }
+
+  static load(id: string): FixedPriceSaleWithdrawal | null {
+    return store.get(
+      "FixedPriceSaleWithdrawal",
+      id
+    ) as FixedPriceSaleWithdrawal | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get user(): string {
+    let value = this.get("user");
+    return value.toString();
+  }
+
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
   }
 
   get amount(): BigInt {
@@ -816,13 +950,13 @@ export class FixedPriceSaleUser extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
-  get totalPurchase(): i32 {
-    let value = this.get("totalPurchase");
+  get totalCommitment(): i32 {
+    let value = this.get("totalCommitment");
     return value.toI32();
   }
 
-  set totalPurchase(value: i32) {
-    this.set("totalPurchase", Value.fromI32(value));
+  set totalCommitment(value: i32) {
+    this.set("totalCommitment", Value.fromI32(value));
   }
 
   get totalVolume(): BigInt {
