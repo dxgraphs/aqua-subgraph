@@ -87,13 +87,21 @@ export class AquaFactory extends Entity {
     this.set("templateManager", Value.fromBytes(value));
   }
 
-  get templateLauncher(): Bytes {
+  get templateLauncher(): Bytes | null {
     let value = this.get("templateLauncher");
-    return value.toBytes();
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
   }
 
-  set templateLauncher(value: Bytes) {
-    this.set("templateLauncher", Value.fromBytes(value));
+  set templateLauncher(value: Bytes | null) {
+    if (value === null) {
+      this.unset("templateLauncher");
+    } else {
+      this.set("templateLauncher", Value.fromBytes(value as Bytes));
+    }
   }
 
   get saleFee(): BigInt {

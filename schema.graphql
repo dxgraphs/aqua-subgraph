@@ -30,11 +30,11 @@ type AquaFactory @entity {
   "Template manager address"
   templateManager: Bytes!
   "TemplateLauncher contract address"
-  templateLauncher: Bytes!
+  templateLauncher: Bytes
   "Fee for launching a new sale"
   saleFee: BigInt!
   feeNumerator: BigInt!
-  "Fee for luanching a new Template fee"
+  "Fee for launching a new template"
   templateFee: BigInt!
 }
 
