@@ -1,10 +1,11 @@
 // Contract ABIs and Events
 import {
-  getFixedPriceSaleUserTotalPurchase,
-  createFixedPriceSalePurchaseId,
+  getFixedPriceSaleUserTotalCommitment,
+  createFixedPriceSaleCommitmentId,
+  createFixedPriceSaleWithdrawalId,
   createOrGetFixedPriceSaleUser,
   createFixedPriceSaleUserId,
-  PURCHASE_STATUS
+  COMITMENT_STATUS
 } from '../../helpers/fixedPriceSale'
 import {
   FixedPriceSale as FixedPriceSaleContract,
@@ -15,7 +16,7 @@ import {
 } from '../../../generated/FixedPriceSale/FixedPriceSale'
 
 // GraphQL Schemas
-import { FixedPriceSale, FixedPriceSalePurchase } from '../../../generated/schema'
+import { FixedPriceSale, FixedPriceSaleCommitment, FixedPriceSaleWithdrawal } from '../../../generated/schema'
 
 // Helpers
 import { SALE_STATUS } from '../../helpers/sales'
@@ -32,9 +33,9 @@ export function handleSaleClosed(event: SaleClosed): void {
 
 /**
  * WIP
- * Handles `NewPurchase` when a investors buy certain amount of tokens
+ * Handles `NewCommitment` when a investors buy certain amount of tokens
  */
-export function handleNewPurchase(event: NewCommitment): void {
+export function handleNewCommitment(event: NewCommitment): void {
   // Get the sale record
   let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
   if (!fixedPriceSale) {
@@ -48,21 +49,21 @@ export function handleNewPurchase(event: NewCommitment): void {
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.user, event.block.timestamp)
   // Increase the total purcahses by one and save
   // Push change to FixedPriceSaleUser entity
-  let newPurchaseIndex = fixedPriceSaleUser.totalPurchase + 1
-  fixedPriceSaleUser.totalPurchase = newPurchaseIndex
+  let newCommitmentIndex = fixedPriceSaleUser.totalCommitment + 1
+  fixedPriceSaleUser.totalCommitment = newCommitmentIndex
   // Increase the total volume for user+sale pair
   fixedPriceSaleUser.totalVolume = event.params.amount.plus(fixedPriceSaleUser.totalVolume)
   // Construct the purchase id
-  let purchaseId = createFixedPriceSalePurchaseId(event.address, event.params.user, newPurchaseIndex)
-  // Create the FixedPriceSalePurchase entity
-  let purchase = new FixedPriceSalePurchase(purchaseId)
+  let purchaseId = createFixedPriceSaleCommitmentId(event.address, event.params.user, newCommitmentIndex)
+  // Create the FixedPriceSaleCommitment entity
+  let purchase = new FixedPriceSaleCommitment(purchaseId)
   purchase.createdAt = event.block.timestamp.toI32()
   purchase.updatedAt = event.block.timestamp.toI32()
   // Update the reference
   purchase.sale = event.address.toHexString()
-  purchase.buyer = event.params.user
+  purchase.user = event.params.user.toHexString()
   purchase.amount = event.params.amount
-  purchase.status = PURCHASE_STATUS.SUBMITTED
+  purchase.status = COMITMENT_STATUS.SUBMITTED
   // update `soldAmount` field in the sale
   fixedPriceSale.soldAmount = fixedPriceSaleContract.remainingTokensForSale()
   // Save all entities
@@ -74,17 +75,30 @@ export function handleNewPurchase(event: NewCommitment): void {
 /**
  * WIP
  */
-export function handleNewTokenClaim(event: NewTokenWithdraw): void {
+export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
+  // Register the withdrawal
+
+  let withdrawal = new FixedPriceSaleWithdrawal(createFixedPriceSaleWithdrawalId(event.address, event.params.user))
+  withdrawal.createdAt = event.block.timestamp.toI32()
+  withdrawal.updatedAt = event.block.timestamp.toI32()
+  withdrawal.amount = event.params.amount
+  // Update references
+  withdrawal.sale = event.address.toHexString()
+  withdrawal.user = event.params.user.toHexString()
+  withdrawal.save()
+
   // Get total purchases by the investor/buyer
-  let totalPurchases = getFixedPriceSaleUserTotalPurchase(createFixedPriceSaleUserId(event.address, event.params.user))
+  let totalCommitments = getFixedPriceSaleUserTotalCommitment(
+    createFixedPriceSaleUserId(event.address, event.params.user)
+  )
   // Loop through the purchases and update their status for the buyer
-  for (let purchaseIndex = 1; purchaseIndex <= totalPurchases; purchaseIndex++) {
-    let purchase = FixedPriceSalePurchase.load(
-      createFixedPriceSalePurchaseId(event.address, event.params.user, purchaseIndex)
+  for (let purchaseIndex = 1; purchaseIndex <= totalCommitments; purchaseIndex++) {
+    let purchase = FixedPriceSaleCommitment.load(
+      createFixedPriceSaleCommitmentId(event.address, event.params.user, purchaseIndex)
     )
 
     if (purchase) {
-      purchase.status = PURCHASE_STATUS.CLAIMED
+      purchase.status = COMITMENT_STATUS.WITHDRAWN
       purchase.save()
     }
   }
