@@ -168,7 +168,7 @@ export async function createFixedPriceSale({
         minRaise: utils.parseUnits('100'),
         tokenPrice: utils.parseUnits('2'),
         tokensForSale: await saleToken.totalSupply(),
-        participantList: ethers.constants.AddressZero // allows for anyone to particpate in the sale
+        participantList: false // allows for anyone to particpate in the sale
       }),
       'explore-metahash'
     )
