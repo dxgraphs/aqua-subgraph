@@ -68,8 +68,8 @@ export function handleTemplateLaunched(event: TemplateLaunched): void {
   let launchedSaleTemplate = new Schemas.LaunchedSaleTemplate(event.params.template.toHexString())
   let saleTemplate = getSaleTemplateById(event.params.templateId.toString())
   // timestamps
+  launchedSaleTemplate.createdAt = event.block.timestamp.toI32()
   launchedSaleTemplate.updatedAt = event.block.timestamp.toI32()
-  launchedSaleTemplate.deletedAt = event.block.timestamp.toI32()
   // IPFS hash
   launchedSaleTemplate.metadataContentHash = event.params.metadataContentHash
   // Update reference
