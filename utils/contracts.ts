@@ -265,8 +265,7 @@ export type ContractFactories =
  * @param signer the signer that deploys the contract
  */
 export function getContractFactory(contract: ContractFactories, signer: Signer) {
-  const contractArtifact = require(`../../artifacts/${contract}.json`)
-
+  const contractArtifact = require(`../artifacts/${contract}.json`)
   return new ContractFactory(contractArtifact.abi, contractArtifact.bytecode, signer)
 }
 
