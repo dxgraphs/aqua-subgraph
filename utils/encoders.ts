@@ -58,7 +58,7 @@ export interface EncodeInitDataFixedPriceOptions {
   minCommitment: BigNumber
   maxCommitment: BigNumber
   minRaise: BigNumber
-  participantList: string
+  participantList: boolean
 }
 
 /**
