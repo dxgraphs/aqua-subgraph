@@ -74,6 +74,7 @@ export function handleTemplateLaunched(event: TemplateLaunched): void {
   launchedSaleTemplate.metadataContentHash = event.params.metadataContentHash
   // Update reference
   launchedSaleTemplate.factory = getAquaFactory().address.toHexString()
+  launchedSaleTemplate.address = event.params.template
   launchedSaleTemplate.template = saleTemplate.id
   // Save
   launchedSaleTemplate.save()
