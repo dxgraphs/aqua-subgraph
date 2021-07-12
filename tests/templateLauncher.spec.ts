@@ -1,8 +1,10 @@
 // Helpers
 import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { getContractFactory, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
-import { addSaleTemplateToLauncher } from '../scripts/helpers'
-import { FixedPriceSale } from './helpers/contracts'
+import type { FixedPriceSale } from '../utils/typechain-contracts'
+import { addSaleTemplateToLauncher } from '../utils/contracts'
+import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
+import { getContractFactory } from '../utils/contracts'
+import { wait } from '../utils/time'
 
 // Test block
 describe.skip('TemplateLauncher', function() {
