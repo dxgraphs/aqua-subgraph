@@ -12,6 +12,7 @@ import { FixedPriceSaleSaleInfo } from '../helpers/fixedPriceSale'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
+import { getAquaFactory } from 'src/helpers/factory'
 /**
  * Handle initializing an (Easy|FixedPrice)Sale via `SaleLauncher.createSale`
  * Determines the sale mechanism from `event.params.templateId` and
@@ -30,6 +31,11 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
     registerFixedPriceSale(event)
   }
+
+  // update saleCount on factory
+  let factory = getAquaFactory()
+  factory.saleCount = ++factory.saleCount
+  factory.save()
 }
 
 /**
