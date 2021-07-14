@@ -9,10 +9,10 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
 import { FixedPriceSaleSaleInfo } from '../helpers/fixedPriceSale'
+import { getAquaFactory } from '../helpers/factory'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
-import { getAquaFactory } from 'src/helpers/factory'
 /**
  * Handle initializing an (Easy|FixedPrice)Sale via `SaleLauncher.createSale`
  * Determines the sale mechanism from `event.params.templateId` and
