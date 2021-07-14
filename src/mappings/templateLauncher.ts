@@ -1,9 +1,14 @@
 // Contract ABIs and Events
-import { TemplateAdded, TemplateRemoved, TemplateVerified } from '../../generated/TemplateLauncher/TemplateLauncher'
+import {
+  TemplateAdded,
+  TemplateRemoved,
+  TemplateVerified,
+  TemplateLaunched
+} from '../../generated/TemplateLauncher/TemplateLauncher'
 import { getAquaFactory } from '../helpers/factory'
 
 // Helpers
-import { fetchTemplateName } from '../helpers/templates'
+import { fetchTemplateName, getSaleTemplateById } from '../helpers/templates'
 
 // GraphQL Schemas
 import * as Schemas from '../../generated/schema'
@@ -50,9 +55,27 @@ export function handleTemplateVerified(event: TemplateVerified): void {
 export function handleTemplateRemoved(event: TemplateRemoved): void {
   let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toHexString())
   if (saleTemplate) {
+    // timestamps
     saleTemplate.updatedAt = event.block.timestamp.toI32()
+    // set as deleted
     saleTemplate.deletedAt = event.block.timestamp.toI32()
     // Save entity
     saleTemplate.save()
   }
+}
+
+export function handleTemplateLaunched(event: TemplateLaunched): void {
+  let launchedSaleTemplate = new Schemas.LaunchedSaleTemplate(event.params.template.toHexString())
+  let saleTemplate = getSaleTemplateById(event.params.templateId.toString())
+  // timestamps
+  launchedSaleTemplate.createdAt = event.block.timestamp.toI32()
+  launchedSaleTemplate.updatedAt = event.block.timestamp.toI32()
+  // IPFS hash
+  launchedSaleTemplate.metadataContentHash = event.params.metadataContentHash
+  // Update reference
+  launchedSaleTemplate.factory = getAquaFactory().address.toHexString()
+  launchedSaleTemplate.address = event.params.template
+  launchedSaleTemplate.template = saleTemplate.id
+  // Save
+  launchedSaleTemplate.save()
 }

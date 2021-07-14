@@ -8,6 +8,8 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 // Helpers
 import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
+import { FixedPriceSaleSaleInfo } from '../helpers/fixedPriceSale'
+import { getAquaFactory } from '../helpers/factory'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'
@@ -29,6 +31,11 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
     registerFixedPriceSale(event)
   }
+
+  // update saleCount on factory
+  let factory = getAquaFactory()
+  factory.saleCount = ++factory.saleCount
+  factory.save()
 }
 
 /**
@@ -44,12 +51,12 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.updatedAt = event.block.timestamp.toI32()
   fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
   // Start and end dates of the sale
-  fairSale.startDate = fairSaleContract.auctionStartedDate().toI32()
-  fairSale.endDate = fairSaleContract.endDate().toI32()
+  fairSale.startDate = event.block.timestamp.toI32()
+  fairSale.endDate = fairSaleContract.auctionEndDate().toI32()
   // Sale status
   fairSale.status = SALE_STATUS.UPCOMING
   // Amount of tokens saled
-  fairSale.tokensForSale = fairSaleContract.tokensForSale()
+  fairSale.tokensForSale = new BigInt(0)
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(fairSaleContract.tokenIn())
   // Saleing token / token out
@@ -80,7 +87,7 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
     let fairSaleBid = new Schemas.FairSaleBid(event.address.toHexString() + '/bids/1') // predictable
     fairSaleBid.createdAt = event.block.timestamp.toI32()
     fairSaleBid.updatedAt = event.block.timestamp.toI32()
-    fairSaleBid.tokenInAmount = fairSaleContract.tokensForSale()
+    fairSaleBid.tokenInAmount = new BigInt(0)
     fairSaleBid.tokenOutAmount = fairSaleContract.minimumBiddingAmountPerOrder()
     fairSaleBid.status = BID_STATUS.SUBMITTED
     // Update ref of FairSaleUser to ownerId
@@ -104,27 +111,29 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.params.sale)
   // Create new EasySale entity
   let fixedPriceSale = new Schemas.FixedPriceSale(event.params.sale.toHexString())
+  // Fetch sale info and deconstruct it
+  let saleInfo = FixedPriceSaleSaleInfo.fromResult(fixedPriceSaleContract.saleInfo())
   // Timestamps
   fixedPriceSale.createdAt = event.block.timestamp.toI32()
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
   // Token price and amount
-  fixedPriceSale.tokenPrice = fixedPriceSaleContract.tokenPrice()
-  fixedPriceSale.sellAmount = fixedPriceSaleContract.tokensForSale()
+  fixedPriceSale.tokenPrice = saleInfo.tokenPrice
+  fixedPriceSale.sellAmount = saleInfo.tokensForSale
   fixedPriceSale.soldAmount = new BigInt(0)
   // Minimum raise amount
-  fixedPriceSale.minimumRaise = fixedPriceSaleContract.minimumRaise()
+  fixedPriceSale.minimumRaise = saleInfo.minRaise
   // // Mnimum and maximum tokens per order
-  fixedPriceSale.allocationMin = fixedPriceSaleContract.allocationMin()
-  fixedPriceSale.allocationMax = fixedPriceSaleContract.allocationMax()
+  fixedPriceSale.allocationMin = saleInfo.minCommitment
+  fixedPriceSale.allocationMax = saleInfo.maxCommitment
   // Start and end dates of the sale
-  fixedPriceSale.startDate = fixedPriceSaleContract.startDate().toI32()
-  fixedPriceSale.endDate = fixedPriceSaleContract.endDate().toI32()
+  fixedPriceSale.startDate = saleInfo.startDate.toI32()
+  fixedPriceSale.endDate = saleInfo.endDate.toI32()
   // Sale status
   fixedPriceSale.status = SALE_STATUS.UPCOMING
   // Bidding token / token in
-  let tokenIn = getOrCreateSaleToken(fixedPriceSaleContract.tokenIn())
+  let tokenIn = getOrCreateSaleToken(saleInfo.tokenIn)
   // Saleing token / token out
-  let tokenOut = getOrCreateSaleToken(fixedPriceSaleContract.tokenOut())
+  let tokenOut = getOrCreateSaleToken(saleInfo.tokenOut)
   // Update assign tokenIn and TokenOut foreign keys
   fixedPriceSale.tokenIn = tokenIn.id
   fixedPriceSale.tokenOut = tokenOut.id

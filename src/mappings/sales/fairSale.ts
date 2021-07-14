@@ -1,14 +1,13 @@
 // Externals
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and Events
 import {
-  FairSale as FairSaleContract,
-  CancellationOrder,
+  CancellationSellOrder,
   UserRegistration,
   ClaimedFromOrder,
-  SaleCleared,
-  NewOrder,
+  AuctionCleared,
+  NewSellOrder,
   NewUser
 } from '../../../generated/FairSale/FairSale'
 
@@ -22,7 +21,7 @@ import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
  * Handles any Auction that has cleared
  * @param event
  */
-export function handleSaleCleared(event: SaleCleared): void {
+export function handleSaleCleared(event: AuctionCleared): void {
   if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
@@ -38,7 +37,7 @@ export function handleSaleCleared(event: SaleCleared): void {
   sale.save()
 }
 
-export function handleCancellationOrder(event: CancellationOrder): void {
+export function handleCancellationOrder(event: CancellationSellOrder): void {
   if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
@@ -75,20 +74,20 @@ export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
  * Handles new Order (Bid) placement on the Auction
  * @param event
  */
-export function handleNewOrder(event: NewOrder): void {
+export function handleNewOrder(event: NewSellOrder): void {
   if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
   // Construct entity ID from the parameters
   // A bid is <saleAddress>/bids/<ownerId>/<block.timestamp>
   let bid = new Schemas.FairSaleBid(
-    event.address.toHexString() + '/bids/' + event.params.ownerId.toString() + '/' + event.block.timestamp.toString()
+    event.address.toHexString() + '/bids/' + event.params.userId.toString() + '/' + event.block.timestamp.toString()
   )
   bid.sale = event.address.toString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
-  bid.tokenInAmount = event.params.orderTokenIn
-  bid.tokenOutAmount = event.params.orderTokenOut
+  bid.tokenInAmount = event.params.sellAmount
+  bid.tokenOutAmount = event.params.buyAmount
   // Update FairSaleUser ref
   bid.owner = event.transaction.from.toHexString()
   // Update FairSale ref

@@ -8,7 +8,8 @@ import {
   FactoryInitialized,
   FeeManagerUpdated,
   SaleFeeUpdated,
-  FeeToUpdated
+  FeeToUpdated,
+  TemplateLaunched
 } from '../../generated/AquaFactory/AquaFactory'
 
 // GraphQL Schemas
@@ -98,3 +99,8 @@ export function handleTemplateLauncherUpdated(event: TemplateLauncherUpdated): v
     factory.save()
   }
 }
+
+/**
+ * See TemplateLauncher for this implementation ignored
+ */
+export function handleTemplateLaunched(event: TemplateLaunched): void {}

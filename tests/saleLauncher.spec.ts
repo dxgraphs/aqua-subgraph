@@ -1,11 +1,12 @@
 // Externals
 import { utils } from 'ethers'
 // Helpers
-import { createTokenAndMintAndApprove, getContractFactory, SUBGRAPH_SYNC_SECONDS, wait, getSigners } from './helpers'
-import { FixedPriceSale, FixedPriceSaleTemplate, FixedPriceSale__factory } from './helpers/contracts'
+import { FixedPriceSale, FixedPriceSaleTemplate, FixedPriceSale__factory } from '../utils/typechain-contracts'
+import { createFixedPriceSale, createTokenAndMintAndApprove, getContractFactory } from '../utils/contracts'
 import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { createFixedPriceSale } from '../scripts/helpers'
-
+import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
+import { getSigners } from '../utils/evm'
+import { wait } from '../utils/time'
 // Test block
 describe('SaleLauncher', function() {
   let aqua: AquaJestBeforeEachContext

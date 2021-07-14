@@ -1,6 +1,7 @@
 // Helpers
 import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { ETH_ZERO_ADDRESS, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
+import { ETH_ZERO_ADDRESS, SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
+import { wait } from '../utils/time'
 
 // Test block
 describe('AquaFactory', function() {

@@ -30,11 +30,11 @@ type AquaFactory @entity {
   "Template manager address"
   templateManager: Bytes!
   "TemplateLauncher contract address"
-  templateLauncher: Bytes!
+  templateLauncher: Bytes
   "Fee for launching a new sale"
   saleFee: BigInt!
   feeNumerator: BigInt!
-  "Fee for luanching a new Template fee"
+  "Fee for launching a new template"
   templateFee: BigInt!
 }
 
@@ -145,27 +145,48 @@ type FixedPriceSale implements EntityMetadata @entity {
   "Token investor get"
   tokenOut: Token!
   "List of sale purchases"
-  purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
+  commitments: [FixedPriceSaleCommitment!] @derivedFrom(field: "sale")
+  "List of users"
+  users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
+  "List of withdrawals"
+  withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
 }
 
-enum FixedPriceSalePurchaseStatus {
+enum FixedPriceSaleCommitmentStatus {
   SUBMITTED
+  RELEASED
   CLAIMED
 }
 
-type FixedPriceSalePurchase implements EntityMetadata @entity {
+type FixedPriceSaleCommitment implements EntityMetadata @entity {
   "The purchase ID"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "FixedPriceSale this purchase is associated with"
+  "FixedPriceSale this commitment is associated with"
   sale: FixedPriceSale!
   "Address of buyer"
-  buyer: Bytes!
+  user: FixedPriceSaleUser!
   "Amount of tokens"
   amount: BigInt!
-  status: FixedPriceSalePurchaseStatus!
+  status: FixedPriceSaleCommitmentStatus!
+}
+
+# Withdrawal track the tokens that have been withdrawn
+type FixedPriceSaleWithdrawal implements EntityMetadata @entity {
+  "The withdrawal ID"
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "FixedPriceSale this withdrawal is associated with"
+  sale: FixedPriceSale!
+  "Address of buyer"
+  user: FixedPriceSaleUser!
+  "Amount of tokens"
+  amount: BigInt!
+  status: FixedPriceSaleCommitmentStatus!
 }
 
 type FixedPriceSaleUser implements EntityMetadata @entity {
@@ -175,7 +196,7 @@ type FixedPriceSaleUser implements EntityMetadata @entity {
   updatedAt: Int!
   deletedAt: Int
   "Total purchases submitted in the sale"
-  totalPurchase: Int!
+  totalCommitment: Int!
   "Total volume for this user"
   totalVolume: BigInt!
   "FixedPriceSale reference"
@@ -215,6 +236,21 @@ type SaleTemplate @entity {
   # Template name
   name: SaleTemplateNames!
   verified: Boolean!
+}
+
+# Sale Templates
+# Each Sale contract implements a template
+type LaunchedSaleTemplate @entity {
+  # TemplatesId from the event
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
+  address: Bytes!
+  factory: AquaFactory!
+  template: SaleTemplate!
+  metadataContentHash: String
 }
 
 enum SaleTemplateNames {
