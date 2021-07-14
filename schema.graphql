@@ -120,7 +120,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "The name of the same, default is the tokenIn's name"
+  "The name of the sale, default is the tokenIn's name"
   name: String!
   "Sale status: open/ended/settled/upcoming/cancelled/failed"
   status: FixedPriceSaleStatus!
