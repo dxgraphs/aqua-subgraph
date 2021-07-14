@@ -76,17 +76,17 @@ export function handleNewCommitment(event: NewCommitment): void {
  * WIP
  */
 export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
+  // Get the user
+  let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.user, event.block.timestamp)
   // Register the withdrawal
-
   let withdrawal = new FixedPriceSaleWithdrawal(createFixedPriceSaleWithdrawalId(event.address, event.params.user))
   withdrawal.createdAt = event.block.timestamp.toI32()
   withdrawal.updatedAt = event.block.timestamp.toI32()
   withdrawal.amount = event.params.amount
   // Update references
   withdrawal.sale = event.address.toHexString()
-  withdrawal.user = event.params.user.toHexString()
+  withdrawal.user = fixedPriceSaleUser.id
   withdrawal.save()
-
   // Get total purchases by the investor/buyer
   let totalCommitments = getFixedPriceSaleUserTotalCommitment(
     createFixedPriceSaleUserId(event.address, event.params.user)
