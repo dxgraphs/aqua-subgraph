@@ -61,7 +61,7 @@ export function handleNewCommitment(event: NewCommitment): void {
   purchase.updatedAt = event.block.timestamp.toI32()
   // Update the reference
   purchase.sale = event.address.toHexString()
-  purchase.user = event.params.user.toHexString()
+  purchase.user = fixedPriceSaleUser.id
   purchase.amount = event.params.amount
   purchase.status = COMITMENT_STATUS.SUBMITTED
   // update `soldAmount` field in the sale
