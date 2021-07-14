@@ -53,21 +53,21 @@ export function handleNewCommitment(event: NewCommitment): void {
   fixedPriceSaleUser.totalCommitment = newCommitmentIndex
   // Increase the total volume for user+sale pair
   fixedPriceSaleUser.totalVolume = event.params.amount.plus(fixedPriceSaleUser.totalVolume)
-  // Construct the purchase id
-  let purchaseId = createFixedPriceSaleCommitmentId(event.address, event.params.user, newCommitmentIndex)
+  // Construct the commitment id
+  let commitmentId = createFixedPriceSaleCommitmentId(event.address, event.params.user, newCommitmentIndex)
   // Create the FixedPriceSaleCommitment entity
-  let purchase = new FixedPriceSaleCommitment(purchaseId)
-  purchase.createdAt = event.block.timestamp.toI32()
-  purchase.updatedAt = event.block.timestamp.toI32()
+  let commitment = new FixedPriceSaleCommitment(commitmentId)
+  commitment.createdAt = event.block.timestamp.toI32()
+  commitment.updatedAt = event.block.timestamp.toI32()
   // Update the reference
-  purchase.sale = event.address.toHexString()
-  purchase.user = fixedPriceSaleUser.id
-  purchase.amount = event.params.amount
-  purchase.status = COMITMENT_STATUS.SUBMITTED
+  commitment.sale = event.address.toHexString()
+  commitment.user = fixedPriceSaleUser.id
+  commitment.amount = event.params.amount
+  commitment.status = COMITMENT_STATUS.SUBMITTED
   // update `soldAmount` field in the sale
   fixedPriceSale.soldAmount = fixedPriceSaleContract.remainingTokensForSale()
   // Save all entities
-  purchase.save()
+  commitment.save()
   fixedPriceSale.save()
   fixedPriceSaleUser.save()
 }
@@ -87,19 +87,19 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
   withdrawal.sale = event.address.toHexString()
   withdrawal.user = fixedPriceSaleUser.id
   withdrawal.save()
-  // Get total purchases by the investor/buyer
+  // Get total commitments by the investor/buyer
   let totalCommitments = getFixedPriceSaleUserTotalCommitment(
     createFixedPriceSaleUserId(event.address, event.params.user)
   )
-  // Loop through the purchases and update their status for the buyer
-  for (let purchaseIndex = 1; purchaseIndex <= totalCommitments; purchaseIndex++) {
-    let purchase = FixedPriceSaleCommitment.load(
-      createFixedPriceSaleCommitmentId(event.address, event.params.user, purchaseIndex)
+  // Loop through the commitments and update their status for the buyer
+  for (let commitmentIndex = 1; commitmentIndex <= totalCommitments; commitmentIndex++) {
+    let commitment = FixedPriceSaleCommitment.load(
+      createFixedPriceSaleCommitmentId(event.address, event.params.user, commitmentIndex)
     )
 
-    if (purchase) {
-      purchase.status = COMITMENT_STATUS.WITHDRAWN
-      purchase.save()
+    if (commitment) {
+      commitment.status = COMITMENT_STATUS.WITHDRAWN
+      commitment.save()
     }
   }
 }
