@@ -699,6 +699,32 @@ export class FixedPriceSale extends Entity {
       this.set("withdrawals", Value.fromStringArray(value as Array<string>));
     }
   }
+
+  get hasParticipantList(): boolean {
+    let value = this.get("hasParticipantList");
+    return value.toBoolean();
+  }
+
+  set hasParticipantList(value: boolean) {
+    this.set("hasParticipantList", Value.fromBoolean(value));
+  }
+
+  get participants(): Array<string> | null {
+    let value = this.get("participants");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set participants(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("participants");
+    } else {
+      this.set("participants", Value.fromStringArray(value as Array<string>));
+    }
+  }
 }
 
 export class FixedPriceSaleCommitment extends Entity {
@@ -992,6 +1018,179 @@ export class FixedPriceSaleUser extends Entity {
 
   set address(value: Bytes) {
     this.set("address", Value.fromBytes(value));
+  }
+}
+
+export class FixedPriceSaleParticipantList extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save FixedPriceSaleParticipantList entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FixedPriceSaleParticipantList entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FixedPriceSaleParticipantList", id.toString(), this);
+  }
+
+  static load(id: string): FixedPriceSaleParticipantList | null {
+    return store.get(
+      "FixedPriceSaleParticipantList",
+      id
+    ) as FixedPriceSaleParticipantList | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+}
+
+export class FixedPriceSaleParticipant extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id !== null,
+      "Cannot save FixedPriceSaleParticipant entity without an ID"
+    );
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FixedPriceSaleParticipant entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FixedPriceSaleParticipant", id.toString(), this);
+  }
+
+  static load(id: string): FixedPriceSaleParticipant | null {
+    return store.get(
+      "FixedPriceSaleParticipant",
+      id
+    ) as FixedPriceSaleParticipant | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get sale(): string {
+    let value = this.get("sale");
+    return value.toString();
+  }
+
+  set sale(value: string) {
+    this.set("sale", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
   }
 }
 

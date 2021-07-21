@@ -130,6 +130,7 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.endDate = saleInfo.endDate.toI32()
   // Sale status
   fixedPriceSale.status = SALE_STATUS.UPCOMING
+  fixedPriceSale.hasParticipantList = saleInfo.hasParticipantList
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(saleInfo.tokenIn)
   // Saleing token / token out

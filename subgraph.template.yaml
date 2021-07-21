@@ -149,6 +149,7 @@ dataSources:
       entities:
         - FixedPriceSale
         - SaleTemplate
+        - FixedPriceSaleParticipantList
       abis:
         - name: FixedPriceSale
           file: ./abis/FixedPriceSale.json
@@ -161,3 +162,25 @@ dataSources:
           handler: handleNewTokenWithdraw
         - event: SaleClosed()
           handler: handleSaleClosed
+        - event: SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)
+          handler: handleFixedPriceSaleInitialized
+  - kind: ethereum/contract
+    name: ParticipantList
+    network: {{network}}
+    source:
+      abi: ParticipantList
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/participantList.ts
+      entities:
+        - FixedPriceSaleParticipant
+      abis:
+        - name: ParticipantList
+          file: ./abis/ParticipantList.json
+      eventHandlers:
+        - event: AmountsUpdated(indexed address,uint256)
+          handler: handleAmountsUpdated
+        

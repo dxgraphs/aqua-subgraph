@@ -150,6 +150,10 @@ type FixedPriceSale implements EntityMetadata @entity {
   users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
   "List of withdrawals"
   withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
+  "If true, sale was initialized with participant list"
+  hasParticipantList: Boolean!
+  "List of allowed participants"
+  participants: [FixedPriceSaleParticipant!] @derivedFrom(field: "sale")
 }
 
 enum FixedPriceSaleCommitmentStatus {
@@ -203,6 +207,31 @@ type FixedPriceSaleUser implements EntityMetadata @entity {
   sale: FixedPriceSale!
   "Address of buyer"
   address: Bytes!
+}
+
+# Entity used to map listed participants with sale
+type FixedPriceSaleParticipantList implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "FixedPriceSale reference"
+  sale: FixedPriceSale!
+  "Address of the participant list"
+  address: Bytes!
+}
+
+type FixedPriceSaleParticipant implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "FixedPriceSale reference"
+  sale: FixedPriceSale!
+  "Participant address"
+  address: Bytes!
+  "Participants limit"
+  amount: BigInt!
 }
 
 #################################################

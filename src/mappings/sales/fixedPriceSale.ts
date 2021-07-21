@@ -12,14 +12,16 @@ import {
   NewTokenWithdraw,
   NewTokenRelease,
   NewCommitment,
-  SaleClosed
+  SaleClosed,
+  SaleInitialized
 } from '../../../generated/FixedPriceSale/FixedPriceSale'
 
 // GraphQL Schemas
-import { FixedPriceSale, FixedPriceSaleCommitment, FixedPriceSaleWithdrawal } from '../../../generated/schema'
+import { FixedPriceSale, FixedPriceSaleCommitment, FixedPriceSaleWithdrawal, FixedPriceSaleParticipantList } from '../../../generated/schema'
 
 // Helpers
 import { SALE_STATUS } from '../../helpers/sales'
+import { ETH_ZERO_ADDRESS } from '../../../utils/constants'
 
 export function handleSaleClosed(event: SaleClosed): void {
   let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
@@ -116,4 +118,19 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
 
   fixedPriceSale.status = SALE_STATUS.SETTLED
   fixedPriceSale.save()
+}
+
+export function handleFixedPriceSaleInitialized(event: SaleInitialized): void {
+  // Sale has been initialized without participantList
+  if (event.params.participantList.toHexString() == ETH_ZERO_ADDRESS) {
+    return
+  }
+
+  let participantList = new FixedPriceSaleParticipantList(event.params.participantList.toHexString())
+  participantList.createdAt = event.block.timestamp.toI32()
+  participantList.updatedAt = event.block.timestamp.toI32()
+  participantList.address = event.params.participantList
+  participantList.sale = event.address.toHexString()
+
+  participantList.save()
 }
