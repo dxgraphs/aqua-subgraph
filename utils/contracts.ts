@@ -20,7 +20,7 @@ import { exec as execBase } from 'child_process'
 import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Typechained
 import { FixedPriceSaleTemplate__factory, FairSaleTemplate__factory } from './typechain-contracts'
-import type { ERC20Mintable, AquaFactory,  TemplateLauncher, FixedPriceSale, SaleLauncher } from './typechain-contracts'
+import type { ERC20Mintable, AquaFactory, TemplateLauncher, FixedPriceSale, SaleLauncher } from './typechain-contracts'
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
@@ -34,6 +34,7 @@ export interface CreateSaleOptions {
   biddingToken: ERC20Mintable
   saleToken: ERC20Mintable
   saleCreator: providers.JsonRpcSigner
+  participantList?: boolean
 }
 
 export interface TokenList {
@@ -139,7 +140,8 @@ export async function createFixedPriceSale({
   saleLauncher,
   biddingToken,
   saleToken,
-  saleCreator
+  saleCreator,
+  participantList = false
 }: CreateSaleOptions): Promise<string> {
   // Get blocktimestamp from Ganache
   const lastBlock = await getLastBlock(aquaFactory.provider)
@@ -167,8 +169,8 @@ export async function createFixedPriceSale({
         maxCommitment: utils.parseUnits('10'),
         minRaise: utils.parseUnits('100'),
         tokenPrice: utils.parseUnits('2'),
-        tokensForSale: await saleToken.totalSupply(),
-        participantList: false // allows for anyone to particpate in the sale
+        tokensForSale: utils.parseUnits('500'),
+        participantList
       }),
       'explore-metahash'
     )
