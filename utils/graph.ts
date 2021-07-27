@@ -1,13 +1,18 @@
 import { writeFile, readFile } from 'fs/promises'
 import type { providers } from 'ethers'
 import { render } from 'mustache'
+import log4js from 'log4js'
 import axios from 'axios'
 
 // EVM utils
-import { getLastBlock } from './evm'
 import { wait } from './time'
+import { getLastBlock } from './evm'
+import { execAsync } from './contracts'
 
 const GRAPH_ADMIN_ENDPOINT = 'http://localhost:8020'
+
+const logger = log4js.getLogger()
+logger.level = 'info'
 
 export interface BuildSubgraphYmlProps {
   network: string | 'mainnet' | 'ropsten' | 'rinkeby' | 'kovan' | 'local'
@@ -30,6 +35,7 @@ export interface BuildSubgraphYmlProps {
 
 export async function buildSubgraphYaml(viewProps: BuildSubgraphYmlProps) {
   // Get the template
+  logger.info('Building subgraph manifest...')
   const subgraphYamlTemplate = await readFile('./subgraph.template.yaml', {
     encoding: 'utf8'
   })
@@ -39,7 +45,7 @@ export async function buildSubgraphYaml(viewProps: BuildSubgraphYmlProps) {
   // Write the file
   await writeFile('./subgraph.yaml', subgraphYamlOut)
 
-  return
+  logger.info('OK')
 }
 
 export async function queryGraph(query: string) {
@@ -56,8 +62,51 @@ interface WaitForGraphSyncParams {
   subgraphName: string
 }
 
+/**
+ * Waits for graph-node to be up after launching docker.
+ * @param {number} [timeout=10000] (optional) Time in ms after which error is thrown
+ */
+
+export async function waitForSubgraphUp(timeout = 10000) {
+  let retryCt = 0
+  let success = false
+
+  logger.info('Setting up subgraph...')
+  // No better idea to suppress console errors
+  const consoleError = console.error
+  console.error = () => { }
+
+  while (retryCt * 100 < timeout) {
+    try {
+      await wait(100)
+      const { data } = await axios.post('http://localhost:8030/graphql', {
+        query: `{
+            indexingStatuses {
+              subgraph
+            }
+        }`
+      })
+
+      if (data) {
+        success = true
+        logger.info('OK')
+        console.error = consoleError
+        break;
+      }
+    } catch (e) { }
+
+    retryCt++
+  }
+  if (!success) {
+    logger.info('Failed to set up subgraph')
+  }
+}
+
 export async function waitForGraphSync({ provider, targetBlockNumber, subgraphName }: WaitForGraphSyncParams) {
   targetBlockNumber = targetBlockNumber || (await getLastBlock(provider)).number
+  let isSynced = false
+
+  logger.info('Syncing graph...')
 
   while (true) {
     try {
@@ -78,16 +127,18 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
         }`
       })
 
-      console.log(data)
       if (data.data.indexingStatusForCurrentVersion.synced) {
-        console.log("Breaking loop")
+        logger.info('OK')
+        isSynced = true
         break;
-        // if (currentVersionId === latestVersionId && latestEthereumBlockNumber == targetBlockNumber) break
       }
-
     } catch (e) {
-      // wrap header
+
     }
+  }
+
+  if (!isSynced) {
+    logger.info('Failed to sync subgraph')
   }
 }
 
@@ -101,29 +152,40 @@ export function createSubgraph(subgraphName: string) {
         name: subgraphName
       },
       id: 1
-  }))
+    }))
 }
 
 export function deploySubgraph(subgraphName: string) {
   return axios.post(GRAPH_ADMIN_ENDPOINT, {
-      jsonrpc: "2.0",
-      method: "subgraph_deploy",
-      params: {
-        name: subgraphName
-      },
-      id: 1
+    jsonrpc: "2.0",
+    method: "subgraph_deploy",
+    params: {
+      name: subgraphName
+    },
+    id: 1
   })
 }
 
 
 export function removeGraph(subgraphName: string) {
   return axios.post(GRAPH_ADMIN_ENDPOINT, {
-      jsonrpc: "2.0",
-      method: "subgraph_remove",
-      params: {
-        name: subgraphName
-      },
-      id: 1
+    jsonrpc: "2.0",
+    method: "subgraph_remove",
+    params: {
+      name: subgraphName
+    },
+    id: 1
+  })
+}
+
+export async function startGraph(provider: providers.JsonRpcProvider) {
+  await execAsync('npm run build')
+  await execAsync('npm run create-local')
+  await execAsync('npm run deploy-local')
+
+  await waitForGraphSync({
+    subgraphName: 'adamazad/aqua',
+    provider
   })
 }
 
