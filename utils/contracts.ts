@@ -19,8 +19,16 @@ import { exec as execBase } from 'child_process'
 // Encoders
 import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Typechained
-import { FixedPriceSaleTemplate__factory, FairSaleTemplate__factory } from './typechain-contracts'
-import type { ERC20Mintable, AquaFactory, TemplateLauncher, FixedPriceSale, SaleLauncher } from './typechain-contracts'
+import {
+  AquaFactory,
+  SaleLauncher,
+  ERC20Mintable,
+  FixedPriceSale,
+  TemplateLauncher,
+  ERC20Mintable__factory,
+  FairSaleTemplate__factory,
+  FixedPriceSaleTemplate__factory,
+} from './typechain-contracts'
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
@@ -283,7 +291,7 @@ export async function createTokenAndMintAndApprove({
   users,
   signer
 }: CreateTokensAndMintAndApproveProps): Promise<ERC20Mintable> {
-  const token = (await getContractFactory('ERC20Mintable', signer).deploy(symbol, name)) as ERC20Mintable
+  const token = await new ERC20Mintable__factory(signer).deploy(symbol, name)
 
   for (const user of users) {
     await token.mint(await user.getAddress(), numberOfTokens)
@@ -307,7 +315,7 @@ export async function createBiddingTokenAndMintAndApprove({
   deployer
 }: CreateBiddingTokenAndMintAndApproveProps) {
   // Deploy the token
-  const biddingToken = (await getContractFactory('ERC20Mintable', deployer).deploy('BT', 'BT')) as ERC20Mintable
+  const biddingToken = await new ERC20Mintable__factory(deployer).deploy('BT', 'BT')
 
   for (const user of users) {
     await biddingToken.mint(user._address, numberOfTokens)
@@ -324,5 +332,5 @@ export async function createBiddingTokenAndMintAndApprove({
 
 export async function createWETH(signer: Signer) {
   // Get factories and deploy BiddingToken and AuctioningToken
-  return (await getContractFactory('ERC20Mintable', signer).deploy('WETH', 'WETH')) as ERC20Mintable
+  return await new ERC20Mintable__factory(signer).deploy('WETH', 'WETH')
 }
