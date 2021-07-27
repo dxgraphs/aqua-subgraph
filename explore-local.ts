@@ -4,30 +4,31 @@ import { ethers, providers, utils } from 'ethers'
 import { start as startREPL } from 'repl'
 import log4js from 'log4js'
 // Contract types
-import type {
-  ParticipantListLauncher,
-  FairSaleTemplate,
-  TemplateLauncher,
+import {
   ParticipantList,
-  FixedPriceSale,
-  SaleLauncher,
-  AquaFactory,
-  FairSale,
+  FairSale__factory,
+  AquaFactory__factory,
+  SaleLauncher__factory,
+  FixedPriceSale__factory,
+  ParticipantList__factory,
+  TemplateLauncher__factory,
+  FairSaleTemplate__factory,
+  FixedPriceSaleTemplate__factory,
+  ParticipantListLauncher__factory,
 } from './utils/typechain-contracts'
-import { FixedPriceSale__factory, ParticipantList__factory } from './utils/typechain-contracts'
 // Utils
 import {
-  createTokenAndMintAndApprove,
-  addSaleTemplateToLauncher,
-  createFixedPriceSale,
-  getContractFactory,
-  printTokens,
   execAsync,
+  printTokens,
+  createFixedPriceSale,
+  addSaleTemplateToLauncher,
+  createTokenAndMintAndApprove,
 } from './utils/contracts'
 import { buildSubgraphYaml, BuildSubgraphYmlProps, waitForGraphSync } from './utils/graph'
 import { EVM_ENDPOINT, GRAPHQL_ENDPOINT } from './utils/constants'
 import { getSigners, mineBlock } from './utils/evm'
-import { wait } from './utils/time'
+import { EVM_ENDPOINT, GRAPHQL_ENDPOINT } from './utils/constants'
+import { buildSubgraphYaml, startGraph, waitForSubgraphUp } from './utils/graph'
 
 // Get logger
 const logger = log4js.getLogger()
@@ -45,7 +46,7 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     }
 
     // Wait for everything to fire up
-    await wait(10000)
+    await waitForSubgraphUp()
 
     // Connect to local ganache instance
     const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
@@ -75,30 +76,32 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     // Before each unit test, a new AquaFactory, TemplateLauncher, and AuctionLauncher FairSale contract is deployed to ganache
     // then followed by deploying its subgraph to the Graph node
     // Deploy AquaFactory
-    const aquaFactory = (await getContractFactory('AquaFactory', deployer).deploy(
+    const aquaFactory = await new AquaFactory__factory(deployer).deploy(
       await deployer.getAddress(), // Fee Manager
       await deployer.getAddress(), // Fee Collector; treasury
       await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
       0, // Template fee: cost to submit a new Sale Template to the Aqua Factory
       0, // fee numerator
       0 // sale fees
-    )) as AquaFactory
+    )
 
     // Deploy ParticipantList
-    const participantList = (await getContractFactory('ParticipantList', deployer).deploy()) as ParticipantList
-    const participantListLauncher = (await getContractFactory('ParticipantListLauncher', deployer).deploy(
+    const participantList = await new ParticipantList__factory(deployer).deploy()
+    const participantListLauncher = await new ParticipantListLauncher__factory(deployer).deploy(
       aquaFactory.address,
       participantList.address
-    )) as ParticipantListLauncher
+    )
+    logger.info(`Factory initialized in block ${aquaFactory.deployTransaction.blockNumber}`)
 
-    console.log(`Factory initialized in block ${aquaFactory.deployTransaction.blockNumber}`)
     // Deploy TemplateLauncher
-    const templateLauncher = (await getContractFactory('TemplateLauncher', deployer).deploy(
+    const templateLauncher = await new TemplateLauncher__factory(deployer).deploy(
       aquaFactory.address,
       participantListLauncher.address
-    )) as TemplateLauncher
+    )
+
     // Deploy SaleLauncher
-    const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(aquaFactory.address)) as SaleLauncher
+    const saleLauncher = await new SaleLauncher__factory(deployer).deploy(aquaFactory.address)
+
     // Set the template launcher in factory
     {
       const setTemplateLauncherTx = await aquaFactory.setTemplateLauncher(templateLauncher.address)
@@ -129,24 +132,13 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     await buildSubgraphYaml(buildSubgraphYamlConfig)
 
     // Build, create and deploy the subgraph
-    console.log('Building subgraph')
+    logger.info('Building subgraph')
     await execAsync('npm run codegen')
-    await execAsync('npm run build')
-    console.log('Creating subgraph')
-    await execAsync('npm run create-local')
-    console.log('Deploying subgraph')
-    await execAsync('npm run deploy-local')
-
-    // Wait for subgraph to sync
-    await waitForGraphSync({
-      subgraphName: 'adamazad/aqua',
-      provider
-    })
-    // wait(20000)
+    await startGraph(provider)
 
     const templates = {
-      fairSaleTemplate: (await getContractFactory('FairSaleTemplate', deployer).deploy()) as FairSaleTemplate,
-      fixedPriceSaleTemplate: (await getContractFactory('FixedPriceSaleTemplate', deployer).deploy()) as FixedPriceSale
+      fairSaleTemplate: await new FairSaleTemplate__factory(deployer).deploy(),
+      fixedPriceSaleTemplate: await new FixedPriceSaleTemplate__factory(deployer).deploy()
     }
 
     // Deploy FairSale and FixedPriceSale
@@ -154,14 +146,14 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
 
     // Register FairSale and FixedPriceSale in SaleLauncher
     {
-      const fairSale = (await getContractFactory('FairSale', deployer).deploy()) as FairSale
+      const fairSale = await new FairSale__factory(deployer).deploy()
       const addSaleTxReceipt = await (await saleLauncher.addTemplate(fairSale.address)).wait(1)
-      console.log(`Registered FairSale in SaleLauncher at ${addSaleTxReceipt.blockNumber}`)
+      logger.info(`Registered FairSale in SaleLauncher at ${addSaleTxReceipt.blockNumber}`)
     }
     {
-      const fixedPriceSale = (await getContractFactory('FixedPriceSale', deployer).deploy()) as FixedPriceSale
+      const fixedPriceSale = await new FixedPriceSale__factory(deployer).deploy()
       const addSaleTxReceipt = await (await saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
-      console.log(`Registered FixedPriceSale in SaleLauncher at ${addSaleTxReceipt.blockNumber}`)
+      logger.info(`Registered FixedPriceSale in SaleLauncher at ${addSaleTxReceipt.blockNumber}`)
     }
 
     // Register FairSaleTemplate and FixedPriceTemplate on TemplateLauncher
@@ -169,14 +161,14 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
       launcher: templateLauncher,
       saleTemplateAddress: templates.fairSaleTemplate.address
     })
-    console.log(`Registered FairSaleTemplate in TemplateLauncher. TemplateId = `, fairSaleTemplateId.toNumber())
+    logger.info(`Registered FairSaleTemplate in TemplateLauncher. TemplateId = `, fairSaleTemplateId.toNumber())
 
     const { templateId: fixedPriceSaleTemplateId } = await addSaleTemplateToLauncher({
       launcher: templateLauncher,
       saleTemplateAddress: templates.fixedPriceSaleTemplate.address
     })
 
-    console.log(
+    logger.info(
       `Registered FixedPriceSaleTemplate in TemplateLauncher. TemplateId = `,
       fixedPriceSaleTemplateId.toNumber()
     )
@@ -252,7 +244,7 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
       saleCreator
     })
 
-    console.log(`Launched a new FixedPriceSale at ${newFixedPriceSaleAddress}`)
+    logger.info(`Launched a new FixedPriceSale at ${newFixedPriceSaleAddress}`)
 
     // Approve new SaleContract
     // await tokens.biddingToken.connect(saleInvestorA).approve(newFairSaleAddress, ethers.constants.MaxUint256)
@@ -273,7 +265,7 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
       participantList: true
     })
 
-    console.log(`Launched a new FixedPriceSale with Participant List at ${newFixedPriceSaleWithListAddress}`)
+    logger.info(`Launched a new FixedPriceSale with Participant List at ${newFixedPriceSaleWithListAddress}`)
 
     await tokens.biddingToken.connect(saleInvestorA).approve(newFixedPriceSaleWithListAddress, ethers.constants.MaxUint256)
     await tokens.biddingToken.connect(saleInvestorB).approve(newFixedPriceSaleWithListAddress, ethers.constants.MaxUint256)
@@ -304,15 +296,15 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
 
     {
       const { '4': saleStartDate } = await sales.fixedPriceSale.saleInvestorA.saleInfo()
-      console.log(`Mining block at ${saleStartDate.toNumber()}`)
+      logger.info(`Mining block at ${saleStartDate.toNumber()}`)
       await mineBlock(provider, saleStartDate.toNumber() + 180)
     }
 
     {
       const { '4': saleStartDate, participantList } = await sales.fixedPriceSaleWithList.saleInvestorA.saleInfo()
       sales.fixedPriceSaleWithList.participantList = ParticipantList__factory.connect(participantList, saleCreator)
-      console.log({ participantList })
-      console.log(`Mining block at ${saleStartDate.toNumber()}`)
+      logger.info({ participantList })
+      logger.info(`Mining block at ${saleStartDate.toNumber()}`)
       await mineBlock(provider, saleStartDate.toNumber() + 180)
 
     }
@@ -331,9 +323,10 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     await sales.fixedPriceSaleWithList.saleInvestorA.commitTokens(utils.parseUnits('4'))
     await sales.fixedPriceSaleWithList.saleInvestorB.commitTokens(utils.parseUnits('5'))
 
-    console.log(`\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n Subgraph ready at ${GRAPHQL_ENDPOINT}`)
+    console.log(`\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n`)
+    logger.info(`Subgraph ready at ${GRAPHQL_ENDPOINT}`)
 
-    console.log(
+    logger.info(
       `You can access ${['aquaFactory', 'templateLauncher', 'saleLauncher', 'helpers', 'templates', 'sales'].join(', ')}`
     )
 
