@@ -2,10 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { AquaFactory } from "./AquaFactory";
-export type { ERC20 } from "./ERC20";
 export type { ERC20Mintable } from "./ERC20Mintable";
-export type { ERC20NameBytes } from "./ERC20NameBytes";
-export type { ERC20SymbolBytes } from "./ERC20SymbolBytes";
 export type { FairSale } from "./FairSale";
 export type { FairSaleTemplate } from "./FairSaleTemplate";
 export type { FixedPriceSale } from "./FixedPriceSale";
@@ -13,14 +10,10 @@ export type { FixedPriceSaleTemplate } from "./FixedPriceSaleTemplate";
 export type { ParticipantList } from "./ParticipantList";
 export type { ParticipantListLauncher } from "./ParticipantListLauncher";
 export type { SaleLauncher } from "./SaleLauncher";
-export type { SaleTemplateNameBytes } from "./SaleTemplateNameBytes";
 export type { TemplateLauncher } from "./TemplateLauncher";
 
 export { AquaFactory__factory } from "./factories/AquaFactory__factory";
-export { ERC20__factory } from "./factories/ERC20__factory";
 export { ERC20Mintable__factory } from "./factories/ERC20Mintable__factory";
-export { ERC20NameBytes__factory } from "./factories/ERC20NameBytes__factory";
-export { ERC20SymbolBytes__factory } from "./factories/ERC20SymbolBytes__factory";
 export { FairSale__factory } from "./factories/FairSale__factory";
 export { FairSaleTemplate__factory } from "./factories/FairSaleTemplate__factory";
 export { FixedPriceSale__factory } from "./factories/FixedPriceSale__factory";
@@ -28,5 +21,4 @@ export { FixedPriceSaleTemplate__factory } from "./factories/FixedPriceSaleTempl
 export { ParticipantList__factory } from "./factories/ParticipantList__factory";
 export { ParticipantListLauncher__factory } from "./factories/ParticipantListLauncher__factory";
 export { SaleLauncher__factory } from "./factories/SaleLauncher__factory";
-export { SaleTemplateNameBytes__factory } from "./factories/SaleTemplateNameBytes__factory";
 export { TemplateLauncher__factory } from "./factories/TemplateLauncher__factory";
