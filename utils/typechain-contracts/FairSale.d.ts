@@ -9,16 +9,15 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "@ethersproject/contracts";
+} from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface FairSaleInterface extends ethers.utils.Interface {
   functions: {
@@ -267,114 +266,96 @@ interface FairSaleInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "UserRegistration"): EventFragment;
 }
 
-export class FairSale extends Contract {
+export class FairSale extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
+
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: FairSaleInterface;
 
   functions: {
     TEMPLATE_NAME(overrides?: CallOverrides): Promise<[string]>;
 
-    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<[string]>;
-
     auctionEndDate(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "auctionEndDate()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     cancelSellOrders(
       _sellOrders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "cancelSellOrders(bytes32[])"(
-      _sellOrders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     claimFromParticipantOrder(
       orders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "claimFromParticipantOrder(bytes32[])"(
-      orders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     clearingPriceOrder(overrides?: CallOverrides): Promise<[string]>;
-
-    "clearingPriceOrder()"(overrides?: CallOverrides): Promise<[string]>;
 
     containsOrder(
       order: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    "containsOrder(bytes32)"(
-      order: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "getSecondsRemainingInBatch()"(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     getUserId(
       user: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "getUserId(address)"(
-      user: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    init(_data: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
-
-    "init(bytes)"(
+    init(
       _data: BytesLike,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     initialAuctionOrder(overrides?: CallOverrides): Promise<[string]>;
 
-    "initialAuctionOrder()"(overrides?: CallOverrides): Promise<[string]>;
-
     initialized(overrides?: CallOverrides): Promise<[boolean]>;
-
-    "initialized()"(overrides?: CallOverrides): Promise<[boolean]>;
 
     interimOrder(overrides?: CallOverrides): Promise<[string]>;
 
-    "interimOrder()"(overrides?: CallOverrides): Promise<[string]>;
-
     interimSumBidAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "interimSumBidAmount()"(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isAtomicClosureAllowed(overrides?: CallOverrides): Promise<[boolean]>;
 
-    "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<[boolean]>;
-
     minFundingThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "minFundingThreshold()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     minFundingThresholdNotReached(
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    "minFundingThresholdNotReached()"(
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -382,32 +363,15 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    "minimumBiddingAmountPerOrder()"(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     numUsers(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    "numUsers()"(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     orderCancellationEndDate(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "orderCancellationEndDate()"(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     placeSellOrders(
       _minBuyAmounts: BigNumberish[],
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "placeSellOrders(uint96[],uint96[],bytes32[])"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     placeSellOrdersOnBehalf(
@@ -415,183 +379,92 @@ export class FairSale extends Contract {
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
       orderSubmitter: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      orderSubmitter: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     precalculateSellAmountSum(
       iterationSteps: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "precalculateSellAmountSum(uint256)"(
-      iterationSteps: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     registerUser(
       user: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    "registerUser(address)"(
-      user: string,
-      overrides?: Overrides
+    settleAuction(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    settleAuction(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "settleAuction()"(overrides?: Overrides): Promise<ContractTransaction>;
 
     settleAuctionAtomically(
       _minBuyAmount: BigNumberish[],
       _sellAmount: BigNumberish[],
       _prevSellOrder: BytesLike[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _minBuyAmount: BigNumberish[],
-      _sellAmount: BigNumberish[],
-      _prevSellOrder: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     tokenIn(overrides?: CallOverrides): Promise<[string]>;
 
-    "tokenIn()"(overrides?: CallOverrides): Promise<[string]>;
-
     tokenOut(overrides?: CallOverrides): Promise<[string]>;
 
-    "tokenOut()"(overrides?: CallOverrides): Promise<[string]>;
-
     volumeClearingPriceOrder(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    "volumeClearingPriceOrder()"(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
   };
 
   TEMPLATE_NAME(overrides?: CallOverrides): Promise<string>;
 
-  "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<string>;
-
   auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   cancelSellOrders(
     _sellOrders: BytesLike[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "cancelSellOrders(bytes32[])"(
-    _sellOrders: BytesLike[],
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   claimFromParticipantOrder(
     orders: BytesLike[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "claimFromParticipantOrder(bytes32[])"(
-    orders: BytesLike[],
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   clearingPriceOrder(overrides?: CallOverrides): Promise<string>;
 
-  "clearingPriceOrder()"(overrides?: CallOverrides): Promise<string>;
-
   containsOrder(order: BytesLike, overrides?: CallOverrides): Promise<boolean>;
-
-  "containsOrder(bytes32)"(
-    order: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "getSecondsRemainingInBatch()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getUserId(user: string, overrides?: Overrides): Promise<ContractTransaction>;
-
-  "getUserId(address)"(
+  getUserId(
     user: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  init(_data: BytesLike, overrides?: Overrides): Promise<ContractTransaction>;
-
-  "init(bytes)"(
+  init(
     _data: BytesLike,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   initialAuctionOrder(overrides?: CallOverrides): Promise<string>;
 
-  "initialAuctionOrder()"(overrides?: CallOverrides): Promise<string>;
-
   initialized(overrides?: CallOverrides): Promise<boolean>;
-
-  "initialized()"(overrides?: CallOverrides): Promise<boolean>;
 
   interimOrder(overrides?: CallOverrides): Promise<string>;
 
-  "interimOrder()"(overrides?: CallOverrides): Promise<string>;
-
   interimSumBidAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "interimSumBidAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   isAtomicClosureAllowed(overrides?: CallOverrides): Promise<boolean>;
 
-  "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<boolean>;
-
   minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   minFundingThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
 
-  "minFundingThresholdNotReached()"(
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "minimumBiddingAmountPerOrder()"(
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   numUsers(overrides?: CallOverrides): Promise<BigNumber>;
 
-  "numUsers()"(overrides?: CallOverrides): Promise<BigNumber>;
-
   orderCancellationEndDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   placeSellOrders(
     _minBuyAmounts: BigNumberish[],
     _sellAmounts: BigNumberish[],
     _prevSellOrders: BytesLike[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "placeSellOrders(uint96[],uint96[],bytes32[])"(
-    _minBuyAmounts: BigNumberish[],
-    _sellAmounts: BigNumberish[],
-    _prevSellOrders: BytesLike[],
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   placeSellOrdersOnBehalf(
@@ -599,97 +472,47 @@ export class FairSale extends Contract {
     _sellAmounts: BigNumberish[],
     _prevSellOrders: BytesLike[],
     orderSubmitter: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
-    _minBuyAmounts: BigNumberish[],
-    _sellAmounts: BigNumberish[],
-    _prevSellOrders: BytesLike[],
-    orderSubmitter: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   precalculateSellAmountSum(
     iterationSteps: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "precalculateSellAmountSum(uint256)"(
-    iterationSteps: BigNumberish,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   registerUser(
     user: string,
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  "registerUser(address)"(
-    user: string,
-    overrides?: Overrides
+  settleAuction(
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  settleAuction(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "settleAuction()"(overrides?: Overrides): Promise<ContractTransaction>;
 
   settleAuctionAtomically(
     _minBuyAmount: BigNumberish[],
     _sellAmount: BigNumberish[],
     _prevSellOrder: BytesLike[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-    _minBuyAmount: BigNumberish[],
-    _sellAmount: BigNumberish[],
-    _prevSellOrder: BytesLike[],
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   tokenIn(overrides?: CallOverrides): Promise<string>;
 
-  "tokenIn()"(overrides?: CallOverrides): Promise<string>;
-
   tokenOut(overrides?: CallOverrides): Promise<string>;
 
-  "tokenOut()"(overrides?: CallOverrides): Promise<string>;
-
   volumeClearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
-
-  "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   callStatic: {
     TEMPLATE_NAME(overrides?: CallOverrides): Promise<string>;
 
-    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<string>;
-
     auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     cancelSellOrders(
       _sellOrders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "cancelSellOrders(bytes32[])"(
-      _sellOrders: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     claimFromParticipantOrder(
-      orders: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        sumTokenOutAmount: BigNumber;
-        sumTokenInAmount: BigNumber;
-      }
-    >;
-
-    "claimFromParticipantOrder(bytes32[])"(
       orders: BytesLike[],
       overrides?: CallOverrides
     ): Promise<
@@ -701,87 +524,38 @@ export class FairSale extends Contract {
 
     clearingPriceOrder(overrides?: CallOverrides): Promise<string>;
 
-    "clearingPriceOrder()"(overrides?: CallOverrides): Promise<string>;
-
     containsOrder(
-      order: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "containsOrder(bytes32)"(
       order: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getSecondsRemainingInBatch()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getUserId(user: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getUserId(address)"(
-      user: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     init(_data: BytesLike, overrides?: CallOverrides): Promise<void>;
 
-    "init(bytes)"(_data: BytesLike, overrides?: CallOverrides): Promise<void>;
-
     initialAuctionOrder(overrides?: CallOverrides): Promise<string>;
-
-    "initialAuctionOrder()"(overrides?: CallOverrides): Promise<string>;
 
     initialized(overrides?: CallOverrides): Promise<boolean>;
 
-    "initialized()"(overrides?: CallOverrides): Promise<boolean>;
-
     interimOrder(overrides?: CallOverrides): Promise<string>;
-
-    "interimOrder()"(overrides?: CallOverrides): Promise<string>;
 
     interimSumBidAmount(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "interimSumBidAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     isAtomicClosureAllowed(overrides?: CallOverrides): Promise<boolean>;
-
-    "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<boolean>;
 
     minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     minFundingThresholdNotReached(overrides?: CallOverrides): Promise<boolean>;
-
-    "minFundingThresholdNotReached()"(
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "minimumBiddingAmountPerOrder()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     numUsers(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "numUsers()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     orderCancellationEndDate(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     placeSellOrders(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "placeSellOrders(uint96[],uint96[],bytes32[])"(
       _minBuyAmounts: BigNumberish[],
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
@@ -796,43 +570,16 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      orderSubmitter: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     precalculateSellAmountSum(
-      iterationSteps: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "precalculateSellAmountSum(uint256)"(
       iterationSteps: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     registerUser(user: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "registerUser(address)"(
-      user: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     settleAuction(overrides?: CallOverrides): Promise<string>;
 
-    "settleAuction()"(overrides?: CallOverrides): Promise<string>;
-
     settleAuctionAtomically(
-      _minBuyAmount: BigNumberish[],
-      _sellAmount: BigNumberish[],
-      _prevSellOrder: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
       _minBuyAmount: BigNumberish[],
       _sellAmount: BigNumberish[],
       _prevSellOrder: BytesLike[],
@@ -841,180 +588,165 @@ export class FairSale extends Contract {
 
     tokenIn(overrides?: CallOverrides): Promise<string>;
 
-    "tokenIn()"(overrides?: CallOverrides): Promise<string>;
-
     tokenOut(overrides?: CallOverrides): Promise<string>;
 
-    "tokenOut()"(overrides?: CallOverrides): Promise<string>;
-
     volumeClearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
     AuctionCleared(
-      soldTokenOuts: null,
-      soldTokenIns: null,
-      clearingPriceOrder: null
-    ): EventFilter;
+      soldTokenOuts?: null,
+      soldTokenIns?: null,
+      clearingPriceOrder?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, string],
+      {
+        soldTokenOuts: BigNumber;
+        soldTokenIns: BigNumber;
+        clearingPriceOrder: string;
+      }
+    >;
 
     AuctionInitialized(
-      tokenOut: string | null,
-      tokenIn: string | null,
-      orderCancellationEndDate: null,
-      auctionEndDate: null,
-      userId: null,
-      auctionedSellAmount: null,
-      minBuyAmount: null,
-      minimumBiddingAmountPerOrder: null,
-      minFundingThreshold: null
-    ): EventFilter;
+      tokenOut?: string | null,
+      tokenIn?: string | null,
+      orderCancellationEndDate?: null,
+      auctionEndDate?: null,
+      userId?: null,
+      auctionedSellAmount?: null,
+      minBuyAmount?: null,
+      minimumBiddingAmountPerOrder?: null,
+      minFundingThreshold?: null
+    ): TypedEventFilter<
+      [
+        string,
+        string,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ],
+      {
+        tokenOut: string;
+        tokenIn: string;
+        orderCancellationEndDate: BigNumber;
+        auctionEndDate: BigNumber;
+        userId: BigNumber;
+        auctionedSellAmount: BigNumber;
+        minBuyAmount: BigNumber;
+        minimumBiddingAmountPerOrder: BigNumber;
+        minFundingThreshold: BigNumber;
+      }
+    >;
 
     CancellationSellOrder(
-      userId: BigNumberish | null,
-      buyAmount: null,
-      sellAmount: null
-    ): EventFilter;
+      userId?: BigNumberish | null,
+      buyAmount?: null,
+      sellAmount?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { userId: BigNumber; buyAmount: BigNumber; sellAmount: BigNumber }
+    >;
 
     ClaimedFromOrder(
-      userId: BigNumberish | null,
-      buyAmount: null,
-      sellAmount: null
-    ): EventFilter;
+      userId?: BigNumberish | null,
+      buyAmount?: null,
+      sellAmount?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { userId: BigNumber; buyAmount: BigNumber; sellAmount: BigNumber }
+    >;
 
     NewSellOrder(
-      userId: BigNumberish | null,
-      buyAmount: null,
-      sellAmount: null
-    ): EventFilter;
+      userId?: BigNumberish | null,
+      buyAmount?: null,
+      sellAmount?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { userId: BigNumber; buyAmount: BigNumber; sellAmount: BigNumber }
+    >;
 
     NewUser(
-      userId: BigNumberish | null,
-      userAddress: string | null
-    ): EventFilter;
+      userId?: BigNumberish | null,
+      userAddress?: string | null
+    ): TypedEventFilter<
+      [BigNumber, string],
+      { userId: BigNumber; userAddress: string }
+    >;
 
-    UserRegistration(user: string | null, userId: null): EventFilter;
+    UserRegistration(
+      user?: string | null,
+      userId?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { user: string; userId: BigNumber }
+    >;
   };
 
   estimateGas: {
     TEMPLATE_NAME(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     auctionEndDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "auctionEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     cancelSellOrders(
       _sellOrders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "cancelSellOrders(bytes32[])"(
-      _sellOrders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     claimFromParticipantOrder(
       orders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "claimFromParticipantOrder(bytes32[])"(
-      orders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     clearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "clearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     containsOrder(
       order: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "containsOrder(bytes32)"(
-      order: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getSecondsRemainingInBatch(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "getSecondsRemainingInBatch()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserId(user: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "getUserId(address)"(
+    getUserId(
       user: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    init(_data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
-
-    "init(bytes)"(_data: BytesLike, overrides?: Overrides): Promise<BigNumber>;
+    init(
+      _data: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     initialAuctionOrder(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "initialAuctionOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     initialized(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "initialized()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     interimOrder(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "interimOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     interimSumBidAmount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "interimSumBidAmount()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     isAtomicClosureAllowed(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "isAtomicClosureAllowed()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     minFundingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "minFundingThreshold()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     minFundingThresholdNotReached(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "minFundingThresholdNotReached()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     minimumBiddingAmountPerOrder(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "minimumBiddingAmountPerOrder()"(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     numUsers(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "numUsers()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     orderCancellationEndDate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "orderCancellationEndDate()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     placeSellOrders(
       _minBuyAmounts: BigNumberish[],
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "placeSellOrders(uint96[],uint96[],bytes32[])"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     placeSellOrdersOnBehalf(
@@ -1022,110 +754,57 @@ export class FairSale extends Contract {
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
       orderSubmitter: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      orderSubmitter: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     precalculateSellAmountSum(
       iterationSteps: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    "precalculateSellAmountSum(uint256)"(
-      iterationSteps: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    registerUser(user: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "registerUser(address)"(
+    registerUser(
       user: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    settleAuction(overrides?: Overrides): Promise<BigNumber>;
-
-    "settleAuction()"(overrides?: Overrides): Promise<BigNumber>;
+    settleAuction(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     settleAuctionAtomically(
       _minBuyAmount: BigNumberish[],
       _sellAmount: BigNumberish[],
       _prevSellOrder: BytesLike[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _minBuyAmount: BigNumberish[],
-      _sellAmount: BigNumberish[],
-      _prevSellOrder: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     tokenIn(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "tokenIn()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     tokenOut(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "tokenOut()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     volumeClearingPriceOrder(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "volumeClearingPriceOrder()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     TEMPLATE_NAME(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "TEMPLATE_NAME()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     auctionEndDate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "auctionEndDate()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     cancelSellOrders(
       _sellOrders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "cancelSellOrders(bytes32[])"(
-      _sellOrders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     claimFromParticipantOrder(
       orders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "claimFromParticipantOrder(bytes32[])"(
-      orders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     clearingPriceOrder(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "clearingPriceOrder()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     containsOrder(
-      order: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "containsOrder(bytes32)"(
       order: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1134,51 +813,25 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "getSecondsRemainingInBatch()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getUserId(
       user: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "getUserId(address)"(
-      user: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     init(
       _data: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "init(bytes)"(
-      _data: BytesLike,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     initialAuctionOrder(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "initialAuctionOrder()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     initialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "initialized()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     interimOrder(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "interimOrder()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     interimSumBidAmount(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "interimSumBidAmount()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1186,15 +839,7 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "isAtomicClosureAllowed()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     minFundingThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "minFundingThreshold()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1202,27 +847,13 @@ export class FairSale extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "minFundingThresholdNotReached()"(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     minimumBiddingAmountPerOrder(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "minimumBiddingAmountPerOrder()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     numUsers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "numUsers()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     orderCancellationEndDate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "orderCancellationEndDate()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1230,14 +861,7 @@ export class FairSale extends Contract {
       _minBuyAmounts: BigNumberish[],
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "placeSellOrders(uint96[],uint96[],bytes32[])"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     placeSellOrdersOnBehalf(
@@ -1245,68 +869,35 @@ export class FairSale extends Contract {
       _sellAmounts: BigNumberish[],
       _prevSellOrders: BytesLike[],
       orderSubmitter: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "placeSellOrdersOnBehalf(uint96[],uint96[],bytes32[],address)"(
-      _minBuyAmounts: BigNumberish[],
-      _sellAmounts: BigNumberish[],
-      _prevSellOrders: BytesLike[],
-      orderSubmitter: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     precalculateSellAmountSum(
       iterationSteps: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "precalculateSellAmountSum(uint256)"(
-      iterationSteps: BigNumberish,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     registerUser(
       user: string,
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    "registerUser(address)"(
-      user: string,
-      overrides?: Overrides
+    settleAuction(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    settleAuction(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "settleAuction()"(overrides?: Overrides): Promise<PopulatedTransaction>;
 
     settleAuctionAtomically(
       _minBuyAmount: BigNumberish[],
       _sellAmount: BigNumberish[],
       _prevSellOrder: BytesLike[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "settleAuctionAtomically(uint96[],uint96[],bytes32[])"(
-      _minBuyAmount: BigNumberish[],
-      _sellAmount: BigNumberish[],
-      _prevSellOrder: BytesLike[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     tokenIn(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "tokenIn()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     tokenOut(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "tokenOut()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     volumeClearingPriceOrder(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "volumeClearingPriceOrder()"(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

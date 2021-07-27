@@ -2,19 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
+import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-
-import type { ERC20SymbolBytes } from "../ERC20SymbolBytes";
-
-export class ERC20SymbolBytes__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ERC20SymbolBytes {
-    return new Contract(address, _abi, signerOrProvider) as ERC20SymbolBytes;
-  }
-}
+import type {
+  ERC20SymbolBytes,
+  ERC20SymbolBytesInterface,
+} from "../ERC20SymbolBytes";
 
 const _abi = [
   {
@@ -33,3 +26,16 @@ const _abi = [
     type: "function",
   },
 ];
+
+export class ERC20SymbolBytes__factory {
+  static readonly abi = _abi;
+  static createInterface(): ERC20SymbolBytesInterface {
+    return new utils.Interface(_abi) as ERC20SymbolBytesInterface;
+  }
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): ERC20SymbolBytes {
+    return new Contract(address, _abi, signerOrProvider) as ERC20SymbolBytes;
+  }
+}

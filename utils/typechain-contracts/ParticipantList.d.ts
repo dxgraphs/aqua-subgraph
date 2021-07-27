@@ -9,16 +9,15 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-} from "ethers";
-import {
-  Contract,
+  BaseContract,
   ContractTransaction,
   Overrides,
   CallOverrides,
-} from "@ethersproject/contracts";
+} from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
+import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ParticipantListInterface extends ethers.utils.Interface {
   functions: {
@@ -77,54 +76,62 @@ interface ParticipantListInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ListInitialized"): EventFragment;
 }
 
-export class ParticipantList extends Contract {
+export class ParticipantList extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  on(event: EventFilter | string, listener: Listener): this;
-  once(event: EventFilter | string, listener: Listener): this;
-  addListener(eventName: EventFilter | string, listener: Listener): this;
-  removeAllListeners(eventName: EventFilter | string): this;
-  removeListener(eventName: any, listener: Listener): this;
+  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
+  off<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  on<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  once<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    listener: TypedListener<EventArgsArray, EventArgsObject>
+  ): this;
+  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
+    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
+  ): this;
+
+  listeners(eventName?: string): Array<Listener>;
+  off(eventName: string, listener: Listener): this;
+  on(eventName: string, listener: Listener): this;
+  once(eventName: string, listener: Listener): this;
+  removeListener(eventName: string, listener: Listener): this;
+  removeAllListeners(eventName?: string): this;
+
+  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
+    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
   interface: ParticipantListInterface;
 
   functions: {
     init(
       managers: string[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "init(address[])"(
-      managers: string[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     initialized(overrides?: CallOverrides): Promise<[boolean]>;
 
-    "initialized()"(overrides?: CallOverrides): Promise<[boolean]>;
-
     isInList(account: string, overrides?: CallOverrides): Promise<[boolean]>;
-
-    "isInList(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
 
     listManagers(arg0: string, overrides?: CallOverrides): Promise<[boolean]>;
 
-    "listManagers(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     participantAmounts(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    "participantAmounts(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -132,47 +139,22 @@ export class ParticipantList extends Contract {
     setParticipantAmounts(
       accounts: string[],
       amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setParticipantAmounts(address[],uint256[])"(
-      accounts: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  init(managers: string[], overrides?: Overrides): Promise<ContractTransaction>;
-
-  "init(address[])"(
+  init(
     managers: string[],
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   initialized(overrides?: CallOverrides): Promise<boolean>;
 
-  "initialized()"(overrides?: CallOverrides): Promise<boolean>;
-
   isInList(account: string, overrides?: CallOverrides): Promise<boolean>;
-
-  "isInList(address)"(
-    account: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   listManagers(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
-  "listManagers(address)"(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   participantAmounts(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "participantAmounts(address)"(
     arg0: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -180,58 +162,24 @@ export class ParticipantList extends Contract {
   setParticipantAmounts(
     accounts: string[],
     amounts: BigNumberish[],
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setParticipantAmounts(address[],uint256[])"(
-    accounts: string[],
-    amounts: BigNumberish[],
-    overrides?: Overrides
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     init(managers: string[], overrides?: CallOverrides): Promise<void>;
 
-    "init(address[])"(
-      managers: string[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     initialized(overrides?: CallOverrides): Promise<boolean>;
-
-    "initialized()"(overrides?: CallOverrides): Promise<boolean>;
 
     isInList(account: string, overrides?: CallOverrides): Promise<boolean>;
 
-    "isInList(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     listManagers(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-    "listManagers(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     participantAmounts(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "participantAmounts(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     setParticipantAmounts(
-      accounts: string[],
-      amounts: BigNumberish[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setParticipantAmounts(address[],uint256[])"(
       accounts: string[],
       amounts: BigNumberish[],
       overrides?: CallOverrides
@@ -239,43 +187,32 @@ export class ParticipantList extends Contract {
   };
 
   filters: {
-    AmountsUpdated(account: string | null, amounts: null): EventFilter;
+    AmountsUpdated(
+      account?: string | null,
+      amounts?: null
+    ): TypedEventFilter<
+      [string, BigNumber],
+      { account: string; amounts: BigNumber }
+    >;
 
-    ListInitialized(managers: null): EventFilter;
+    ListInitialized(
+      managers?: null
+    ): TypedEventFilter<[string[]], { managers: string[] }>;
   };
 
   estimateGas: {
-    init(managers: string[], overrides?: Overrides): Promise<BigNumber>;
-
-    "init(address[])"(
+    init(
       managers: string[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     initialized(overrides?: CallOverrides): Promise<BigNumber>;
 
-    "initialized()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     isInList(account: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "isInList(address)"(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     listManagers(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    "listManagers(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     participantAmounts(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "participantAmounts(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -283,37 +220,19 @@ export class ParticipantList extends Contract {
     setParticipantAmounts(
       accounts: string[],
       amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setParticipantAmounts(address[],uint256[])"(
-      accounts: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     init(
       managers: string[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "init(address[])"(
-      managers: string[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     initialized(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    "initialized()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     isInList(
-      account: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "isInList(address)"(
       account: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -323,17 +242,7 @@ export class ParticipantList extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "listManagers(address)"(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     participantAmounts(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "participantAmounts(address)"(
       arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -341,13 +250,7 @@ export class ParticipantList extends Contract {
     setParticipantAmounts(
       accounts: string[],
       amounts: BigNumberish[],
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setParticipantAmounts(address[],uint256[])"(
-      accounts: string[],
-      amounts: BigNumberish[],
-      overrides?: Overrides
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

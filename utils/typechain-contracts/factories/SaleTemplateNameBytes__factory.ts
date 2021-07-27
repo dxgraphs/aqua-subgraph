@@ -2,23 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer } from "ethers";
+import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-
-import type { SaleTemplateNameBytes } from "../SaleTemplateNameBytes";
-
-export class SaleTemplateNameBytes__factory {
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): SaleTemplateNameBytes {
-    return new Contract(
-      address,
-      _abi,
-      signerOrProvider
-    ) as SaleTemplateNameBytes;
-  }
-}
+import type {
+  SaleTemplateNameBytes,
+  SaleTemplateNameBytesInterface,
+} from "../SaleTemplateNameBytes";
 
 const _abi = [
   {
@@ -36,3 +25,20 @@ const _abi = [
     type: "function",
   },
 ];
+
+export class SaleTemplateNameBytes__factory {
+  static readonly abi = _abi;
+  static createInterface(): SaleTemplateNameBytesInterface {
+    return new utils.Interface(_abi) as SaleTemplateNameBytesInterface;
+  }
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): SaleTemplateNameBytes {
+    return new Contract(
+      address,
+      _abi,
+      signerOrProvider
+    ) as SaleTemplateNameBytes;
+  }
+}
