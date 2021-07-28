@@ -24,7 +24,7 @@ import {
   printTokens,
   execAsync,
 } from './utils/contracts'
-import { buildSubgraphYaml, createSubgraph, deploySubgraph, waitForGraphSync } from './utils/graph'
+import { buildSubgraphYaml, BuildSubgraphYmlProps, waitForGraphSync } from './utils/graph'
 import { EVM_ENDPOINT, GRAPHQL_ENDPOINT } from './utils/constants'
 import { getSigners, mineBlock } from './utils/evm'
 import { wait } from './utils/time'
@@ -105,7 +105,7 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
       logger.info(`Template Launcher set in AquaFactory in block ${setTemplateLauncherTx.blockNumber}`)
     }
 
-    const buildSubgraphYamlConfig = {
+    const buildSubgraphYamlConfig: BuildSubgraphYmlProps = {
       network: 'local',
       startBlock: aquaFactory.deployTransaction.blockNumber as number,
       contracts: {
@@ -117,6 +117,9 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
         },
         templateLauncher: {
           address: templateLauncher.address
+        },
+        participantListLauncher: {
+          address: participantListLauncher.address
         }
       }
     }

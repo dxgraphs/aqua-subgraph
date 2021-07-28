@@ -22,6 +22,9 @@ export interface BuildSubgraphYmlProps {
     templateLauncher: {
       address: string
     }
+    participantListLauncher: {
+      address: string
+    }
   }
 }
 

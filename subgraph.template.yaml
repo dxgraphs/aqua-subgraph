@@ -107,7 +107,7 @@ dataSources:
     name: ParticipantListLauncher
     network: {{network}}
     source:
-      address: '{{contracts.participantLauncher.address}}'
+      address: '{{contracts.participantListLauncher.address}}'
       abi: ParticipantListLauncher
       startBlock: {{startBlock}}
     mapping:
