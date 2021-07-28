@@ -1021,7 +1021,7 @@ export class FixedPriceSaleUser extends Entity {
   }
 }
 
-export class FixedPriceSaleParticipantList extends Entity {
+export class ParticipantList extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1029,23 +1029,17 @@ export class FixedPriceSaleParticipantList extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(
-      id !== null,
-      "Cannot save FixedPriceSaleParticipantList entity without an ID"
-    );
+    assert(id !== null, "Cannot save ParticipantList entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save FixedPriceSaleParticipantList entity with non-string ID. " +
+      "Cannot save ParticipantList entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("FixedPriceSaleParticipantList", id.toString(), this);
+    store.set("ParticipantList", id.toString(), this);
   }
 
-  static load(id: string): FixedPriceSaleParticipantList | null {
-    return store.get(
-      "FixedPriceSaleParticipantList",
-      id
-    ) as FixedPriceSaleParticipantList | null;
+  static load(id: string): ParticipantList | null {
+    return store.get("ParticipantList", id) as ParticipantList | null;
   }
 
   get id(): string {
@@ -1084,26 +1078,34 @@ export class FixedPriceSaleParticipantList extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
-  get sale(): string {
+  get sale(): Bytes {
     let value = this.get("sale");
-    return value.toString();
-  }
-
-  set sale(value: string) {
-    this.set("sale", Value.fromString(value));
-  }
-
-  get address(): Bytes {
-    let value = this.get("address");
     return value.toBytes();
   }
 
-  set address(value: Bytes) {
-    this.set("address", Value.fromBytes(value));
+  set sale(value: Bytes) {
+    this.set("sale", Value.fromBytes(value));
+  }
+
+  get participants(): Array<string> | null {
+    let value = this.get("participants");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set participants(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("participants");
+    } else {
+      this.set("participants", Value.fromStringArray(value as Array<string>));
+    }
   }
 }
 
-export class FixedPriceSaleParticipant extends Entity {
+export class Participant extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1111,23 +1113,17 @@ export class FixedPriceSaleParticipant extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(
-      id !== null,
-      "Cannot save FixedPriceSaleParticipant entity without an ID"
-    );
+    assert(id !== null, "Cannot save Participant entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save FixedPriceSaleParticipant entity with non-string ID. " +
+      "Cannot save Participant entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("FixedPriceSaleParticipant", id.toString(), this);
+    store.set("Participant", id.toString(), this);
   }
 
-  static load(id: string): FixedPriceSaleParticipant | null {
-    return store.get(
-      "FixedPriceSaleParticipant",
-      id
-    ) as FixedPriceSaleParticipant | null;
+  static load(id: string): Participant | null {
+    return store.get("Participant", id) as Participant | null;
   }
 
   get id(): string {
@@ -1166,15 +1162,6 @@ export class FixedPriceSaleParticipant extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
-  get sale(): string {
-    let value = this.get("sale");
-    return value.toString();
-  }
-
-  set sale(value: string) {
-    this.set("sale", Value.fromString(value));
-  }
-
   get address(): Bytes {
     let value = this.get("address");
     return value.toBytes();
@@ -1182,15 +1169,6 @@ export class FixedPriceSaleParticipant extends Entity {
 
   set address(value: Bytes) {
     this.set("address", Value.fromBytes(value));
-  }
-
-  get amount(): BigInt {
-    let value = this.get("amount");
-    return value.toBigInt();
-  }
-
-  set amount(value: BigInt) {
-    this.set("amount", Value.fromBigInt(value));
   }
 }
 
