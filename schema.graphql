@@ -153,7 +153,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   "If true, sale was initialized with participant list"
   hasParticipantList: Boolean!
   "List of allowed participants"
-  participants: [ParticipantList!]
+  participantList: ParticipantList
 }
 
 enum FixedPriceSaleCommitmentStatus {

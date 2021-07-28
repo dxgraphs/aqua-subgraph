@@ -709,20 +709,20 @@ export class FixedPriceSale extends Entity {
     this.set("hasParticipantList", Value.fromBoolean(value));
   }
 
-  get participants(): Array<string> | null {
-    let value = this.get("participants");
+  get participantList(): string | null {
+    let value = this.get("participantList");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toStringArray();
+      return value.toString();
     }
   }
 
-  set participants(value: Array<string> | null) {
+  set participantList(value: string | null) {
     if (value === null) {
-      this.unset("participants");
+      this.unset("participantList");
     } else {
-      this.set("participants", Value.fromStringArray(value as Array<string>));
+      this.set("participantList", Value.fromString(value as string));
     }
   }
 }
@@ -1078,13 +1078,21 @@ export class ParticipantList extends Entity {
     this.set("deletedAt", Value.fromI32(value));
   }
 
-  get sale(): Bytes {
+  get sale(): Bytes | null {
     let value = this.get("sale");
-    return value.toBytes();
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
   }
 
-  set sale(value: Bytes) {
-    this.set("sale", Value.fromBytes(value));
+  set sale(value: Bytes | null) {
+    if (value === null) {
+      this.unset("sale");
+    } else {
+      this.set("sale", Value.fromBytes(value as Bytes));
+    }
   }
 
   get participants(): Array<string> | null {
