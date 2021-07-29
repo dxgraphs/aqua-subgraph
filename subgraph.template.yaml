@@ -182,7 +182,7 @@ templates:
         - event: SaleClosed()
           handler: handleSaleClosed
         - event: SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)
-          handler: handleFixedPriceSaleInitialized
+          handler: handleSaleInitialized
   - kind: ethereum/contract
     name: ParticipantList
     network: {{network}}
@@ -201,3 +201,5 @@ templates:
       eventHandlers:
         - event: AmountsUpdated(indexed address,uint256)
           handler: handleAmountsUpdated
+        - event: ListInitialized(address[])
+          handler: handleListInitialized
