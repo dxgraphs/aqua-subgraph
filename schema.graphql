@@ -120,7 +120,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "The name of the same, default is the tokenIn's name"
+  "The name of the sale, default is the tokenIn's name"
   name: String!
   "Sale status: open/ended/settled/upcoming/cancelled/failed"
   status: FixedPriceSaleStatus!
@@ -136,15 +136,15 @@ type FixedPriceSale implements EntityMetadata @entity {
   soldAmount: BigInt!
   # Minimum amount per bid
   minimumRaise: BigInt!
-  "Minimum token amount per purchase"
+  "Minimum token amount per commitment"
   allocationMin: BigInt!
-  "Maximum token amount per purchase"
+  "Maximum token amount per commitment"
   allocationMax: BigInt!
   "Token investors can use to bid"
   tokenIn: Token!
   "Token investor get"
   tokenOut: Token!
-  "List of sale purchases"
+  "List of sale commitments"
   commitments: [FixedPriceSaleCommitment!] @derivedFrom(field: "sale")
   "List of users"
   users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
@@ -160,7 +160,7 @@ enum FixedPriceSaleCommitmentStatus {
 }
 
 type FixedPriceSaleCommitment implements EntityMetadata @entity {
-  "The purchase ID"
+  "The commitment ID"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
@@ -196,7 +196,7 @@ type FixedPriceSaleUser implements EntityMetadata @entity {
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "Total purchases submitted in the sale"
+  "Total commitments submitted in the sale"
   totalCommitment: Int!
   "Total volume for this user"
   totalVolume: BigInt!
