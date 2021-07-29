@@ -150,6 +150,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
   "List of withdrawals"
   withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
+  metadataContentHash: String
 }
 
 enum FixedPriceSaleCommitmentStatus {
