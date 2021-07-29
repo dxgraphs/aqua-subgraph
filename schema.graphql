@@ -68,6 +68,7 @@ type FairSale implements EntityMetadata @entity {
   minFundingThreshold: Int
   "List of bids"
   bids: [FairSaleBid!] @derivedFrom(field: "sale")
+  metadataContentHash: String
 }
 
 # FairSaleUser

@@ -43,6 +43,12 @@ export function handleSaleInitialized(event: SaleInitialized): void {
  * Creates a new FairSale entity from
  */
 function registerFairSale(event: SaleInitialized): Schemas.FairSale {
+  // Bind Template launcher
+  let templateLauncherAddress = getAquaFactory().templateLauncher
+  if (!templateLauncherAddress) {
+    throw new Error('Template launcher not found')
+  }
+  let templateLauncherContract = TemplateLauncherContract.bind(<Address>templateLauncherAddress)
   // Bind the new Contract
   let fairSaleContract = FairSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -51,6 +57,8 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.createdAt = event.block.timestamp.toI32()
   fairSale.updatedAt = event.block.timestamp.toI32()
   fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
+  // Get launched template data to find metadata ipfs hash
+  fairSale.metadataContentHash = templateLauncherContract.launchedTemplate(event.transaction.from).value1
   // Start and end dates of the sale
   fairSale.startDate = event.block.timestamp.toI32()
   fairSale.endDate = fairSaleContract.auctionEndDate().toI32()
@@ -111,7 +119,7 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   // Bind Template launcher
   let templateLauncherAddress = getAquaFactory().templateLauncher
   if (!templateLauncherAddress) {
-    throw console.error('Template launcher not found')
+    throw new Error('Template launcher not found')
   }
   let templateLauncherContract = TemplateLauncherContract.bind(<Address>templateLauncherAddress)
   // Bind the new Contract
