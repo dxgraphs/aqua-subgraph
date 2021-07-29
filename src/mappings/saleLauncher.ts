@@ -1,5 +1,5 @@
 // Externals
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, Address } from '@graphprotocol/graph-ts'
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
@@ -113,7 +113,7 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   if (!templateLauncherAddress) {
     throw console.error('Template launcher not found')
   }
-  let templateLauncherContract = TemplateLauncherContract.bind(templateLauncherAddress)
+  let templateLauncherContract = TemplateLauncherContract.bind(<Address>templateLauncherAddress)
   // Bind the new Contract
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.params.sale)
   // Create new EasySale entity
