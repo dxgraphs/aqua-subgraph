@@ -215,18 +215,23 @@ type ParticipantList implements EntityMetadata @entity {
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "Reference the sale"
+  "Address of sale, and not a ref"
   sale: Bytes
+  "List of addresses that can add or remove participants"
+  managers: [Bytes!]
+  "List of participants allowed to partake in the sale"
   participants: [Participant!]
 }
 
+# Entity used to map listed participants
 type Participant implements EntityMetadata @entity {
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "Participant address"
+  "Reference the sale"
   address: Bytes!
+  amount: BigInt!
 }
 
 #################################################

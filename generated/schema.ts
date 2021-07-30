@@ -1095,6 +1095,23 @@ export class ParticipantList extends Entity {
     }
   }
 
+  get managers(): Array<Bytes> | null {
+    let value = this.get("managers");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytesArray();
+    }
+  }
+
+  set managers(value: Array<Bytes> | null) {
+    if (value === null) {
+      this.unset("managers");
+    } else {
+      this.set("managers", Value.fromBytesArray(value as Array<Bytes>));
+    }
+  }
+
   get participants(): Array<string> | null {
     let value = this.get("participants");
     if (value === null || value.kind == ValueKind.NULL) {
@@ -1177,6 +1194,15 @@ export class Participant extends Entity {
 
   set address(value: Bytes) {
     this.set("address", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
   }
 }
 
