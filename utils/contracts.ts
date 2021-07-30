@@ -122,7 +122,7 @@ export async function createFairSale({
   const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseUnits('1')
+    value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
 
@@ -186,7 +186,7 @@ export async function createFixedPriceSale({
   const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseUnits('1')
+     value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
   // Extract the newSale from logs
