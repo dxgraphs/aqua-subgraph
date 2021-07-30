@@ -1,4 +1,4 @@
-import { ByteArray, Bytes, log } from '@graphprotocol/graph-ts'
+import { Bytes, log } from '@graphprotocol/graph-ts'
 import { ListInitialized, AmountsUpdated } from '../../generated/ParticipantList/ParticipantList'
 import { ParticipantList, Participant } from '../../generated/schema'
 
