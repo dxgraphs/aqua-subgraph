@@ -12,7 +12,8 @@ import {
   NewTokenWithdraw,
   NewTokenRelease,
   NewCommitment,
-  SaleClosed
+  SaleClosed,
+  SaleInitialized
 } from '../../../generated/FixedPriceSale/FixedPriceSale'
 
 // GraphQL Schemas
@@ -117,3 +118,5 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
   fixedPriceSale.status = SALE_STATUS.SETTLED
   fixedPriceSale.save()
 }
+
+export function handleSaleInitialized(event: SaleInitialized): void {}

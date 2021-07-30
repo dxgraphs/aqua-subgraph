@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
 
 // Contract types
-import { AquaFactory, SaleLauncher, TemplateLauncher } from '../tests/helpers/contracts'
 import {
   buildSubgraphYaml,
   EVM_ENDPOINT,
@@ -11,7 +10,12 @@ import {
   getContractFactory,
   GRAPHQL_ENDPOINT,
   wait
-} from '../tests/helpers'
+} from '../utils'
+import {
+  AquaFactory,
+  SaleLauncher,
+  TemplateLauncher
+} from '../utils/typechain-contracts'
 
 export async function aquaJestBeforeEach(): Promise<AquaJestBeforeEachContext> {
   await upDockerCompose()

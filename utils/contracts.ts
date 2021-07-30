@@ -20,7 +20,7 @@ import { exec as execBase } from 'child_process'
 import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Typechained
 import { FixedPriceSaleTemplate__factory, FairSaleTemplate__factory } from './typechain-contracts'
-import type { ERC20Mintable, AquaFactory,  TemplateLauncher, FixedPriceSale, SaleLauncher } from './typechain-contracts'
+import type { ERC20Mintable, AquaFactory, TemplateLauncher, FixedPriceSale, SaleLauncher } from './typechain-contracts'
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
@@ -34,6 +34,7 @@ export interface CreateSaleOptions {
   biddingToken: ERC20Mintable
   saleToken: ERC20Mintable
   saleCreator: providers.JsonRpcSigner
+  participantList?: boolean
 }
 
 export interface TokenList {
@@ -121,7 +122,7 @@ export async function createFairSale({
   const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseUnits('1')
+    value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
 
@@ -139,18 +140,14 @@ export async function createFixedPriceSale({
   saleLauncher,
   biddingToken,
   saleToken,
-  saleCreator
+  saleCreator,
+  participantList = false
 }: CreateSaleOptions): Promise<string> {
   // Get blocktimestamp from Ganache
   const lastBlock = await getLastBlock(aquaFactory.provider)
   // Sale lasts for one hour
   const startDate = lastBlock.timestamp + 180 // 5 minutes from from last block timestamp
   const endDate = startDate + 3600 * 24 // 24 hours from start date
-
-  console.log({
-    startDate: new Date(startDate * 1000),
-    endDate: new Date(endDate * 1000)
-  })
 
   const launchFixedPriceSaleTemplateTxReceipt = await aquaFactory
     .launchTemplate(
@@ -167,8 +164,8 @@ export async function createFixedPriceSale({
         maxCommitment: utils.parseUnits('10'),
         minRaise: utils.parseUnits('100'),
         tokenPrice: utils.parseUnits('2'),
-        tokensForSale: await saleToken.totalSupply(),
-        participantList: false // allows for anyone to particpate in the sale
+        tokensForSale: utils.parseUnits('500'),
+        participantList
       }),
       'explore-metahash'
     )
@@ -184,7 +181,7 @@ export async function createFixedPriceSale({
   const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseUnits('1')
+     value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
   // Extract the newSale from logs

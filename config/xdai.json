@@ -10,6 +10,9 @@
     },
     "templateLauncher": {
       "address": "0x1c1006D122A7f09A047f42D16464A3e7fBdB24C2"
+    },
+    "participantListLauncher": {
+      "address": "0x1c1006D122A7f09A047f42D16464A3e7fBdB24C2"
     }
   }
 }
