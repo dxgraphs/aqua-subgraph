@@ -149,11 +149,6 @@ export async function createFixedPriceSale({
   const startDate = lastBlock.timestamp + 180 // 5 minutes from from last block timestamp
   const endDate = startDate + 3600 * 24 // 24 hours from start date
 
-  console.log({
-    startDate: new Date(startDate * 1000),
-    endDate: new Date(endDate * 1000)
-  })
-
   const launchFixedPriceSaleTemplateTxReceipt = await aquaFactory
     .launchTemplate(
       templateId, // FixedPriceSale templateId
