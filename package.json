@@ -5,7 +5,6 @@
     "docker-up": "docker-compose up -d --force-recreate",
     "docker-clean": "docker-compose kill && docker-compose -y rm",
     "pretest": "npm run docker-up",
-    "prepare-mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml",
     "prepare-rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "prepare-xdai": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml",
     "test": "jest --verbose",
