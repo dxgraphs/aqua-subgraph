@@ -152,7 +152,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
   "If true, sale was initialized with participant list"
   hasParticipantList: Boolean!
-  "List of allowed participants"
+  "Reference to ParticipantList contract/entity."
   participantList: ParticipantList
 }
 
