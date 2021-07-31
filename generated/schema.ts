@@ -1095,6 +1095,15 @@ export class ParticipantList extends Entity {
     }
   }
 
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
   get managers(): Array<Bytes> | null {
     let value = this.get("managers");
     if (value === null || value.kind == ValueKind.NULL) {
@@ -1185,6 +1194,15 @@ export class Participant extends Entity {
 
   set deletedAt(value: i32) {
     this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get participantList(): string {
+    let value = this.get("participantList");
+    return value.toString();
+  }
+
+  set participantList(value: string) {
+    this.set("participantList", Value.fromString(value));
   }
 
   get address(): Bytes {
