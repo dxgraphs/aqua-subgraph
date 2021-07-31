@@ -6,7 +6,7 @@ import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
 import { wait } from '../utils/time'
 
 // Test block
-describe('TemplateLauncher', function () {
+describe('TemplateLauncher', function() {
   let aqua: AquaJestBeforeEachContext
 
   beforeAll(async () => {
@@ -24,7 +24,7 @@ describe('TemplateLauncher', function () {
     })
 
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await aqua.fetchFromTheGraph(`{
+    const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${event.templateId}") {
             address
             factory
@@ -49,7 +49,7 @@ describe('TemplateLauncher', function () {
 
     await wait(SUBGRAPH_SYNC_SECONDS)
 
-    const { data } = await aqua.fetchFromTheGraph(`{
+    const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${event.templateId}") {
             verified
           }
@@ -65,7 +65,7 @@ describe('TemplateLauncher', function () {
     })
     await (await aqua.templateLauncher.removeTemplate(event.templateId)).wait(1)
     await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await aqua.fetchFromTheGraph(`{
+    const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${event.templateId}") {
             deletedAt
           }

@@ -74,7 +74,7 @@ describe('SaleLauncher', function () {
 
     await wait(SUBGRAPH_SYNC_SECONDS * 5)
 
-    const { data } = await aqua.fetchFromTheGraph(`{
+    const { data } = await aqua.querySubgraph(`{
       fixedPriceSale (id: "${newFixedPriceSaleAddress}") {
           id
           status

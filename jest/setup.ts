@@ -1,7 +1,5 @@
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
-import { inspect } from 'util'
-import log4js from 'log4js'
 // Contract types
 import {
   wait,
@@ -12,6 +10,10 @@ import {
   startGraph,
   waitForSubgraphUp,
   SUBGRAPH_SYNC_SECONDS,
+  getLogger,
+  Namespace,
+  querySubgraph,
+  SUBGRAPH_NAME
 } from '../utils'
 import {
   AquaFactory,
@@ -24,29 +26,8 @@ import {
   ParticipantListLauncher__factory
 } from '../utils/typechain-contracts'
 
-const logger = log4js.getLogger()
+const logger = getLogger(Namespace.CONTRACTS)
 logger.level = 'info'
-
-const fetchFromTheGraph = async (query: string) => {
-  await wait(SUBGRAPH_SYNC_SECONDS)
-  const res = await axios.post(
-    GRAPHQL_ENDPOINT,
-    {
-      query
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-  )
-
-  if (res.data?.data && !res.data?.errors?.length) {
-    return res.data
-  } else {
-    throw new Error(`Query failed: ${inspect(res.data.errors, false, null, true)}`)
-  }
-}
 
 export async function aquaJestBeforeAll() {
   await waitForSubgraphUp()
@@ -63,16 +44,22 @@ export async function aquaJestBeforeEach() {
 
   // Deploy framework core contracts
   const aquaFactory = await new AquaFactory__factory(deployer).deploy(
-    deployerAddress,  // Fee Manager
-    deployerAddress,  // FeeTo
-    deployerAddress,  // TemplateManager
-    0,                // TemplateFee
-    0,                // FeeNumerator
-    0                 // SaleFee
+    deployerAddress, // Fee Manager
+    deployerAddress, // FeeTo
+    deployerAddress, // TemplateManager
+    0, // TemplateFee
+    0, // FeeNumerator
+    0 // SaleFee
   )
   const participantList = await new ParticipantList__factory(deployer).deploy()
-  const participantListLauncher = await new ParticipantListLauncher__factory(deployer).deploy(aquaFactory.address, participantList.address)
-  const templateLauncher = await new TemplateLauncher__factory(deployer).deploy(aquaFactory.address, participantListLauncher.address)
+  const participantListLauncher = await new ParticipantListLauncher__factory(deployer).deploy(
+    aquaFactory.address,
+    participantList.address
+  )
+  const templateLauncher = await new TemplateLauncher__factory(deployer).deploy(
+    aquaFactory.address,
+    participantListLauncher.address
+  )
   const saleLauncher = await new SaleLauncher__factory(deployer).deploy(aquaFactory.address)
 
   // Attach templateLauncher to factory
@@ -106,7 +93,7 @@ export async function aquaJestBeforeEach() {
 
   // Add to context
   return {
-    fetchFromTheGraph,
+    querySubgraph: (query: string) => querySubgraph(SUBGRAPH_NAME, query),
     provider,
     aquaFactory,
     saleLauncher,
@@ -120,7 +107,7 @@ export async function aquaJestAfterEach() {
 
 export interface AquaJestBeforeEachContext {
   provider: providers.JsonRpcProvider
-  fetchFromTheGraph: (query: string) => Promise<AxiosResponse>
+  querySubgraph: (query: string) => Promise<AxiosResponse>
   aquaFactory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher

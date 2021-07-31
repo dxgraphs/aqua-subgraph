@@ -1,7 +1,7 @@
 import { writeFile, readFile } from 'fs/promises'
 import type { providers } from 'ethers'
 import { render } from 'mustache'
-import log4js from 'log4js'
+import { inspect } from 'util'
 import axios from 'axios'
 
 // EVM utils
@@ -13,6 +13,7 @@ import { getLogger, Namespace } from './logger'
 
 const logger = getLogger(Namespace.SUBGRAPH)
 logger.level = 'info'
+
 export interface BuildSubgraphYmlProps {
   network: string | 'mainnet' | 'ropsten' | 'rinkeby' | 'kovan' | 'local'
   startBlock: number
@@ -44,13 +45,33 @@ export async function buildSubgraphYaml(viewProps: BuildSubgraphYmlProps) {
   logger.info('OK')
 }
 
-export async function queryGraph(query: string) {
-  return (await axios.post('http://localhost:8000/index-node/graphql', { query })).data.data
+
+/**
+ * Queries a given subgraph
+ * @param subgraphName
+ * @param query
+ * @returns
+ */
+export async function querySubgraph(subgraphName: string, query: string) {
+  const res = await axios.post(
+    `http://localhost:8000/subgraphs/name/${subgraphName}`,
+    {
+      query
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+
+  if (res.data?.data && !res.data?.errors?.length) {
+    return res.data
+  } else {
+    throw new Error(`Query failed: ${inspect(res.data.errors, false, null, true)}`)
+  }
 }
 
-export async function querySubgraph(subgraphName: string, query: string) {
-  return (await axios.post(`http://localhost:8000/subgraphs/name/${subgraphName}`, { query })).data.data
-}
 
 interface WaitForGraphSyncParams {
   provider: providers.JsonRpcProvider
