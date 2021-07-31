@@ -27,13 +27,14 @@ import {
   TemplateLauncher,
   ERC20Mintable__factory,
   FairSaleTemplate__factory,
-  FixedPriceSaleTemplate__factory,
+  FixedPriceSaleTemplate__factory
 } from './typechain-contracts'
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
 import { ONE_HOUR } from '../utils/constants'
 import { getLastBlock } from '../utils/evm'
+import { getLogger, Namespace } from './logger'
 
 export interface CreateSaleOptions {
   templateId: BigNumberish
@@ -63,6 +64,8 @@ export interface PurchaseTokenOptions {
 // UTC plugin
 dayjs.extend(DayJSUTC)
 
+const logger = getLogger(Namespace.CONTRACTS)
+logger.level = 'info'
 /**
  *
  * @param tokens
@@ -70,7 +73,7 @@ dayjs.extend(DayJSUTC)
 export async function printTokens(tokens: TokenList) {
   const values = Object.values(tokens)
 
-  console.log(`Deployed tokens`)
+  logger.info(`Deployed tokens`)
   const debug = await Promise.all(
     values.map(async ({ symbol, name, totalSupply }) => ({
       symbol: await symbol(),
@@ -184,12 +187,12 @@ export async function createFixedPriceSale({
   if (!launchedTemplateAddress) {
     throw new Error('Could not find launched FixedPriceSaleTemplate address')
   }
-  console.log(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
+  logger.info(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
   // Connect to the Template and create the sale
   const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-     value: await aquaFactory.saleFee()
+    value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
   // Extract the newSale from logs

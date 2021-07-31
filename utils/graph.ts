@@ -8,12 +8,11 @@ import axios from 'axios'
 import { wait } from './time'
 import { getLastBlock } from './evm'
 import { execAsync } from './contracts'
+import { GRAPH_ADMIN_ENDPOINT } from './constants'
+import { getLogger, Namespace } from './logger'
 
-const GRAPH_ADMIN_ENDPOINT = 'http://localhost:8020'
-
-const logger = log4js.getLogger()
+const logger = getLogger(Namespace.SUBGRAPH)
 logger.level = 'info'
-
 export interface BuildSubgraphYmlProps {
   network: string | 'mainnet' | 'ropsten' | 'rinkeby' | 'kovan' | 'local'
   startBlock: number
@@ -39,12 +38,9 @@ export async function buildSubgraphYaml(viewProps: BuildSubgraphYmlProps) {
   const subgraphYamlTemplate = await readFile('./subgraph.template.yaml', {
     encoding: 'utf8'
   })
-
   const subgraphYamlOut = render(subgraphYamlTemplate, viewProps)
-
   // Write the file
   await writeFile('./subgraph.yaml', subgraphYamlOut)
-
   logger.info('OK')
 }
 
@@ -106,7 +102,7 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
   targetBlockNumber = targetBlockNumber || (await getLastBlock(provider)).number
   let isSynced = false
 
-  logger.info('Syncing graph...')
+  logger.info(`Waiting for subgraph "${subgraphName}" to sync...`)
 
   while (true) {
     try {
@@ -128,7 +124,7 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
       })
 
       if (data.data.indexingStatusForCurrentVersion.synced) {
-        logger.info('OK')
+        logger.info(`Subgraph "${subgraphName}" has synced...`)
         isSynced = true
         break;
       }
@@ -138,7 +134,7 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
   }
 
   if (!isSynced) {
-    logger.info('Failed to sync subgraph')
+    logger.info(`subgraph "${subgraphName}" failed to sync`)
   }
 }
 
