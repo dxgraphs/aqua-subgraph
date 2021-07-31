@@ -92,6 +92,9 @@ export async function aquaJestBeforeEach() {
       },
       templateLauncher: {
         address: templateLauncher.address
+      },
+      participantListLauncher: {
+        address: participantListLauncher.address
       }
     }
   })
