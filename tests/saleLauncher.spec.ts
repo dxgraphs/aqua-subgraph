@@ -72,8 +72,6 @@ describe('SaleLauncher', function() {
       await participantList.setParticipantAmounts([await saleInvestorA.getAddress()], [0])
     ).wait(1)
 
-    console.log({ events })
-
     await aqua.waitForSubgraphSync()
     await wait(5000)
     const { data } = await aqua.querySubgraph(`{
