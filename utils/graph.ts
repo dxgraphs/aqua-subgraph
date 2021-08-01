@@ -8,7 +8,7 @@ import axios from 'axios'
 import { wait } from './time'
 import { getLastBlock } from './evm'
 import { execAsync } from './contracts'
-import { GRAPH_ADMIN_ENDPOINT } from './constants'
+import { GRAPH_ADMIN_ENDPOINT, SUBGRAPH_SYNC_SECONDS } from './constants'
 import { getLogger, Namespace } from './logger'
 
 const logger = getLogger(Namespace.SUBGRAPH)
@@ -153,6 +153,8 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
 
     }
   }
+
+  await wait(SUBGRAPH_SYNC_SECONDS)
 
   if (!isSynced) {
     logger.info(`subgraph "${subgraphName}" failed to sync`)
