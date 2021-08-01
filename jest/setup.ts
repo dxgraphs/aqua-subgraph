@@ -1,39 +1,69 @@
-import { upAll as upDockerCompose } from 'docker-compose'
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
-
 // Contract types
 import {
-  buildSubgraphYaml,
-  EVM_ENDPOINT,
   execAsync,
-  getContractFactory,
-  GRAPHQL_ENDPOINT,
-  wait
+  EVM_ENDPOINT,
+  buildSubgraphYaml,
+  startGraph,
+  waitForSubgraphUp,
+  getLogger,
+  Namespace,
+  querySubgraph,
+  SUBGRAPH_NAME,
+  waitForGraphSync
 } from '../utils'
 import {
   AquaFactory,
   SaleLauncher,
-  TemplateLauncher
+  TemplateLauncher,
+  AquaFactory__factory,
+  SaleLauncher__factory,
+  ParticipantList__factory,
+  TemplateLauncher__factory,
+  ParticipantListLauncher__factory
 } from '../utils/typechain-contracts'
 
-export async function aquaJestBeforeEach(): Promise<AquaJestBeforeEachContext> {
-  await upDockerCompose()
-  // Connect to local ganache instance
+const logger = getLogger(Namespace.CONTRACTS)
+logger.level = 'info'
+
+export async function aquaJestBeforeAll() {
+  await waitForSubgraphUp()
+}
+
+export async function aquaJestBeforeEach() {
   const provider = new providers.JsonRpcProvider(EVM_ENDPOINT)
+
+  logger.info('Deploying contracts...')
+
   // Wallets/Signers
   const deployer = provider.getSigner(0)
-  // Before each unit test, a new AquaFactory, TemplateLauncher, and AuctionLauncher EasyAuction contract is deployed to ganache
-  // then followed by deploying its subgraph to the Graph node
-  // Deploy AquaFactory
-  const aquaFactory = (await getContractFactory('AquaFactory', deployer).deploy()) as AquaFactory
-  // Deploy TemplateLauncher
-  const templateLauncher = (await getContractFactory('TemplateLauncher', deployer).deploy(
-    aquaFactory.address
-  )) as TemplateLauncher
-  // Deploy AuctionLauncher
-  const saleLauncher = (await getContractFactory('SaleLauncher', deployer).deploy(aquaFactory.address)) as SaleLauncher
+  const deployerAddress = await deployer.getAddress()
 
+  // Deploy framework core contracts
+  const aquaFactory = await new AquaFactory__factory(deployer).deploy(
+    deployerAddress, // Fee Manager
+    deployerAddress, // FeeTo
+    deployerAddress, // TemplateManager
+    0, // TemplateFee
+    0, // FeeNumerator
+    0 // SaleFee
+  )
+  const participantList = await new ParticipantList__factory(deployer).deploy()
+  const participantListLauncher = await new ParticipantListLauncher__factory(deployer).deploy(
+    aquaFactory.address,
+    participantList.address
+  )
+  const templateLauncher = await new TemplateLauncher__factory(deployer).deploy(
+    aquaFactory.address,
+    participantListLauncher.address
+  )
+  const saleLauncher = await new SaleLauncher__factory(deployer).deploy(aquaFactory.address)
+
+  // Attach templateLauncher to factory
+  await aquaFactory.setTemplateLauncher(templateLauncher.address)
+
+  logger.info('OK')
   // Prepare subgraph.yaml
   await buildSubgraphYaml({
     network: 'local',
@@ -47,45 +77,26 @@ export async function aquaJestBeforeEach(): Promise<AquaJestBeforeEachContext> {
       },
       templateLauncher: {
         address: templateLauncher.address
+      },
+      participantListLauncher: {
+        address: participantListLauncher.address
       }
     }
   })
 
-  // Initilize the Factory
-  await aquaFactory.initialize(
-    await deployer.getAddress(), // Fee Manager
-    await deployer.getAddress(), // Fee Collector; treasury
-    await deployer.getAddress(), // Template Manager: can add/remove/verify Sale Templates
-    templateLauncher.address, // TemplateLauncher address
-    0, // Template fee: cost to submit a new Sale Template to the Aqua Factory
-    0, // zero sale fees
-    0 // zero fees
-  )
-
-  // The Graph client
-  const fetchFromTheGraph = (query: string) => {
-    return axios.post(
-      GRAPHQL_ENDPOINT,
-      {
-        query
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-  }
-
   // Build, create and deploy the subgraph
-  await execAsync('npm run build')
-  await execAsync('npm run create-local')
-  await execAsync('npm run deploy-local')
-  // Wait for subgraph to sync
-  await wait(5000)
+  await startGraph(provider)
+
+  logger.info('Setup complete')
+
   // Add to context
   return {
-    fetchFromTheGraph,
+    waitForSubgraphSync: () =>
+      waitForGraphSync({
+        provider,
+        subgraphName: SUBGRAPH_NAME
+      }),
+    querySubgraph: (query: string) => querySubgraph(SUBGRAPH_NAME, query),
     provider,
     aquaFactory,
     saleLauncher,
@@ -99,7 +110,8 @@ export async function aquaJestAfterEach() {
 
 export interface AquaJestBeforeEachContext {
   provider: providers.JsonRpcProvider
-  fetchFromTheGraph: (query: string) => Promise<AxiosResponse>
+  querySubgraph: (query: string) => Promise<AxiosResponse>
+  waitForSubgraphSync: () => Promise<void>
   aquaFactory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher

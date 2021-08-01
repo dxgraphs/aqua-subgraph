@@ -1,37 +1,39 @@
 // Externals
 import { utils } from 'ethers'
 // Helpers
-import { FixedPriceSale, FixedPriceSaleTemplate, FixedPriceSale__factory } from '../utils/typechain-contracts'
-import { createFixedPriceSale, createTokenAndMintAndApprove, getContractFactory } from '../utils/contracts'
-import { aquaJestAfterEach, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
+import {
+  FixedPriceSale__factory,
+  ParticipantList__factory,
+  FixedPriceSaleTemplate__factory
+} from '../utils/typechain-contracts'
+import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
+import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { getSigners } from '../utils/evm'
-import { wait } from '../utils/time'
+import { wait } from '../utils'
+
 // Test block
 describe('SaleLauncher', function() {
   let aqua: AquaJestBeforeEachContext
+
+  beforeAll(async () => {
+    await aquaJestBeforeAll()
+  })
 
   beforeEach(async () => {
     aqua = await aquaJestBeforeEach()
   })
 
-  afterEach(async () => {
-    await aquaJestAfterEach()
-  })
-
   test('Should save new FixedPriceSale with all expected properties', async () => {
     const [deployer, saleCreator, saleInvestorA, saleInvestorB] = getSigners(aqua.provider)
     // Register sale
-    const fixedPriceSale = (await getContractFactory('FixedPriceSale', deployer).deploy()) as FixedPriceSale
+    const fixedPriceSale = await new FixedPriceSale__factory(deployer).deploy()
     // Register FixedPriceSale in SaleLauncher
-    const fixedPriceSaleTemplate = (await getContractFactory(
-      'FixedPriceSaleTemplate',
-      aqua.provider.getSigner(0)
-    ).deploy()) as FixedPriceSaleTemplate
+    const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(deployer).deploy()
     // Register sale in SaleLauncher
-    const txReceipt1 = await (await aqua.saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
+    await (await aqua.saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
     // Regiter template in TemplateLauncher
-    const txReceipt2 = await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait(1)
+    await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait(1)
+
     // Deploy, mint and approve Auctioning Token
     const fixedPriceSaleToken = await createTokenAndMintAndApprove({
       name: 'Fixed Price Sale Token',
@@ -51,6 +53,7 @@ describe('SaleLauncher', function() {
       users: [saleCreator, saleInvestorA, saleInvestorB],
       signer: deployer
     })
+
     // Launch FixedPriceSale
     const newFixedPriceSaleAddress = await createFixedPriceSale({
       templateId: 1,
@@ -58,23 +61,41 @@ describe('SaleLauncher', function() {
       saleLauncher: aqua.saleLauncher,
       biddingToken: biddingToken,
       saleToken: fixedPriceSaleToken,
-      saleCreator
+      saleCreator,
+      participantList: true
     })
+
     const launchedfixedPriceSale = FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleCreator)
+    const saleInfo = await launchedfixedPriceSale.saleInfo()
+    const participantList = ParticipantList__factory.connect(saleInfo.participantList, saleCreator)
+    const { events } = await (
+      await participantList.setParticipantAmounts([await saleInvestorA.getAddress()], [0])
+    ).wait(1)
 
-    await wait(SUBGRAPH_SYNC_SECONDS * 5)
-
-    const { data } = await aqua.fetchFromTheGraph(`{
+    await aqua.waitForSubgraphSync()
+    await wait(5000)
+    const { data } = await aqua.querySubgraph(`{
       fixedPriceSale (id: "${newFixedPriceSaleAddress}") {
           id
           status
           sellAmount
+          soldAmount
           startDate
           endDate
           tokenPrice
           minimumRaise
           allocationMin
           allocationMax
+          participantList {
+            id
+            address
+            managers
+            participants {
+              id
+              address
+              amount
+            }
+          }
           tokenIn {
             id
             name
@@ -87,30 +108,39 @@ describe('SaleLauncher', function() {
             symbol
             decimals
           }
-          purchases {
+          commitments {
             id
+            user {
+              address
+            }
             amount
-            buyer
+            status
           }
       }
     }`)
 
-    expect(data.data.fixedPriceSale.id).toMatch(newFixedPriceSaleAddress)
-    expect(data.data.fixedPriceSale.status).toMatch('UPCOMING')
-    expect(data.data.fixedPriceSale.minimumRaise).toMatch((await launchedfixedPriceSale.minimumRaise()).toString())
-    expect(data.data.fixedPriceSale.allocationMin).toMatch((await launchedfixedPriceSale.allocationMin()).toString())
-    expect(data.data.fixedPriceSale.allocationMax).toMatch((await launchedfixedPriceSale.allocationMax()).toString())
-    expect(data.data.fixedPriceSale.sellAmount).toMatch((await launchedfixedPriceSale.tokensForSale()).toString())
-    expect(data.data.fixedPriceSale.tokenPrice).toMatch((await launchedfixedPriceSale.tokenPrice()).toString())
-    expect(data.data.fixedPriceSale.tokenIn.id.toLowerCase()).toMatch(biddingToken.address.toLowerCase())
-    expect(data.data.fixedPriceSale.tokenIn.name).toMatch(await biddingToken.name())
-    expect(data.data.fixedPriceSale.tokenIn.symbol).toMatch(await biddingToken.symbol())
-    expect(data.data.fixedPriceSale.tokenIn.decimals).toMatch((await biddingToken.decimals()).toString())
-    expect(data.data.fixedPriceSale.tokenOut.id.toLowerCase()).toMatch(fixedPriceSaleToken.address.toLowerCase())
-    expect(data.data.fixedPriceSale.tokenOut.name).toMatch(await fixedPriceSaleToken.name())
-    expect(data.data.fixedPriceSale.tokenOut.symbol).toMatch(await fixedPriceSaleToken.symbol())
-    expect(data.data.fixedPriceSale.tokenOut.decimals).toMatch((await fixedPriceSaleToken.decimals()).toString())
-    expect(Array.isArray(data.data.fixedPriceSale.purchases)).toBeTruthy()
-    expect(data.data.fixedPriceSale.purchases.length).toBe(0)
+    expect(data.fixedPriceSale).not.toBeNull()
+    expect(data.fixedPriceSale.id).toMatch(newFixedPriceSaleAddress)
+    expect(data.fixedPriceSale.status).toMatch('UPCOMING')
+    expect(data.fixedPriceSale.minimumRaise).toMatch(saleInfo.minRaise.toString())
+    expect(data.fixedPriceSale.allocationMin).toMatch(saleInfo.minCommitment.toString())
+    expect(data.fixedPriceSale.allocationMax).toMatch(saleInfo.maxCommitment.toString())
+    expect(data.fixedPriceSale.sellAmount).toMatch(saleInfo.tokensForSale.toString())
+    expect(data.fixedPriceSale.tokenPrice).toMatch(saleInfo.tokenPrice.toString())
+    expect(data.fixedPriceSale.tokenIn.id.toLowerCase()).toMatch(biddingToken.address.toLowerCase())
+    expect(data.fixedPriceSale.tokenIn.name).toMatch(await biddingToken.name())
+    expect(data.fixedPriceSale.tokenIn.symbol).toMatch(await biddingToken.symbol())
+    expect(data.fixedPriceSale.tokenIn.decimals).toMatch((await biddingToken.decimals()).toString())
+    expect(data.fixedPriceSale.tokenOut.id.toLowerCase()).toMatch(fixedPriceSaleToken.address.toLowerCase())
+    expect(data.fixedPriceSale.tokenOut.name).toMatch(await fixedPriceSaleToken.name())
+    expect(data.fixedPriceSale.tokenOut.symbol).toMatch(await fixedPriceSaleToken.symbol())
+    expect(data.fixedPriceSale.tokenOut.decimals).toMatch((await fixedPriceSaleToken.decimals()).toString())
+    expect(Array.isArray(data.fixedPriceSale.commitments)).toBeTruthy()
+    expect(data.fixedPriceSale.commitments.length).toBe(0)
+    expect(data.fixedPriceSale.participantList.participants.length).toBe(1)
+
+    const [saleParticipant] = data.fixedPriceSale.participantList.participants
+    expect(saleParticipant.address).toBe((await saleInvestorA.getAddress()).toLowerCase())
+    expect(saleParticipant.amount).toBe((await participantList.participantAmounts(saleParticipant.address)).toString())
   })
 })

@@ -39,7 +39,7 @@ export function handleTemplateAdded(event: TemplateAdded): void {
  * @param event the `TemplateAdded` event
  */
 export function handleTemplateVerified(event: TemplateVerified): void {
-  let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toHexString())
+  let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toString())
   if (saleTemplate) {
     saleTemplate.verified = true
     saleTemplate.updatedAt = event.block.timestamp.toI32()
@@ -53,7 +53,7 @@ export function handleTemplateVerified(event: TemplateVerified): void {
  * @param event
  */
 export function handleTemplateRemoved(event: TemplateRemoved): void {
-  let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toHexString())
+  let saleTemplate = Schemas.SaleTemplate.load(event.params.templateId.toString())
   if (saleTemplate) {
     // timestamps
     saleTemplate.updatedAt = event.block.timestamp.toI32()
