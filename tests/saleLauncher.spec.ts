@@ -8,12 +8,11 @@ import {
 } from '../utils/typechain-contracts'
 import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
 import { getSigners } from '../utils/evm'
-import { wait } from '../utils/time'
+import { wait } from '../utils'
 
 // Test block
-describe('SaleLauncher', function () {
+describe('SaleLauncher', function() {
   let aqua: AquaJestBeforeEachContext
 
   beforeAll(async () => {
@@ -24,13 +23,12 @@ describe('SaleLauncher', function () {
     aqua = await aquaJestBeforeEach()
   })
 
-
   test('Should save new FixedPriceSale with all expected properties', async () => {
     const [deployer, saleCreator, saleInvestorA, saleInvestorB] = getSigners(aqua.provider)
     // Register sale
-    const fixedPriceSale = await (new FixedPriceSale__factory(deployer)).deploy()
+    const fixedPriceSale = await new FixedPriceSale__factory(deployer).deploy()
     // Register FixedPriceSale in SaleLauncher
-    const fixedPriceSaleTemplate = await (new FixedPriceSaleTemplate__factory(deployer)).deploy()
+    const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(deployer).deploy()
     // Register sale in SaleLauncher
     await (await aqua.saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
     // Regiter template in TemplateLauncher
@@ -70,25 +68,35 @@ describe('SaleLauncher', function () {
     const launchedfixedPriceSale = FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleCreator)
     const saleInfo = await launchedfixedPriceSale.saleInfo()
     const participantList = ParticipantList__factory.connect(saleInfo.participantList, saleCreator)
-    await participantList.setParticipantAmounts([await saleInvestorA.getAddress()], [0])
+    const { events } = await (
+      await participantList.setParticipantAmounts([await saleInvestorA.getAddress()], [0])
+    ).wait(1)
 
-    await wait(SUBGRAPH_SYNC_SECONDS * 5)
+    console.log({ events })
 
+    await aqua.waitForSubgraphSync()
+    await wait(5000)
     const { data } = await aqua.querySubgraph(`{
       fixedPriceSale (id: "${newFixedPriceSaleAddress}") {
           id
           status
           sellAmount
+          soldAmount
           startDate
           endDate
           tokenPrice
           minimumRaise
           allocationMin
           allocationMax
-          participants {
+          participantList {
             id
             address
-            amount
+            managers
+            participants {
+              id
+              address
+              amount
+            }
           }
           tokenIn {
             id
@@ -113,6 +121,7 @@ describe('SaleLauncher', function () {
       }
     }`)
 
+    expect(data.fixedPriceSale).not.toBeNull()
     expect(data.fixedPriceSale.id).toMatch(newFixedPriceSaleAddress)
     expect(data.fixedPriceSale.status).toMatch('UPCOMING')
     expect(data.fixedPriceSale.minimumRaise).toMatch(saleInfo.minRaise.toString())
@@ -130,8 +139,10 @@ describe('SaleLauncher', function () {
     expect(data.fixedPriceSale.tokenOut.decimals).toMatch((await fixedPriceSaleToken.decimals()).toString())
     expect(Array.isArray(data.fixedPriceSale.commitments)).toBeTruthy()
     expect(data.fixedPriceSale.commitments.length).toBe(0)
-    expect(data.fixedPriceSale.participants.length).toBe(1)
-    expect(data.fixedPriceSale.participants[0].address).toBe((await saleInvestorA.getAddress()).toLowerCase())
-    expect(data.fixedPriceSale.participants[0].amount).toBe((await participantList.participantAmounts(data.fixedPriceSale.participants[0].address)).toString())
+    expect(data.fixedPriceSale.participantList.participants.length).toBe(1)
+
+    const [saleParticipant] = data.fixedPriceSale.participantList.participants
+    expect(saleParticipant.address).toBe((await saleInvestorA.getAddress()).toLowerCase())
+    expect(saleParticipant.amount).toBe((await participantList.participantAmounts(saleParticipant.address)).toString())
   })
 })
