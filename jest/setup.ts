@@ -2,18 +2,16 @@ import { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
 // Contract types
 import {
-  wait,
   execAsync,
   EVM_ENDPOINT,
   buildSubgraphYaml,
-  GRAPHQL_ENDPOINT,
   startGraph,
   waitForSubgraphUp,
-  SUBGRAPH_SYNC_SECONDS,
   getLogger,
   Namespace,
   querySubgraph,
-  SUBGRAPH_NAME
+  SUBGRAPH_NAME,
+  waitForGraphSync
 } from '../utils'
 import {
   AquaFactory,
@@ -93,6 +91,11 @@ export async function aquaJestBeforeEach() {
 
   // Add to context
   return {
+    waitForSubgraphSync: () =>
+      waitForGraphSync({
+        provider,
+        subgraphName: SUBGRAPH_NAME
+      }),
     querySubgraph: (query: string) => querySubgraph(SUBGRAPH_NAME, query),
     provider,
     aquaFactory,
@@ -108,6 +111,7 @@ export async function aquaJestAfterEach() {
 export interface AquaJestBeforeEachContext {
   provider: providers.JsonRpcProvider
   querySubgraph: (query: string) => Promise<AxiosResponse>
+  waitForSubgraphSync: () => Promise<void>
   aquaFactory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
