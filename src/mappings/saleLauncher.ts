@@ -27,11 +27,11 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   }
 
   if (saleTemplate.name == SALE_TEMPLATES.FAIR_SALE) {
-    FixedPriceSale.create(event.params.sale)
+    FairSale.create(event.params.sale)
     registerFairSale(event)
   }
   if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
-    FairSale.create(event.params.sale)
+    FixedPriceSale.create(event.params.sale)
     registerFixedPriceSale(event)
   }
 
