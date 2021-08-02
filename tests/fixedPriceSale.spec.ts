@@ -98,14 +98,11 @@ describe('FixedPriceSale', () => {
     const { events, blockNumber } = await (
       await launchedfixedPriceSale.connect(saleInvestorB).commitTokens(commitTokensAmount)
     ).wait()
-
-    console.log(events)
     // Sync subgraph
     await aqua.waitForSubgraphSync(blockNumber)
     await wait(20000)
     const { data } = await aqua.querySubgraph(`{
       fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
-        id
         soldAmount
       }
     }`)
