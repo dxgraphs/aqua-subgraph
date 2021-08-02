@@ -123,7 +123,7 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
   targetBlockNumber = targetBlockNumber || (await getLastBlock(provider)).number
   let isSynced = false
 
-  logger.info(`Waiting for subgraph "${subgraphName}" to sync...`)
+  logger.info(`Waiting for subgraph "${subgraphName}" to sync block #${ targetBlockNumber}`)
 
   while (true) {
     try {
@@ -144,8 +144,8 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
         }`
       })
 
-      if (data.data.indexingStatusForCurrentVersion.synced) {
-        logger.info(`Subgraph "${subgraphName}" has synced...`)
+      if (data.data.indexingStatusForCurrentVersion.synced && data.data.indexingStatusForCurrentVersion.chains.latestBlock == targetBlockNumber) {
+        logger.info(`Subgraph "${subgraphName}" has synced with block #${targetBlockNumber}`)
         isSynced = true
         break;
       }

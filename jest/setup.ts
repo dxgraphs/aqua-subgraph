@@ -91,10 +91,11 @@ export async function aquaJestBeforeEach() {
 
   // Add to context
   return {
-    waitForSubgraphSync: () =>
+    waitForSubgraphSync: (targetBlockNumber?: number) =>
       waitForGraphSync({
         provider,
-        subgraphName: SUBGRAPH_NAME
+        subgraphName: SUBGRAPH_NAME,
+        targetBlockNumber
       }),
     querySubgraph: (query: string) => querySubgraph(SUBGRAPH_NAME, query),
     provider,
@@ -111,7 +112,7 @@ export async function aquaJestAfterEach() {
 export interface AquaJestBeforeEachContext {
   provider: providers.JsonRpcProvider
   querySubgraph: (query: string) => Promise<AxiosResponse>
-  waitForSubgraphSync: () => Promise<void>
+  waitForSubgraphSync: (targetBlockNumber?: number) => Promise<void>
   aquaFactory: AquaFactory
   saleLauncher: SaleLauncher
   templateLauncher: TemplateLauncher
