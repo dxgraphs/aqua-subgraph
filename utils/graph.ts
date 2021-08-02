@@ -123,12 +123,16 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
   targetBlockNumber = targetBlockNumber || (await getLastBlock(provider)).number
   let isSynced = false
 
-  logger.info(`Waiting for subgraph "${subgraphName}" to sync block #${ targetBlockNumber}`)
+  logger.info(`Waiting for subgraph "${subgraphName}" to sync block #${targetBlockNumber}`)
 
   while (true) {
     try {
       await wait(100)
-      const { data } = await axios.post('http://localhost:8030/graphql', {
+      const { data: {
+        data: {
+          indexingStatusForCurrentVersion
+        }
+      } } = await axios.post('http://localhost:8030/graphql', {
         query: `{
             indexingStatusForCurrentVersion(subgraphName: "${subgraphName}") {
             synced
@@ -144,20 +148,14 @@ export async function waitForGraphSync({ provider, targetBlockNumber, subgraphNa
         }`
       })
 
-      if (data.data.indexingStatusForCurrentVersion.synced && data.data.indexingStatusForCurrentVersion.chains.latestBlock == targetBlockNumber) {
+      if (indexingStatusForCurrentVersion.synced && indexingStatusForCurrentVersion.chains[0].latestBlock.number == targetBlockNumber) {
         logger.info(`Subgraph "${subgraphName}" has synced with block #${targetBlockNumber}`)
         isSynced = true
         break;
       }
     } catch (e) {
-
+      console.error(e)
     }
-  }
-
-  await wait(SUBGRAPH_SYNC_SECONDS)
-
-  if (!isSynced) {
-    logger.info(`subgraph "${subgraphName}" failed to sync`)
   }
 }
 
