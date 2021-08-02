@@ -9,7 +9,7 @@ import {
 } from '../utils/typechain-contracts'
 import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { getSigners, increaseBockTimestamp, mineBlock } from '../utils/evm'
+import { getSigners, mineBlock } from '../utils/evm'
 import { wait } from '../utils'
 
 // Test block
@@ -73,7 +73,6 @@ describe('FixedPriceSale', () => {
 
     launchedfixedPriceSale = FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleCreator)
     await aqua.waitForSubgraphSync()
-    await wait(5000)
   })
 
   test('Should increase soldAmount by number of committed tokens', async () => {
@@ -95,12 +94,11 @@ describe('FixedPriceSale', () => {
     // soldAmount + new committed tokens amount
     const expectedSoldAmount = commitTokensAmount.add(currentSnapshot.fixedPriceSale.soldAmount)
     // Commit tokens
-    const { events, blockNumber } = await (
+    const { blockNumber } = await (
       await launchedfixedPriceSale.connect(saleInvestorB).commitTokens(commitTokensAmount)
     ).wait()
     // Sync subgraph
     await aqua.waitForSubgraphSync(blockNumber)
-    await wait(20000)
     const { data } = await aqua.querySubgraph(`{
       fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
         soldAmount
