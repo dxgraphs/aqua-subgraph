@@ -4,6 +4,7 @@ import { BigInt } from '@graphprotocol/graph-ts'
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
 import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
+import { FairSale, FixedPriceSale } from '../../generated/templates'
 
 // Helpers
 import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
@@ -26,9 +27,11 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   }
 
   if (saleTemplate.name == SALE_TEMPLATES.FAIR_SALE) {
+    FairSale.create(event.params.sale)
     registerFairSale(event)
   }
   if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
+    FixedPriceSale.create(event.params.sale)
     registerFixedPriceSale(event)
   }
 

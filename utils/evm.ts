@@ -1,4 +1,8 @@
 import type { providers } from 'ethers'
+import { getLogger, Namespace } from './logger'
+
+const logger = getLogger(Namespace.EVM)
+logger.level = 'info'
 
 /**
  * Gets the first 10 signers
@@ -18,11 +22,12 @@ export function getSigners(provider: providers.JsonRpcProvider): providers.JsonR
  * Advances EVNM block timestamp to a custom one
  */
 export function increaseBockTimestamp(provider: providers.JsonRpcProvider, timestamp: number) {
+  logger.info(`Increainsg timestamp to ${timestamp}`)
   return provider.send('evm_increaseTime', [timestamp])
 }
 
 export async function mineBlock(provider: providers.JsonRpcProvider, timestamp: number): Promise<void> {
-  provider.send('evm_mine', [timestamp])
+  return provider.send('evm_mine', [timestamp])
 }
 
 export async function increaseTime(provider: providers.JsonRpcProvider, duration: number): Promise<void> {

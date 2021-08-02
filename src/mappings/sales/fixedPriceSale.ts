@@ -8,7 +8,6 @@ import {
   COMITMENT_STATUS
 } from '../../helpers/fixedPriceSale'
 import {
-  FixedPriceSale as FixedPriceSaleContract,
   NewTokenWithdraw,
   NewTokenRelease,
   NewCommitment,
@@ -42,10 +41,6 @@ export function handleNewCommitment(event: NewCommitment): void {
   if (!fixedPriceSale) {
     return
   }
-
-  // Get the contract
-  let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.address)
-
   // Get the user
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.user, event.block.timestamp)
   // Increase the total purcahses by one and save
@@ -66,7 +61,7 @@ export function handleNewCommitment(event: NewCommitment): void {
   commitment.amount = event.params.amount
   commitment.status = COMITMENT_STATUS.SUBMITTED
   // update `soldAmount` field in the sale
-  fixedPriceSale.soldAmount = fixedPriceSaleContract.remainingTokensForSale()
+  fixedPriceSale.soldAmount = fixedPriceSale.soldAmount.plus(event.params.amount)
   // Save all entities
   commitment.save()
   fixedPriceSale.save()
