@@ -59,7 +59,7 @@ type FairSale implements EntityMetadata @entity {
   "Total amount of tokens available for sale"
   tokensForSale: BigInt!
   "Minimum amount per bid"
-  minimumBidAmount: BigInt!
+  minBidAmount: BigInt!
   "Accepted bidding token (ie: DAI, USDC)"
   tokenIn: Token!
   "Auctioning token"
@@ -134,12 +134,12 @@ type FixedPriceSale implements EntityMetadata @entity {
   sellAmount: BigInt!
   "Amount of tokens sold so far"
   soldAmount: BigInt!
-  # Minimum amount per bid
-  minimumRaise: BigInt!
+  "Minimum raise threshold"
+  minRaise: BigInt!
   "Minimum token amount per commitment"
-  allocationMin: BigInt!
+  minCommitment: BigInt!
   "Maximum token amount per commitment"
-  allocationMax: BigInt!
+  maxCommitment: BigInt!
   "Token investors can use to bid"
   tokenIn: Token!
   "Token investor get"
@@ -273,15 +273,18 @@ type SaleTemplate @entity {
 # Sale Templates
 # Each Sale contract implements a template
 type LaunchedSaleTemplate @entity {
-  # TemplatesId from the event
+  "Address of the template"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
+  "Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale"
   address: Bytes!
+  "Factory"
   factory: AquaFactory!
+  "The original Sale Template this was created from"
   template: SaleTemplate!
+  "IPFS content hash"
   metadataContentHash: String
 }
 

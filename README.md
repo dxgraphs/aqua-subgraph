@@ -42,9 +42,9 @@ Now make a query:
    sellAmount
    startDate
    endDate
-   minimumRaise
-   allocationMin
-   allocationMax
+   minRaise
+   minCommitment
+   maxCommitment
    tokenIn {
      id
      name
@@ -118,12 +118,12 @@ Result should look like this:
     ],
     "fixedPriceSales": [
       {
-        "allocationMax": "10",
-        "allocationMin": "1",
+        "maxCommitment": "10",
+        "minCommitment": "1",
         "createdAt": 1619086303,
         "endDate": 1619093502,
         "id": "0x32a82316dd98887f016b8b95a52ac5886a15d28c",
-        "minimumRaise": "100",
+        "minRaise": "100",
         "purchases": [
           {
             "amount": "4",

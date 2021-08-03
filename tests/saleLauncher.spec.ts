@@ -83,9 +83,9 @@ describe('SaleLauncher', function() {
           startDate
           endDate
           tokenPrice
-          minimumRaise
-          allocationMin
-          allocationMax
+          minRaise
+          minCommitment
+          maxCommitment
           participantList {
             id
             address
@@ -122,9 +122,9 @@ describe('SaleLauncher', function() {
     expect(data.fixedPriceSale).not.toBeNull()
     expect(data.fixedPriceSale.id).toMatch(newFixedPriceSaleAddress)
     expect(data.fixedPriceSale.status).toMatch('UPCOMING')
-    expect(data.fixedPriceSale.minimumRaise).toMatch(saleInfo.minRaise.toString())
-    expect(data.fixedPriceSale.allocationMin).toMatch(saleInfo.minCommitment.toString())
-    expect(data.fixedPriceSale.allocationMax).toMatch(saleInfo.maxCommitment.toString())
+    expect(data.fixedPriceSale.minRaise).toMatch(saleInfo.minRaise.toString())
+    expect(data.fixedPriceSale.minCommitment).toMatch(saleInfo.minCommitment.toString())
+    expect(data.fixedPriceSale.maxCommitment).toMatch(saleInfo.maxCommitment.toString())
     expect(data.fixedPriceSale.sellAmount).toMatch(saleInfo.tokensForSale.toString())
     expect(data.fixedPriceSale.tokenPrice).toMatch(saleInfo.tokenPrice.toString())
     expect(data.fixedPriceSale.tokenIn.id.toLowerCase()).toMatch(biddingToken.address.toLowerCase())

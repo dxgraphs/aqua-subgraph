@@ -242,13 +242,13 @@ export class FairSale extends Entity {
     this.set("tokensForSale", Value.fromBigInt(value));
   }
 
-  get minimumBidAmount(): BigInt {
-    let value = this.get("minimumBidAmount");
+  get minBidAmount(): BigInt {
+    let value = this.get("minBidAmount");
     return value.toBigInt();
   }
 
-  set minimumBidAmount(value: BigInt) {
-    this.set("minimumBidAmount", Value.fromBigInt(value));
+  set minBidAmount(value: BigInt) {
+    this.set("minBidAmount", Value.fromBigInt(value));
   }
 
   get tokenIn(): string {
@@ -604,31 +604,31 @@ export class FixedPriceSale extends Entity {
     this.set("soldAmount", Value.fromBigInt(value));
   }
 
-  get minimumRaise(): BigInt {
-    let value = this.get("minimumRaise");
+  get minRaise(): BigInt {
+    let value = this.get("minRaise");
     return value.toBigInt();
   }
 
-  set minimumRaise(value: BigInt) {
-    this.set("minimumRaise", Value.fromBigInt(value));
+  set minRaise(value: BigInt) {
+    this.set("minRaise", Value.fromBigInt(value));
   }
 
-  get allocationMin(): BigInt {
-    let value = this.get("allocationMin");
+  get minCommitment(): BigInt {
+    let value = this.get("minCommitment");
     return value.toBigInt();
   }
 
-  set allocationMin(value: BigInt) {
-    this.set("allocationMin", Value.fromBigInt(value));
+  set minCommitment(value: BigInt) {
+    this.set("minCommitment", Value.fromBigInt(value));
   }
 
-  get allocationMax(): BigInt {
-    let value = this.get("allocationMax");
+  get maxCommitment(): BigInt {
+    let value = this.get("maxCommitment");
     return value.toBigInt();
   }
 
-  set allocationMax(value: BigInt) {
-    this.set("allocationMax", Value.fromBigInt(value));
+  set maxCommitment(value: BigInt) {
+    this.set("maxCommitment", Value.fromBigInt(value));
   }
 
   get tokenIn(): string {
