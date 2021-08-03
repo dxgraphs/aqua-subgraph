@@ -4,6 +4,7 @@ import { FixedPriceSaleTemplate__factory } from '../utils/typechain-contracts'
 import { addSaleTemplateToLauncher } from '../utils/contracts'
 import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
 import { wait } from '../utils/time'
+import { Event } from 'ethers'
 
 // Test block
 describe('TemplateLauncher', function() {
@@ -18,14 +19,22 @@ describe('TemplateLauncher', function() {
 
   test('Should save new SaleTemplate', async () => {
     const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
-    const event = await addSaleTemplateToLauncher({
-      launcher: aqua.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
+    const { blockNumber, events } = await (
+      await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)
+    ).wait()
 
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    // @ts-ignore
+    const templatedAddedEvent = events.find(
+      event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
+    ) as Event
+
+    if (!templatedAddedEvent) {
+      throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
+    }
+
+    await aqua.waitForSubgraphSync(blockNumber)
     const { data } = await aqua.querySubgraph(`{
-          saleTemplate (id: "${event.templateId}") {
+          saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             address
             factory
             name
@@ -40,17 +49,24 @@ describe('TemplateLauncher', function() {
 
   test('Should save update SaleTemplate as verified', async () => {
     const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
-    const event = await addSaleTemplateToLauncher({
-      launcher: aqua.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
+    const { events } = await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait()
 
-    await (await aqua.templateLauncher.verifyTemplate(event.templateId)).wait(1)
+    // @ts-ignore
+    const templatedAddedEvent = events.find(
+      event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
+    ) as Event
 
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    if (!templatedAddedEvent) {
+      throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
+    }
 
+    const { blockNumber } = await (
+      await aqua.templateLauncher.verifyTemplate(templatedAddedEvent?.args?.templateId)
+    ).wait(1)
+
+    await aqua.waitForSubgraphSync(blockNumber)
     const { data } = await aqua.querySubgraph(`{
-          saleTemplate (id: "${event.templateId}") {
+          saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             verified
           }
         }`)
@@ -59,14 +75,22 @@ describe('TemplateLauncher', function() {
 
   test('Should save remove SaleTemplate', async () => {
     const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
-    const event = await addSaleTemplateToLauncher({
-      launcher: aqua.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
-    await (await aqua.templateLauncher.removeTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
+    const { events } = await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait()
+    // @ts-ignore
+    const templatedAddedEvent = events.find(
+      event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
+    ) as Event
+
+    if (!templatedAddedEvent) {
+      throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
+    }
+
+    const { blockNumber } = await (
+      await aqua.templateLauncher.removeTemplate(templatedAddedEvent?.args?.templateId)
+    ).wait(1)
+    await aqua.waitForSubgraphSync(blockNumber)
     const { data } = await aqua.querySubgraph(`{
-          saleTemplate (id: "${event.templateId}") {
+          saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             deletedAt
           }
         }`)
