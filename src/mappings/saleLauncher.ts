@@ -52,7 +52,7 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   // Timestamps
   fairSale.createdAt = event.block.timestamp.toI32()
   fairSale.updatedAt = event.block.timestamp.toI32()
-  fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
+  fairSale.minBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
   // Start and end dates of the sale
   fairSale.startDate = event.block.timestamp.toI32()
   fairSale.endDate = fairSaleContract.auctionEndDate().toI32()
@@ -124,10 +124,10 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.sellAmount = saleInfo.tokensForSale
   fixedPriceSale.soldAmount = new BigInt(0)
   // Minimum raise amount
-  fixedPriceSale.minimumRaise = saleInfo.minRaise
+  fixedPriceSale.minRaise = saleInfo.minRaise
   // // Mnimum and maximum tokens per order
-  fixedPriceSale.allocationMin = saleInfo.minCommitment
-  fixedPriceSale.allocationMax = saleInfo.maxCommitment
+  fixedPriceSale.minCommitment = saleInfo.minCommitment
+  fixedPriceSale.maxCommitment = saleInfo.maxCommitment
   // Start and end dates of the sale
   fixedPriceSale.startDate = saleInfo.startDate.toI32()
   fixedPriceSale.endDate = saleInfo.endDate.toI32()
