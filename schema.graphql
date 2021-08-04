@@ -68,7 +68,6 @@ type FairSale implements EntityMetadata @entity {
   minFundingThreshold: Int
   "List of bids"
   bids: [FairSaleBid!] @derivedFrom(field: "sale")
-  metadataContentHash: String
 }
 
 # FairSaleUser
@@ -151,7 +150,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
   "List of withdrawals"
   withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
-  metadataContentHash: String
+  launchedTemplate: LaunchedSaleTemplate
 }
 
 enum FixedPriceSaleCommitmentStatus {

@@ -73,7 +73,7 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       eventHandlers:
-        - event: SaleInitialized(indexed address,uint256,bytes)
+        - event: SaleInitialized(indexed address,uint256,indexed address,bytes)
           handler: handleSaleInitialized
   - kind: ethereum/contract
     name: TemplateLauncher

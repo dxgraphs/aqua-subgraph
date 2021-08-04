@@ -1,5 +1,5 @@
 // Externals
-import { BigInt, Address } from '@graphprotocol/graph-ts'
+import { BigInt, Address, log } from '@graphprotocol/graph-ts'
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
@@ -44,11 +44,6 @@ export function handleSaleInitialized(event: SaleInitialized): void {
  */
 function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   // Bind Template launcher
-  let templateLauncherAddress = getAquaFactory().templateLauncher
-  if (!templateLauncherAddress) {
-    throw new Error('Template launcher not found')
-  }
-  let templateLauncherContract = TemplateLauncherContract.bind(<Address>templateLauncherAddress)
   // Bind the new Contract
   let fairSaleContract = FairSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -58,7 +53,6 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.updatedAt = event.block.timestamp.toI32()
   fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
   // Get launched template data to find metadata ipfs hash
-  fairSale.metadataContentHash = templateLauncherContract.launchedTemplate(event.transaction.from).value1
   // Start and end dates of the sale
   fairSale.startDate = event.block.timestamp.toI32()
   fairSale.endDate = fairSaleContract.auctionEndDate().toI32()
@@ -117,11 +111,6 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
  */
 function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale {
   // Bind Template launcher
-  let templateLauncherAddress = getAquaFactory().templateLauncher
-  if (!templateLauncherAddress) {
-    throw new Error('Template launcher not found')
-  }
-  let templateLauncherContract = TemplateLauncherContract.bind(<Address>templateLauncherAddress)
   // Bind the new Contract
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -129,7 +118,6 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   // Fetch sale info and deconstruct it
   let saleInfo = FixedPriceSaleSaleInfo.fromResult(fixedPriceSaleContract.saleInfo())
   // Get launched template data to find metadata ipfs hash
-  fixedPriceSale.metadataContentHash = templateLauncherContract.launchedTemplate(event.transaction.from).value1
   // Timestamps
   fixedPriceSale.createdAt = event.block.timestamp.toI32()
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
@@ -156,6 +144,8 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.tokenOut = tokenOut.id
   // Sale name
   fixedPriceSale.name = tokenOut.name || ''
+  log.debug('TEMPLATE ADDR = {}', [event.params.template.toHexString()])
+  // fixedPriceSale.launchedTemplate = event.params.template.toHexString()
   // Save
   fixedPriceSale.save()
 

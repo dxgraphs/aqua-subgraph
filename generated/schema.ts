@@ -294,23 +294,6 @@ export class FairSale extends Entity {
       this.set("bids", Value.fromStringArray(value as Array<string>));
     }
   }
-
-  get metadataContentHash(): string | null {
-    let value = this.get("metadataContentHash");
-    if (value === null || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set metadataContentHash(value: string | null) {
-    if (value === null) {
-      this.unset("metadataContentHash");
-    } else {
-      this.set("metadataContentHash", Value.fromString(value as string));
-    }
-  }
 }
 
 export class FairSaleUser extends Entity {
@@ -717,8 +700,8 @@ export class FixedPriceSale extends Entity {
     }
   }
 
-  get metadataContentHash(): string | null {
-    let value = this.get("metadataContentHash");
+  get launchedTemplate(): string | null {
+    let value = this.get("launchedTemplate");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -726,11 +709,11 @@ export class FixedPriceSale extends Entity {
     }
   }
 
-  set metadataContentHash(value: string | null) {
+  set launchedTemplate(value: string | null) {
     if (value === null) {
-      this.unset("metadataContentHash");
+      this.unset("launchedTemplate");
     } else {
-      this.set("metadataContentHash", Value.fromString(value as string));
+      this.set("launchedTemplate", Value.fromString(value as string));
     }
   }
 }

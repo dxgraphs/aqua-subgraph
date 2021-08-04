@@ -44,6 +44,12 @@ const _abi = [
         type: "uint256",
       },
       {
+        indexed: true,
+        internalType: "address",
+        name: "template",
+        type: "address",
+      },
+      {
         indexed: false,
         internalType: "bytes",
         name: "data",

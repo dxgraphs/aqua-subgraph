@@ -103,7 +103,7 @@ interface SaleLauncherInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "sales", data: BytesLike): Result;
 
   events: {
-    "SaleInitialized(address,uint256,bytes)": EventFragment;
+    "SaleInitialized(address,uint256,address,bytes)": EventFragment;
     "SaleLaunched(address,uint256)": EventFragment;
     "TemplateAdded(address,uint256)": EventFragment;
     "TemplateRemoved(address,uint256)": EventFragment;
@@ -463,6 +463,7 @@ export class SaleLauncher extends Contract {
     SaleInitialized(
       sale: string | null,
       templateId: null,
+      template: string | null,
       data: null
     ): EventFilter;
 
