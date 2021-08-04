@@ -172,8 +172,8 @@ export async function createFixedPriceSale({
         tokenIn: biddingToken.address,
         tokenOut: saleToken.address,
         minCommitment: utils.parseUnits('1'),
-        maxCommitment: utils.parseUnits('10'),
-        minRaise: utils.parseUnits('100'),
+        maxCommitment: utils.parseUnits('50'),
+        minRaise: utils.parseUnits('10'), // 20% threshold
         tokenPrice: utils.parseUnits('2'),
         tokensForSale: utils.parseUnits('500'),
         participantList
