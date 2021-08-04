@@ -9,16 +9,17 @@ import {
   BigNumber,
   BigNumberish,
   PopulatedTransaction,
-  BaseContract,
+} from "ethers";
+import {
+  Contract,
   ContractTransaction,
   Overrides,
   PayableOverrides,
   CallOverrides,
-} from "ethers";
+} from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
-import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface SaleLauncherInterface extends ethers.utils.Interface {
   functions: {
@@ -114,53 +115,28 @@ interface SaleLauncherInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "TemplateRemoved"): EventFragment;
 }
 
-export class SaleLauncher extends BaseContract {
+export class SaleLauncher extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  listeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter?: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): Array<TypedListener<EventArgsArray, EventArgsObject>>;
-  off<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  on<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  once<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeListener<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    listener: TypedListener<EventArgsArray, EventArgsObject>
-  ): this;
-  removeAllListeners<EventArgsArray extends Array<any>, EventArgsObject>(
-    eventFilter: TypedEventFilter<EventArgsArray, EventArgsObject>
-  ): this;
-
-  listeners(eventName?: string): Array<Listener>;
-  off(eventName: string, listener: Listener): this;
-  on(eventName: string, listener: Listener): this;
-  once(eventName: string, listener: Listener): this;
-  removeListener(eventName: string, listener: Listener): this;
-  removeAllListeners(eventName?: string): this;
-
-  queryFilter<EventArgsArray extends Array<any>, EventArgsObject>(
-    event: TypedEventFilter<EventArgsArray, EventArgsObject>,
-    fromBlockOrBlockhash?: string | number | undefined,
-    toBlock?: string | number | undefined
-  ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
+  on(event: EventFilter | string, listener: Listener): this;
+  once(event: EventFilter | string, listener: Listener): this;
+  addListener(eventName: EventFilter | string, listener: Listener): this;
+  removeAllListeners(eventName: EventFilter | string): this;
+  removeListener(eventName: any, listener: Listener): this;
 
   interface: SaleLauncherInterface;
 
   functions: {
     addTemplate(
       _template: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "addTemplate(address)"(
+      _template: string,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     createSale(
@@ -169,12 +145,28 @@ export class SaleLauncher extends BaseContract {
       _tokenSupply: BigNumberish,
       _tokenSupplier: string,
       _data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides
+    ): Promise<ContractTransaction>;
+
+    "createSale(uint256,address,uint256,address,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
+      _data: BytesLike,
+      overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     factory(overrides?: CallOverrides): Promise<[string]>;
 
+    "factory()"(overrides?: CallOverrides): Promise<[string]>;
+
     getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getDepositAmountWithFees(uint256)"(
       _tokenSupply: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -184,16 +176,33 @@ export class SaleLauncher extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string] & { template: string }>;
 
+    "getTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string] & { template: string }>;
+
     getTemplateId(
+      _template: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    "getTemplateId(address)"(
       _template: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     numberOfSales(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    "numberOfSales()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     removeTemplate(
       _templateId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<ContractTransaction>;
+
+    "removeTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     saleInfo(
@@ -207,14 +216,37 @@ export class SaleLauncher extends BaseContract {
       }
     >;
 
+    "saleInfo(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, BigNumber, BigNumber] & {
+        exists: boolean;
+        templateId: BigNumber;
+        index: BigNumber;
+      }
+    >;
+
     saleTemplateId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    "saleTemplateId()"(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    "sales(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
   };
 
   addTemplate(
     _template: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "addTemplate(address)"(
+    _template: string,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   createSale(
@@ -223,12 +255,28 @@ export class SaleLauncher extends BaseContract {
     _tokenSupply: BigNumberish,
     _tokenSupplier: string,
     _data: BytesLike,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides
+  ): Promise<ContractTransaction>;
+
+  "createSale(uint256,address,uint256,address,bytes)"(
+    _templateId: BigNumberish,
+    _token: string,
+    _tokenSupply: BigNumberish,
+    _tokenSupplier: string,
+    _data: BytesLike,
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   factory(overrides?: CallOverrides): Promise<string>;
 
+  "factory()"(overrides?: CallOverrides): Promise<string>;
+
   getDepositAmountWithFees(
+    _tokenSupply: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getDepositAmountWithFees(uint256)"(
     _tokenSupply: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -238,16 +286,33 @@ export class SaleLauncher extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  "getTemplate(uint256)"(
+    _templateId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   getTemplateId(
+    _template: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getTemplateId(address)"(
     _template: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
+  "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
+
   removeTemplate(
     _templateId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+
+  "removeTemplate(uint256)"(
+    _templateId: BigNumberish,
+    overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   saleInfo(
@@ -261,12 +326,35 @@ export class SaleLauncher extends BaseContract {
     }
   >;
 
+  "saleInfo(address)"(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<
+    [boolean, BigNumber, BigNumber] & {
+      exists: boolean;
+      templateId: BigNumber;
+      index: BigNumber;
+    }
+  >;
+
   saleTemplateId(overrides?: CallOverrides): Promise<BigNumber>;
+
+  "saleTemplateId()"(overrides?: CallOverrides): Promise<BigNumber>;
 
   sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  "sales(uint256)"(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   callStatic: {
     addTemplate(
+      _template: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "addTemplate(address)"(
       _template: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -280,9 +368,25 @@ export class SaleLauncher extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    "createSale(uint256,address,uint256,address,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
+      _data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     factory(overrides?: CallOverrides): Promise<string>;
 
+    "factory()"(overrides?: CallOverrides): Promise<string>;
+
     getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDepositAmountWithFees(uint256)"(
       _tokenSupply: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -292,14 +396,31 @@ export class SaleLauncher extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    "getTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     getTemplateId(
+      _template: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTemplateId(address)"(
       _template: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeTemplate(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeTemplate(uint256)"(
       _templateId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -315,51 +436,50 @@ export class SaleLauncher extends BaseContract {
       }
     >;
 
+    "saleInfo(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, BigNumber, BigNumber] & {
+        exists: boolean;
+        templateId: BigNumber;
+        index: BigNumber;
+      }
+    >;
+
     saleTemplateId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "saleTemplateId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    "sales(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {
     SaleInitialized(
-      sale?: string | null,
-      templateId?: null,
-      template?: string | null,
-      data?: null
-    ): TypedEventFilter<
-      [string, BigNumber, string, string],
-      { sale: string; templateId: BigNumber; template: string; data: string }
-    >;
+      sale: string | null,
+      templateId: null,
+      template: string | null,
+      data: null
+    ): EventFilter;
 
-    SaleLaunched(
-      sale?: string | null,
-      templateId?: null
-    ): TypedEventFilter<
-      [string, BigNumber],
-      { sale: string; templateId: BigNumber }
-    >;
+    SaleLaunched(sale: string | null, templateId: null): EventFilter;
 
-    TemplateAdded(
-      template?: string | null,
-      templateId?: null
-    ): TypedEventFilter<
-      [string, BigNumber],
-      { template: string; templateId: BigNumber }
-    >;
+    TemplateAdded(template: string | null, templateId: null): EventFilter;
 
-    TemplateRemoved(
-      template?: string | null,
-      templateId?: null
-    ): TypedEventFilter<
-      [string, BigNumber],
-      { template: string; templateId: BigNumber }
-    >;
+    TemplateRemoved(template: string | null, templateId: null): EventFilter;
   };
 
   estimateGas: {
-    addTemplate(
+    addTemplate(_template: string, overrides?: Overrides): Promise<BigNumber>;
+
+    "addTemplate(address)"(
       _template: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     createSale(
@@ -368,12 +488,28 @@ export class SaleLauncher extends BaseContract {
       _tokenSupply: BigNumberish,
       _tokenSupplier: string,
       _data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides
+    ): Promise<BigNumber>;
+
+    "createSale(uint256,address,uint256,address,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
+      _data: BytesLike,
+      overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     factory(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "factory()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDepositAmountWithFees(uint256)"(
       _tokenSupply: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -383,29 +519,63 @@ export class SaleLauncher extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "getTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTemplateId(
+      _template: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTemplateId(address)"(
       _template: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     numberOfSales(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "numberOfSales()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeTemplate(
       _templateId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<BigNumber>;
+
+    "removeTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: Overrides
     ): Promise<BigNumber>;
 
     saleInfo(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    "saleInfo(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     saleTemplateId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    "saleTemplateId()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     sales(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "sales(uint256)"(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     addTemplate(
       _template: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "addTemplate(address)"(
+      _template: string,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     createSale(
@@ -414,12 +584,28 @@ export class SaleLauncher extends BaseContract {
       _tokenSupply: BigNumberish,
       _tokenSupplier: string,
       _data: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "createSale(uint256,address,uint256,address,bytes)"(
+      _templateId: BigNumberish,
+      _token: string,
+      _tokenSupply: BigNumberish,
+      _tokenSupplier: string,
+      _data: BytesLike,
+      overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "factory()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getDepositAmountWithFees(
+      _tokenSupply: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getDepositAmountWithFees(uint256)"(
       _tokenSupply: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -429,16 +615,33 @@ export class SaleLauncher extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "getTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getTemplateId(
+      _template: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTemplateId(address)"(
       _template: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     numberOfSales(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "numberOfSales()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     removeTemplate(
       _templateId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeTemplate(uint256)"(
+      _templateId: BigNumberish,
+      overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     saleInfo(
@@ -446,9 +649,23 @@ export class SaleLauncher extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "saleInfo(address)"(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     saleTemplateId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    "saleTemplateId()"(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     sales(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "sales(uint256)"(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

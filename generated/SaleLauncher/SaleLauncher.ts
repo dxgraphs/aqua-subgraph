@@ -31,8 +31,12 @@ export class SaleInitialized__Params {
     return this._event.parameters[1].value.toBigInt();
   }
 
+  get template(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
   get data(): Bytes {
-    return this._event.parameters[2].value.toBytes();
+    return this._event.parameters[3].value.toBytes();
   }
 }
 

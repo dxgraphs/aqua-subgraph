@@ -116,8 +116,17 @@ describe('SaleLauncher', function() {
             amount
             status
           }
+          launchedTemplate {
+            id
+            metadataContentHash
+          }
       }
     }`)
+
+    const launchedTemplate = FixedPriceSaleTemplate__factory.connect(
+      data.fixedPriceSale.launchedTemplate.id,
+      saleCreator
+    )
 
     expect(data.fixedPriceSale).not.toBeNull()
     expect(data.fixedPriceSale.id).toMatch(newFixedPriceSaleAddress)
@@ -138,6 +147,9 @@ describe('SaleLauncher', function() {
     expect(Array.isArray(data.fixedPriceSale.commitments)).toBeTruthy()
     expect(data.fixedPriceSale.commitments.length).toBe(0)
     expect(data.fixedPriceSale.participantList.participants.length).toBe(1)
+    expect(data.fixedPriceSale.launchedTemplate.metadataContentHash).toMatch(
+      await launchedTemplate.metaDataContentHash()
+    )
 
     const [saleParticipant] = data.fixedPriceSale.participantList.participants
     expect(saleParticipant.address).toBe((await saleInvestorA.getAddress()).toLowerCase())

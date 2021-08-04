@@ -69,6 +69,8 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.tokenOut = tokenOut.id
   // Sale name
   fairSale.name = tokenOut.name || ''
+  // Template that launched sale
+  fairSale.launchedTemplate = event.params.template.toHexString()
 
   {
     let fairSaleUserId = event.address.toHexString() + '/users/1' // The first user is always 1
@@ -147,6 +149,8 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.tokenOut = tokenOut.id
   // Sale name
   fixedPriceSale.name = tokenOut.name || ''
+  // Template that launched sale
+  fixedPriceSale.launchedTemplate = event.params.template.toHexString()
   // Save
   fixedPriceSale.save()
 
