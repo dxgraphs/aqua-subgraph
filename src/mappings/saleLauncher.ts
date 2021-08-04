@@ -5,6 +5,7 @@ import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedP
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
 import { TemplateLauncher as TemplateLauncherContract } from '../../generated/TemplateLauncher/TemplateLauncher'
 import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
+import { FairSale, FixedPriceSale } from '../../generated/templates'
 
 // Helpers
 import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
@@ -27,9 +28,11 @@ export function handleSaleInitialized(event: SaleInitialized): void {
   }
 
   if (saleTemplate.name == SALE_TEMPLATES.FAIR_SALE) {
+    FairSale.create(event.params.sale)
     registerFairSale(event)
   }
   if (saleTemplate.name == SALE_TEMPLATES.FIXED_PRICE_SALE) {
+    FixedPriceSale.create(event.params.sale)
     registerFixedPriceSale(event)
   }
 
@@ -51,8 +54,7 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   // Timestamps
   fairSale.createdAt = event.block.timestamp.toI32()
   fairSale.updatedAt = event.block.timestamp.toI32()
-  fairSale.minimumBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
-  // Get launched template data to find metadata ipfs hash
+  fairSale.minBidAmount = fairSaleContract.minimumBiddingAmountPerOrder()
   // Start and end dates of the sale
   fairSale.startDate = event.block.timestamp.toI32()
   fairSale.endDate = fairSaleContract.auctionEndDate().toI32()
@@ -126,15 +128,20 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.sellAmount = saleInfo.tokensForSale
   fixedPriceSale.soldAmount = new BigInt(0)
   // Minimum raise amount
-  fixedPriceSale.minimumRaise = saleInfo.minRaise
+  fixedPriceSale.minRaise = saleInfo.minRaise
   // // Mnimum and maximum tokens per order
-  fixedPriceSale.allocationMin = saleInfo.minCommitment
-  fixedPriceSale.allocationMax = saleInfo.maxCommitment
+  fixedPriceSale.minCommitment = saleInfo.minCommitment
+  fixedPriceSale.maxCommitment = saleInfo.maxCommitment
   // Start and end dates of the sale
   fixedPriceSale.startDate = saleInfo.startDate.toI32()
   fixedPriceSale.endDate = saleInfo.endDate.toI32()
   // Sale status
   fixedPriceSale.status = SALE_STATUS.UPCOMING
+  fixedPriceSale.hasParticipantList = saleInfo.hasParticipantList
+  if (saleInfo.hasParticipantList) {
+    // Reference the participantList entity
+    fixedPriceSale.participantList = saleInfo.participantList.toHexString()
+  }
   // Bidding token / token in
   let tokenIn = getOrCreateSaleToken(saleInfo.tokenIn)
   // Saleing token / token out

@@ -242,13 +242,13 @@ export class FairSale extends Entity {
     this.set("tokensForSale", Value.fromBigInt(value));
   }
 
-  get minimumBidAmount(): BigInt {
-    let value = this.get("minimumBidAmount");
+  get minBidAmount(): BigInt {
+    let value = this.get("minBidAmount");
     return value.toBigInt();
   }
 
-  set minimumBidAmount(value: BigInt) {
-    this.set("minimumBidAmount", Value.fromBigInt(value));
+  set minBidAmount(value: BigInt) {
+    this.set("minBidAmount", Value.fromBigInt(value));
   }
 
   get tokenIn(): string {
@@ -604,31 +604,31 @@ export class FixedPriceSale extends Entity {
     this.set("soldAmount", Value.fromBigInt(value));
   }
 
-  get minimumRaise(): BigInt {
-    let value = this.get("minimumRaise");
+  get minRaise(): BigInt {
+    let value = this.get("minRaise");
     return value.toBigInt();
   }
 
-  set minimumRaise(value: BigInt) {
-    this.set("minimumRaise", Value.fromBigInt(value));
+  set minRaise(value: BigInt) {
+    this.set("minRaise", Value.fromBigInt(value));
   }
 
-  get allocationMin(): BigInt {
-    let value = this.get("allocationMin");
+  get minCommitment(): BigInt {
+    let value = this.get("minCommitment");
     return value.toBigInt();
   }
 
-  set allocationMin(value: BigInt) {
-    this.set("allocationMin", Value.fromBigInt(value));
+  set minCommitment(value: BigInt) {
+    this.set("minCommitment", Value.fromBigInt(value));
   }
 
-  get allocationMax(): BigInt {
-    let value = this.get("allocationMax");
+  get maxCommitment(): BigInt {
+    let value = this.get("maxCommitment");
     return value.toBigInt();
   }
 
-  set allocationMax(value: BigInt) {
-    this.set("allocationMax", Value.fromBigInt(value));
+  set maxCommitment(value: BigInt) {
+    this.set("maxCommitment", Value.fromBigInt(value));
   }
 
   get tokenIn(): string {
@@ -700,8 +700,17 @@ export class FixedPriceSale extends Entity {
     }
   }
 
-  get launchedTemplate(): string | null {
-    let value = this.get("launchedTemplate");
+  get hasParticipantList(): boolean {
+    let value = this.get("hasParticipantList");
+    return value.toBoolean();
+  }
+
+  set hasParticipantList(value: boolean) {
+    this.set("hasParticipantList", Value.fromBoolean(value));
+  }
+
+  get participantList(): string | null {
+    let value = this.get("participantList");
     if (value === null || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -709,16 +718,16 @@ export class FixedPriceSale extends Entity {
     }
   }
 
+<<<<<<< HEAD
   set launchedTemplate(value: string | null) {
     if (value === null) {
       this.unset("launchedTemplate");
     } else {
-      this.set("launchedTemplate", Value.fromString(value as string));
+>>>>>>> 16846cd81b6f393de59193923c131866f20c1897
     }
   }
 }
 
-export class FixedPriceSaleCommitment extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1009,6 +1018,209 @@ export class FixedPriceSaleUser extends Entity {
 
   set address(value: Bytes) {
     this.set("address", Value.fromBytes(value));
+  }
+}
+
+export class ParticipantList extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save ParticipantList entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save ParticipantList entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("ParticipantList", id.toString(), this);
+  }
+
+  static load(id: string): ParticipantList | null {
+    return store.get("ParticipantList", id) as ParticipantList | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get sale(): Bytes | null {
+    let value = this.get("sale");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set sale(value: Bytes | null) {
+    if (value === null) {
+      this.unset("sale");
+    } else {
+      this.set("sale", Value.fromBytes(value as Bytes));
+    }
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get managers(): Array<Bytes> | null {
+    let value = this.get("managers");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytesArray();
+    }
+  }
+
+  set managers(value: Array<Bytes> | null) {
+    if (value === null) {
+      this.unset("managers");
+    } else {
+      this.set("managers", Value.fromBytesArray(value as Array<Bytes>));
+    }
+  }
+
+  get participants(): Array<string> | null {
+    let value = this.get("participants");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set participants(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("participants");
+    } else {
+      this.set("participants", Value.fromStringArray(value as Array<string>));
+    }
+  }
+}
+
+export class Participant extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Participant entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Participant entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Participant", id.toString(), this);
+  }
+
+  static load(id: string): Participant | null {
+    return store.get("Participant", id) as Participant | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdAt(): i32 {
+    let value = this.get("createdAt");
+    return value.toI32();
+  }
+
+  set createdAt(value: i32) {
+    this.set("createdAt", Value.fromI32(value));
+  }
+
+  get updatedAt(): i32 {
+    let value = this.get("updatedAt");
+    return value.toI32();
+  }
+
+  set updatedAt(value: i32) {
+    this.set("updatedAt", Value.fromI32(value));
+  }
+
+  get deletedAt(): i32 {
+    let value = this.get("deletedAt");
+    return value.toI32();
+  }
+
+  set deletedAt(value: i32) {
+    this.set("deletedAt", Value.fromI32(value));
+  }
+
+  get participantList(): string {
+    let value = this.get("participantList");
+    return value.toString();
+  }
+
+  set participantList(value: string) {
+    this.set("participantList", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
   }
 }
 

@@ -59,7 +59,7 @@ type FairSale implements EntityMetadata @entity {
   "Total amount of tokens available for sale"
   tokensForSale: BigInt!
   "Minimum amount per bid"
-  minimumBidAmount: BigInt!
+  minBidAmount: BigInt!
   "Accepted bidding token (ie: DAI, USDC)"
   tokenIn: Token!
   "Auctioning token"
@@ -134,12 +134,12 @@ type FixedPriceSale implements EntityMetadata @entity {
   sellAmount: BigInt!
   "Amount of tokens sold so far"
   soldAmount: BigInt!
-  # Minimum amount per bid
-  minimumRaise: BigInt!
+  "Minimum raise threshold"
+  minRaise: BigInt!
   "Minimum token amount per commitment"
-  allocationMin: BigInt!
+  minCommitment: BigInt!
   "Maximum token amount per commitment"
-  allocationMax: BigInt!
+  maxCommitment: BigInt!
   "Token investors can use to bid"
   tokenIn: Token!
   "Token investor get"
@@ -150,6 +150,10 @@ type FixedPriceSale implements EntityMetadata @entity {
   users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
   "List of withdrawals"
   withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
+  "If true, sale was initialized with participant list"
+  hasParticipantList: Boolean!
+  "Reference to ParticipantList contract/entity."
+  participantList: ParticipantList
   launchedTemplate: LaunchedSaleTemplate
 }
 
@@ -206,6 +210,34 @@ type FixedPriceSaleUser implements EntityMetadata @entity {
   address: Bytes!
 }
 
+# Entity used to map listed participants
+type ParticipantList implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Address of sale; and not a ref"
+  sale: Bytes
+  "Contract address"
+  address: Bytes!
+  "List of addresses that can add or remove participants"
+  managers: [Bytes!]
+  "List of participants allowed to partake in the sale"
+  participants: [Participant!] @derivedFrom(field: "participantList")
+}
+
+# Entity used to map listed participants
+type Participant implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Reference to ParticipantList"
+  participantList: ParticipantList!
+  address: Bytes!
+  amount: BigInt!
+}
+
 #################################################
 
 # Token
@@ -242,15 +274,18 @@ type SaleTemplate @entity {
 # Sale Templates
 # Each Sale contract implements a template
 type LaunchedSaleTemplate @entity {
-  # TemplatesId from the event
+  "Address of the template"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
+  "Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale"
   address: Bytes!
+  "Factory"
   factory: AquaFactory!
+  "The original Sale Template this was created from"
   template: SaleTemplate!
+  "IPFS content hash"
   metadataContentHash: String
 }
 

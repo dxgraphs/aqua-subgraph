@@ -104,11 +104,31 @@ dataSources:
         - event: TemplateLaunched(indexed address,uint256,address,string)
           handler: handleTemplateLaunched
   - kind: ethereum/contract
+    name: ParticipantListLauncher
+    network: {{network}}
+    source:
+      address: '{{contracts.participantListLauncher.address}}'
+      abi: ParticipantListLauncher
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/participantListLauncher.ts
+      entities:
+        - ParticipantList
+      abis:
+        - name: ParticipantListLauncher
+          file: ./abis/ParticipantListLauncher.json
+      eventHandlers:
+        - event: ListLaunched(indexed address)
+          handler: handleListLaunched
+templates:
+  - kind: ethereum/contract
     name: FairSale
     network: {{network}}
     source:
       abi: FairSale
-      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -140,7 +160,6 @@ dataSources:
     network: {{network}}
     source:
       abi: FixedPriceSale
-      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -149,6 +168,7 @@ dataSources:
       entities:
         - FixedPriceSale
         - SaleTemplate
+        - FixedPriceSaleParticipantList
       abis:
         - name: FixedPriceSale
           file: ./abis/FixedPriceSale.json
@@ -161,3 +181,25 @@ dataSources:
           handler: handleNewTokenWithdraw
         - event: SaleClosed()
           handler: handleSaleClosed
+        - event: SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)
+          handler: handleSaleInitialized
+  - kind: ethereum/contract
+    name: ParticipantList
+    network: {{network}}
+    source:
+      abi: ParticipantList
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/participantList.ts
+      entities:
+        - FixedPriceSaleParticipant
+      abis:
+        - name: ParticipantList
+          file: ./abis/ParticipantList.json
+      eventHandlers:
+        - event: AmountsUpdated(indexed address,uint256)
+          handler: handleAmountsUpdated
+        - event: ListInitialized(address[])
+          handler: handleListInitialized

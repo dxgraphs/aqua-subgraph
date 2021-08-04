@@ -19,13 +19,22 @@ import { exec as execBase } from 'child_process'
 // Encoders
 import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Typechained
-import { FixedPriceSaleTemplate__factory, FairSaleTemplate__factory } from './typechain-contracts'
-import type { ERC20Mintable, AquaFactory,  TemplateLauncher, FixedPriceSale, SaleLauncher } from './typechain-contracts'
+import {
+  AquaFactory,
+  SaleLauncher,
+  ERC20Mintable,
+  FixedPriceSale,
+  TemplateLauncher,
+  ERC20Mintable__factory,
+  FairSaleTemplate__factory,
+  FixedPriceSaleTemplate__factory
+} from './typechain-contracts'
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
 import { ONE_HOUR } from '../utils/constants'
 import { getLastBlock } from '../utils/evm'
+import { getLogger, Namespace } from './logger'
 
 export interface CreateSaleOptions {
   templateId: BigNumberish
@@ -34,6 +43,7 @@ export interface CreateSaleOptions {
   biddingToken: ERC20Mintable
   saleToken: ERC20Mintable
   saleCreator: providers.JsonRpcSigner
+  participantList?: boolean
 }
 
 export interface TokenList {
@@ -54,6 +64,8 @@ export interface PurchaseTokenOptions {
 // UTC plugin
 dayjs.extend(DayJSUTC)
 
+const logger = getLogger(Namespace.CONTRACTS)
+logger.level = 'info'
 /**
  *
  * @param tokens
@@ -61,7 +73,7 @@ dayjs.extend(DayJSUTC)
 export async function printTokens(tokens: TokenList) {
   const values = Object.values(tokens)
 
-  console.log(`Deployed tokens`)
+  logger.info(`Deployed tokens`)
   const debug = await Promise.all(
     values.map(async ({ symbol, name, totalSupply }) => ({
       symbol: await symbol(),
@@ -121,7 +133,7 @@ export async function createFairSale({
   const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseUnits('1')
+    value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
 
@@ -139,18 +151,14 @@ export async function createFixedPriceSale({
   saleLauncher,
   biddingToken,
   saleToken,
-  saleCreator
+  saleCreator,
+  participantList = false
 }: CreateSaleOptions): Promise<string> {
   // Get blocktimestamp from Ganache
   const lastBlock = await getLastBlock(aquaFactory.provider)
   // Sale lasts for one hour
   const startDate = lastBlock.timestamp + 180 // 5 minutes from from last block timestamp
   const endDate = startDate + 3600 * 24 // 24 hours from start date
-
-  console.log({
-    startDate: new Date(startDate * 1000),
-    endDate: new Date(endDate * 1000)
-  })
 
   const launchFixedPriceSaleTemplateTxReceipt = await aquaFactory
     .launchTemplate(
@@ -167,8 +175,8 @@ export async function createFixedPriceSale({
         maxCommitment: utils.parseUnits('10'),
         minRaise: utils.parseUnits('100'),
         tokenPrice: utils.parseUnits('2'),
-        tokensForSale: await saleToken.totalSupply(),
-        participantList: false // allows for anyone to particpate in the sale
+        tokensForSale: utils.parseUnits('500'),
+        participantList
       }),
       'explore-metahash'
     )
@@ -179,12 +187,12 @@ export async function createFixedPriceSale({
   if (!launchedTemplateAddress) {
     throw new Error('Could not find launched FixedPriceSaleTemplate address')
   }
-  console.log(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
+  logger.info(`Launched a new FixedPriceSaleTemplate at ${launchedTemplateAddress}`)
   // Connect to the Template and create the sale
   const saleTemplate = FixedPriceSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
   const createSaleTx = await saleTemplate.createSale({
-    value: utils.parseUnits('1')
+    value: await aquaFactory.saleFee()
   })
   const createSaleTxReceipt = await createSaleTx.wait(1)
   // Extract the newSale from logs
@@ -286,7 +294,7 @@ export async function createTokenAndMintAndApprove({
   users,
   signer
 }: CreateTokensAndMintAndApproveProps): Promise<ERC20Mintable> {
-  const token = (await getContractFactory('ERC20Mintable', signer).deploy(symbol, name)) as ERC20Mintable
+  const token = await new ERC20Mintable__factory(signer).deploy(symbol, name)
 
   for (const user of users) {
     await token.mint(await user.getAddress(), numberOfTokens)
@@ -310,7 +318,7 @@ export async function createBiddingTokenAndMintAndApprove({
   deployer
 }: CreateBiddingTokenAndMintAndApproveProps) {
   // Deploy the token
-  const biddingToken = (await getContractFactory('ERC20Mintable', deployer).deploy('BT', 'BT')) as ERC20Mintable
+  const biddingToken = await new ERC20Mintable__factory(deployer).deploy('BT', 'BT')
 
   for (const user of users) {
     await biddingToken.mint(user._address, numberOfTokens)
@@ -327,5 +335,5 @@ export async function createBiddingTokenAndMintAndApprove({
 
 export async function createWETH(signer: Signer) {
   // Get factories and deploy BiddingToken and AuctioningToken
-  return (await getContractFactory('ERC20Mintable', signer).deploy('WETH', 'WETH')) as ERC20Mintable
+  return await new ERC20Mintable__factory(signer).deploy('WETH', 'WETH')
 }
