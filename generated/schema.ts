@@ -294,6 +294,23 @@ export class FairSale extends Entity {
       this.set("bids", Value.fromStringArray(value as Array<string>));
     }
   }
+
+  get launchedTemplate(): string | null {
+    let value = this.get("launchedTemplate");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set launchedTemplate(value: string | null) {
+    if (value === null) {
+      this.unset("launchedTemplate");
+    } else {
+      this.set("launchedTemplate", Value.fromString(value as string));
+    }
+  }
 }
 
 export class FairSaleUser extends Entity {
@@ -723,6 +740,23 @@ export class FixedPriceSale extends Entity {
       this.unset("participantList");
     } else {
       this.set("participantList", Value.fromString(value as string));
+    }
+  }
+
+  get launchedTemplate(): string | null {
+    let value = this.get("launchedTemplate");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set launchedTemplate(value: string | null) {
+    if (value === null) {
+      this.unset("launchedTemplate");
+    } else {
+      this.set("launchedTemplate", Value.fromString(value as string));
     }
   }
 }

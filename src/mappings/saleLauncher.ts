@@ -1,9 +1,8 @@
 // Externals
-import { BigInt, Address, log } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 // Contract Types and ABIs
 import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
 import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
-import { TemplateLauncher as TemplateLauncherContract } from '../../generated/TemplateLauncher/TemplateLauncher'
 import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 import { FairSale, FixedPriceSale } from '../../generated/templates'
 
@@ -46,7 +45,6 @@ export function handleSaleInitialized(event: SaleInitialized): void {
  * Creates a new FairSale entity from
  */
 function registerFairSale(event: SaleInitialized): Schemas.FairSale {
-  // Bind Template launcher
   // Bind the new Contract
   let fairSaleContract = FairSaleContract.bind(event.params.sale)
   // Create new EasySale entity
@@ -71,6 +69,8 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.tokenOut = tokenOut.id
   // Sale name
   fairSale.name = tokenOut.name || ''
+  // Template that launched sale
+  fairSale.launchedTemplate = event.params.template.toHexString()
 
   {
     let fairSaleUserId = event.address.toHexString() + '/users/1' // The first user is always 1
@@ -112,14 +112,12 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
  * Creates a new FixedPriceSale entity
  */
 function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale {
-  // Bind Template launcher
   // Bind the new Contract
   let fixedPriceSaleContract = FixedPriceSaleContract.bind(event.params.sale)
   // Create new EasySale entity
   let fixedPriceSale = new Schemas.FixedPriceSale(event.params.sale.toHexString())
   // Fetch sale info and deconstruct it
   let saleInfo = FixedPriceSaleSaleInfo.fromResult(fixedPriceSaleContract.saleInfo())
-  // Get launched template data to find metadata ipfs hash
   // Timestamps
   fixedPriceSale.createdAt = event.block.timestamp.toI32()
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
@@ -151,8 +149,8 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.tokenOut = tokenOut.id
   // Sale name
   fixedPriceSale.name = tokenOut.name || ''
-  // log.debug('TEMPLATE ADDR = {}', [event.params.template.toHexString()])
-  // fixedPriceSale.launchedTemplate = event.params.template.toHexString()
+  // Template that launched sale
+  fixedPriceSale.launchedTemplate = event.params.template.toHexString()
   // Save
   fixedPriceSale.save()
 
