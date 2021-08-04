@@ -162,6 +162,8 @@ enum FixedPriceSaleCommitmentStatus {
   SUBMITTED
   RELEASED
   CLAIMED
+  PROCESSED
+  WITHDRAWN
 }
 
 type FixedPriceSaleCommitment implements EntityMetadata @entity {

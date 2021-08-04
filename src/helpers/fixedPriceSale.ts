@@ -8,6 +8,12 @@ export abstract class COMITMENT_STATUS {
   static SUBMITTED: string = 'SUBMITTED'
   static WITHDRAWN: string = 'WITHDRAWN'
   static RELEASED: string = 'RELEASED'
+  static PROCESSED: string = 'PROCESSED'
+}
+
+export abstract class WITHDRAWAL_STATUS {
+  static SUBMITTED: string = 'SUBMITTED'
+  static PROCESSED: string = 'PROCESSED'
 }
 
 /**
