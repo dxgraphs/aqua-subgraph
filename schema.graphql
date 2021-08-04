@@ -154,7 +154,6 @@ type FixedPriceSale implements EntityMetadata @entity {
   hasParticipantList: Boolean!
   "Reference to ParticipantList contract/entity."
   participantList: ParticipantList
-  launchedTemplate: LaunchedSaleTemplate
 }
 
 enum FixedPriceSaleCommitmentStatus {

@@ -151,7 +151,7 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.tokenOut = tokenOut.id
   // Sale name
   fixedPriceSale.name = tokenOut.name || ''
-  log.debug('TEMPLATE ADDR = {}', [event.params.template.toHexString()])
+  // log.debug('TEMPLATE ADDR = {}', [event.params.template.toHexString()])
   // fixedPriceSale.launchedTemplate = event.params.template.toHexString()
   // Save
   fixedPriceSale.save()

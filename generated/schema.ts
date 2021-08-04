@@ -718,16 +718,16 @@ export class FixedPriceSale extends Entity {
     }
   }
 
-<<<<<<< HEAD
-  set launchedTemplate(value: string | null) {
+  set participantList(value: string | null) {
     if (value === null) {
-      this.unset("launchedTemplate");
+      this.unset("participantList");
     } else {
->>>>>>> 16846cd81b6f393de59193923c131866f20c1897
+      this.set("participantList", Value.fromString(value as string));
     }
   }
 }
 
+export class FixedPriceSaleCommitment extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
