@@ -8,10 +8,20 @@ export abstract class COMITMENT_STATUS {
   static SUBMITTED: string = 'SUBMITTED'
   static WITHDRAWN: string = 'WITHDRAWN'
   static RELEASED: string = 'RELEASED'
+  static PROCESSED: string = 'PROCESSED'
+}
+
+export abstract class WITHDRAWAL_STATUS {
+  static SUBMITTED: string = 'SUBMITTED'
+  static PROCESSED: string = 'PROCESSED'
 }
 
 /**
- * Helper function to construct the `FixedPriceSaleUser` entity IDs
+ * Helper function to construct `FixedPriceSaleUser` entity ID.
+ * Yields a unique compsite ID: `<saleAddress>/users/<userAddress>`
+ * @param {Address} saleAddress The sale contract address
+ * @param {Address} userAddress The user address
+ * @returns A string `<saleAddress>/users/<userAddress>`
  */
 export function createFixedPriceSaleUserId(saleAddress: Address, userAddres: Address): string {
   let fixedPriceSaleUserId = saleAddress.toHexString() + '/users/' + userAddres.toHexString()
@@ -19,7 +29,11 @@ export function createFixedPriceSaleUserId(saleAddress: Address, userAddres: Add
 }
 
 /**
- * Helper function to construct the `FixedPriceSaleWithdrawal` entity IDs
+ * Helper function to construct `FixedPriceSaleWithdrawal` entity ID.
+ * Yields a unique compsite ID: `<saleAddress>/withdrawals/<userAddress>`
+ * @param {Address} saleAddress The sale contract address
+ * @param {Address} userAddress The user address
+ * @returns A string `<saleAddress>/withdrawals/<userAddress>`
  */
 export function createFixedPriceSaleWithdrawalId(saleAddress: Address, userAddres: Address): string {
   let fixedPriceSaleUserId = saleAddress.toHexString() + '/withdrawals/' + userAddres.toHexString()
@@ -28,6 +42,14 @@ export function createFixedPriceSaleWithdrawalId(saleAddress: Address, userAddre
 
 /**
  * Helper function to construct the `FixedPriceSaleCommitment` entity IDs
+ */
+/**
+ * Helper function to construct `FixedPriceSaleWithdrawal` entity ID.
+ * Yields a unique compsite ID: `<saleAddress>/commitments/<userAddress>`
+ * @param {Address} saleAddress The sale contract address
+ * @param {Address} userAddress The user address
+ * @param {number} commitmentIndex the commitment index - starts from 1
+ * @returns A string `<saleAddress>/commitments/<userAddress>/<commitmentIndex>`
  */
 export function createFixedPriceSaleCommitmentId(
   saleAddress: Address,
@@ -71,10 +93,9 @@ export function createOrGetFixedPriceSaleUser(
 }
 
 /**
- * Returns the total commitments by a FixedPriceSale user
- * @param saleAddress
- * @param userAddres
- * @returns
+ * Returns the total commitments by a `FixedPriceSale` user
+ * @param fixedPriceSaleUserId The unique ID
+ * @returns {number} The total commitments made by the user
  */
 export function getFixedPriceSaleUserTotalCommitment(fixedPriceSaleUserId: string): number {
   // First, fetch or register the new user

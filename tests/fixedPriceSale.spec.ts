@@ -2,15 +2,14 @@
 import { constants, providers, utils } from 'ethers'
 // Helpers
 import {
-  FixedPriceSale__factory,
   FixedPriceSaleTemplate__factory,
+  FixedPriceSale__factory,
   FixedPriceSale,
   ERC20Mintable
 } from '../utils/typechain-contracts'
 import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { getSigners, mineBlock } from '../utils/evm'
-import { wait } from '../utils'
 
 // Test block
 describe('FixedPriceSale', () => {
@@ -74,7 +73,7 @@ describe('FixedPriceSale', () => {
     launchedfixedPriceSale = FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleCreator)
     await aqua.waitForSubgraphSync()
   })
-
+  /*
   test('Should increase soldAmount by number of committed tokens', async () => {
     // Approve
     await (
@@ -104,7 +103,49 @@ describe('FixedPriceSale', () => {
         soldAmount
       }
     }`)
-
     expect(data.fixedPriceSale.soldAmount).toMatch(expectedSoldAmount.toString())
+  })
+  */
+  test('All FixedPriceSale.status should be WITHDRAWN after claiming', async () => {
+    // Approve
+    await (
+      await biddingToken.connect(saleInvestorB).approve(launchedfixedPriceSale.address, constants.MaxUint256)
+    ).wait()
+
+    // Connect to sale from SaleInvestorB
+    const launchedfixedPriceSaleSaleInvestorB = launchedfixedPriceSale.connect(saleInvestorB)
+    const saleInfo = await launchedfixedPriceSale.saleInfo()
+    // Open sale
+    await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
+    // Insure threshold is met
+    const commitTokensAmount = saleInfo.minRaise
+    console.log({
+      commitTokensAmount: utils.formatEther(commitTokensAmount)
+    })
+    // Commit tokens
+    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(commitTokensAmount)).wait()
+    // End sale
+    await mineBlock(aqua.provider, saleInfo.endDate.toNumber() + 180)
+    // Close sale
+    await (await launchedfixedPriceSale.closeSale()).wait()
+    // withdraw tokens
+    // Sale is closed and threshold is met
+    const withdrawTokensTxReciept = await (
+      await launchedfixedPriceSaleSaleInvestorB.withdrawTokens(await saleInvestorB.getAddress())
+    ).wait()
+
+    console.log(withdrawTokensTxReciept.events)
+
+    await aqua.waitForSubgraphSync(withdrawTokensTxReciept.blockNumber)
+    const { data } = await aqua.querySubgraph(`{
+      fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
+        commitments {
+          id
+          status
+        }
+      }
+    }`)
+    console.log(data)
+    expect(data.fixedPriceSale.commitments[0].status).toMatch('WITHDRAWN')
   })
 })

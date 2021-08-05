@@ -5,7 +5,8 @@ import {
   createFixedPriceSaleWithdrawalId,
   createOrGetFixedPriceSaleUser,
   createFixedPriceSaleUserId,
-  COMITMENT_STATUS
+  COMITMENT_STATUS,
+  WITHDRAWAL_STATUS
 } from '../../helpers/fixedPriceSale'
 import {
   NewTokenWithdraw,
@@ -82,6 +83,7 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
   // Update references
   withdrawal.sale = event.address.toHexString()
   withdrawal.user = fixedPriceSaleUser.id
+  withdrawal.status = WITHDRAWAL_STATUS.SUBMITTED
   withdrawal.save()
   // Get total commitments by the investor/buyer
   let totalCommitments = getFixedPriceSaleUserTotalCommitment(
@@ -94,7 +96,7 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
     )
 
     if (commitment) {
-      commitment.status = COMITMENT_STATUS.WITHDRAWN
+      commitment.status = COMITMENT_STATUS.PROCESSED
       commitment.save()
     }
   }
