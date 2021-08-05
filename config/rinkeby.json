@@ -3,13 +3,16 @@
   "startBlock": 8243429,
   "contracts": {
     "factory": {
-      "address": "0xc9c6cf237975b882bbef757faa3226b2c3178439"
+      "address": "0xa1Bf3bfDbC86Fd6eC7E2d9707609d7fAc0d93EeF"
     },
     "saleLauncher": {
-      "address": "0x031053f28bf9273b96f7d0dcd20e970ee3bbb54f"
+      "address": "0x6085eb96659B0e90bc59288750C8306eE390fA99"
     },
     "templateLauncher": {
-      "address": "0xb89a4ed67a280ed9755758607d75a39e2b7dda68"
+      "address": "0x569DD258D95c8f558AAf6fe808a0cfC00D941565"
+    },
+    "participantListLauncher": {
+      "address": "0xD9b4a505A649eDE83Ad5AEd2a9504922EdA7eDB5"
     }
   }
 }
