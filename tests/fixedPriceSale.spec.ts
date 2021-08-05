@@ -133,9 +133,6 @@ describe('FixedPriceSale', () => {
     const withdrawTokensTxReciept = await (
       await launchedfixedPriceSaleSaleInvestorB.withdrawTokens(await saleInvestorB.getAddress())
     ).wait()
-
-    console.log(withdrawTokensTxReciept.events)
-
     await aqua.waitForSubgraphSync(withdrawTokensTxReciept.blockNumber)
     const { data } = await aqua.querySubgraph(`{
       fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
@@ -145,7 +142,6 @@ describe('FixedPriceSale', () => {
         }
       }
     }`)
-    console.log(data)
-    expect(data.fixedPriceSale.commitments[0].status).toMatch('WITHDRAWN')
+    expect(data.fixedPriceSale.commitments[0].status).toMatch('PROCESSED')
   })
 })
