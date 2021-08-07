@@ -1,5 +1,5 @@
 // Externals
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, dataSource, ethereum } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and Events
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../../generated/FairSale/FairSale'
 
 // GraphQL Schemas
-import * as Schemas from '../../../generated/schema'
+import { FairSale, FairSaleBid, FairSaleUser } from '../../../generated/schema'
 
 // Helpers
 import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
@@ -26,7 +26,7 @@ export function handleSaleCleared(event: AuctionCleared): void {
     return
   }
 
-  let sale = Schemas.FairSaleBid.load(event.address.toHexString()) // event.address is the contract that emits the event
+  let sale = FairSaleBid.load(event.address.toHexString()) // event.address is the contract that emits the event
 
   if (!sale) {
     return
@@ -43,7 +43,7 @@ export function handleCancellationOrder(event: CancellationSellOrder): void {
   }
 
   // ToDo: concatenate unique id
-  let bid = Schemas.FairSaleBid.load(event.transaction.hash.toHexString())
+  let bid = FairSaleBid.load(event.transaction.hash.toHexString())
 
   if (!bid) {
     return
@@ -61,7 +61,7 @@ export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
   }
 
   // ToDo: concatenate unique id
-  let bid = Schemas.FairSaleBid.load(event.transaction.hash.toHexString())
+  let bid = FairSaleBid.load(event.transaction.hash.toHexString())
   if (!bid) {
     return
   }
@@ -80,7 +80,7 @@ export function handleNewOrder(event: NewSellOrder): void {
   }
   // Construct entity ID from the parameters
   // A bid is <saleAddress>/bids/<ownerId>/<block.timestamp>
-  let bid = new Schemas.FairSaleBid(
+  let bid = new FairSaleBid(
     event.address.toHexString() + '/bids/' + event.params.userId.toString() + '/' + event.block.timestamp.toString()
   )
   bid.sale = event.address.toString()
@@ -108,7 +108,7 @@ export function handleNewUser(event: NewUser): void {
 
   // Use their address as unique id
   // A sale user id is <saleAddress>/users/<ownerId>
-  let saleUser = new Schemas.FairSaleUser(event.address.toHexString() + '/users/' + event.params.userId.toString())
+  let saleUser = new FairSaleUser(event.address.toHexString() + '/users/' + event.params.userId.toString())
   // Update ref to FairSale
   saleUser.sale = event.address.toString()
   saleUser.ownerId = event.params.userId.toI32()
@@ -129,11 +129,34 @@ export function handleUserRegistration(event: UserRegistration): void {}
  */
 function isFairSaleBelongsToAqua(fairSaleContractAddress: Address): boolean {
   // Find the from
-  let fairSale = Schemas.FairSale.load(fairSaleContractAddress.toHexString())
+  let fairSale = FairSale.load(fairSaleContractAddress.toHexString())
 
   if (fairSale != null) {
     return true
   }
 
   return false
+}
+
+/**
+ * Block handler for sale status
+ */
+
+/**
+ * Block handler to open sale
+ * Other status are deteremined from events as they should be
+ */
+export function handleBlock(block: ethereum.Block): void {
+  // fetch the FairSale
+  let fairSale = FairSale.load(dataSource.address().toHexString())
+  if (!fairSale) {
+    return
+  }
+  // Go backward
+  // Sale is upcoming, open it
+  else if (block.timestamp.toI32() >= fairSale.startDate && block.timestamp.toI32() < fairSale.endDate) {
+    fairSale.status = SALE_STATUS.OPEN
+  }
+
+  fairSale.save()
 }
