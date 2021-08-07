@@ -11,7 +11,8 @@ import { fetchTokenDecimals, fetchTokenName, fetchTokenSymbol } from './erc20'
 export abstract class SALE_STATUS {
   static UPCOMING: string = 'UPCOMING'
   static SETTLED: string = 'SETTLED'
-  static ENDED: string = 'ENDED'
+  static FAILED: string = 'FAILED'
+  static CLOSED: string = 'CLOSED'
   static OPEN: string = 'OPEN'
 }
 
