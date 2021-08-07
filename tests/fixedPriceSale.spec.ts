@@ -73,7 +73,6 @@ describe('FixedPriceSale', () => {
     launchedfixedPriceSale = FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleCreator)
     await aqua.waitForSubgraphSync()
   })
-  /*
   test('Should increase soldAmount by number of committed tokens', async () => {
     // Approve
     await (
@@ -105,8 +104,7 @@ describe('FixedPriceSale', () => {
     }`)
     expect(data.fixedPriceSale.soldAmount).toMatch(expectedSoldAmount.toString())
   })
-  */
-  test('All FixedPriceSale.status should be WITHDRAWN after claiming', async () => {
+  test('FixedPriceSaleCommitment.status should be PROCESSED after claiming tokens', async () => {
     // Approve
     await (
       await biddingToken.connect(saleInvestorB).approve(launchedfixedPriceSale.address, constants.MaxUint256)
@@ -119,9 +117,6 @@ describe('FixedPriceSale', () => {
     await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
     // Insure threshold is met
     const commitTokensAmount = saleInfo.minRaise
-    console.log({
-      commitTokensAmount: utils.formatEther(commitTokensAmount)
-    })
     // Commit tokens
     await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(commitTokensAmount)).wait()
     // End sale
@@ -143,5 +138,26 @@ describe('FixedPriceSale', () => {
       }
     }`)
     expect(data.fixedPriceSale.commitments[0].status).toMatch('PROCESSED')
+  })
+  test('All FixedPriceSale.status should be UPCOMING when FixedPriceSale.startDate > block.timestamp', async () => {
+    await aqua.waitForSubgraphSync()
+    const { data } = await aqua.querySubgraph(`{
+      fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
+        status
+      }
+    }`)
+    expect(data.fixedPriceSale.status).toMatch('UPCOMING')
+  })
+  test('FixedPriceSale.status should be OPEN when FixedPriceSale.startDate <= block.timestamp > FixedPriceSale.endDate', async () => {
+    const saleInfo = await launchedfixedPriceSale.saleInfo()
+    // Time travel to open the sale
+    await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
+    await aqua.waitForSubgraphSync()
+    const { data } = await aqua.querySubgraph(`{
+      fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
+        status
+      }
+    }`)
+    expect(data.fixedPriceSale.status).toMatch('OPEN')
   })
 })
