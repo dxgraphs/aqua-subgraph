@@ -7,10 +7,11 @@ import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 import { FairSale, FixedPriceSale } from '../../generated/templates'
 
 // Helpers
-import { SALE_STATUS, getOrCreateSaleToken, BID_STATUS } from '../helpers/sales'
 import { getSaleTemplateById, SALE_TEMPLATES } from '../helpers/templates'
+import { SALE_STATUS, getOrCreateSaleToken } from '../helpers/sales'
 import { FixedPriceSaleSaleInfo } from '../helpers/fixedPriceSale'
 import { getAquaFactory } from '../helpers/factory'
+import { BID_STATUS } from '../helpers/fairSale'
 
 // GraphQL schemas
 import * as Schemas from '../../generated/schema'

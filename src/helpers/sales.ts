@@ -16,14 +16,6 @@ export abstract class SALE_STATUS {
   static OPEN: string = 'OPEN'
 }
 
-// Predefined Auction Bid status
-export abstract class BID_STATUS {
-  static SUBMITTED: string = 'submitted'
-  static CANCELLED: string = 'cancelled'
-  static SETTLED: string = 'settled'
-  static CLAIMED: string = 'claimed'
-}
-
 /**
  * Returns an existing AuctionToken instance if exists.
  * Creates a new instance if it does not.

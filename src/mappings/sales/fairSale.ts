@@ -15,7 +15,8 @@ import {
 import { FairSale, FairSaleBid, FairSaleUser } from '../../../generated/schema'
 
 // Helpers
-import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
+import { BID_STATUS } from '../../helpers/fairSale'
+import { SALE_STATUS } from '../../helpers/sales'
 
 /**
  * Handles any Auction that has cleared
