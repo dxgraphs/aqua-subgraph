@@ -51,7 +51,7 @@ type FairSale implements EntityMetadata @entity {
   "The sale name"
   name: String
   "Sale status: open/ended/settled/upcoming"
-  status: String!
+  status: SaleStatus!
   "Date of the sale start"
   startDate: Int!
   "Date of the sale end"
@@ -108,10 +108,11 @@ type FairSaleBid implements EntityMetadata @entity {
 
 #################################################
 
-enum FixedPriceSaleStatus {
+enum SaleStatus {
   UPCOMING
+  FAILED
   SETTLED
-  ENDED
+  CLOSED
   OPEN
 }
 
@@ -124,7 +125,7 @@ type FixedPriceSale implements EntityMetadata @entity {
   "The name of the sale, default is the tokenIn's name"
   name: String!
   "Sale status: open/ended/settled/upcoming/cancelled/failed"
-  status: FixedPriceSaleStatus!
+  status: SaleStatus!
   "The UTC timestamp at which the sale starts"
   startDate: Int! # Open timestamp
   "The UTC timestamp at which the sale closes"
