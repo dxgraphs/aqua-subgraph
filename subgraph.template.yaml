@@ -155,6 +155,8 @@ templates:
           handler: handleNewUser
         - event: UserRegistration(indexed address,uint64)
           handler: handleUserRegistration
+      blockHandlers:
+        - handler: handleBlock
   - kind: ethereum/contract
     name: FixedPriceSale
     network: {{network}}
@@ -183,6 +185,8 @@ templates:
           handler: handleSaleClosed
         - event: SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)
           handler: handleSaleInitialized
+      blockHandlers:
+        - handler: handleBlock
   - kind: ethereum/contract
     name: ParticipantList
     network: {{network}}

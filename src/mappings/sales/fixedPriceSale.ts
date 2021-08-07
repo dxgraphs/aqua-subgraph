@@ -1,3 +1,5 @@
+// External
+import { dataSource, ethereum } from '@graphprotocol/graph-ts'
 // Contract ABIs and Events
 import {
   getFixedPriceSaleUserTotalCommitment,
@@ -27,7 +29,7 @@ export function handleSaleClosed(event: SaleClosed): void {
   if (!fixedPriceSale) {
     return
   }
-  fixedPriceSale.status = SALE_STATUS.ENDED
+  fixedPriceSale.status = SALE_STATUS.CLOSED
   fixedPriceSale.updatedAt = event.block.timestamp.toI32()
   fixedPriceSale.save()
 }
@@ -117,3 +119,22 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
 }
 
 export function handleSaleInitialized(event: SaleInitialized): void {}
+
+/**
+ * Block handler to open sale
+ * Other status are deteremined from events as they should be
+ */
+export function handleBlock(block: ethereum.Block): void {
+  // fetch the FixedPriceSale
+  let fixedPriceSale = FixedPriceSale.load(dataSource.address().toHexString())
+  if (!fixedPriceSale) {
+    return
+  }
+  // Sale is upcoming, open it
+  else if (block.timestamp.toI32() >= fixedPriceSale.startDate && block.timestamp.toI32() < fixedPriceSale.endDate) {
+    fixedPriceSale.status = SALE_STATUS.OPEN
+  }
+  // Update timestamp and save
+  fixedPriceSale.updatedAt = block.timestamp.toI32()
+  fixedPriceSale.save()
+}
