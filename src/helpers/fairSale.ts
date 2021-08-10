@@ -1,5 +1,13 @@
 import { Bytes, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
+// Predefined Auction Bid status
+export abstract class BID_STATUS {
+  static SUBMITTED: string = 'SUBMITTED'
+  static CANCELLED: string = 'CANCELLED'
+  static SETTLED: string = 'SETTLED'
+  static CLAIMED: string = 'CLAIMED'
+}
+
 export class Order {
   _ownerId: ethereum.Value
   _tokenIn: ethereum.Value

@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 
 // Contract ABIs
-import { ERC20SymbolBytes } from '../../generated/MesaFactory/ERC20SymbolBytes'
-import { ERC20NameBytes } from '../../generated/MesaFactory/ERC20NameBytes'
-import { ERC20 } from '../../generated/MesaFactory/ERC20'
+import { ERC20SymbolBytes } from '../../generated/AquaFactory/ERC20SymbolBytes'
+import { ERC20NameBytes } from '../../generated/AquaFactory/ERC20NameBytes'
+import { ERC20 } from '../../generated/AquaFactory/ERC20'
 import { isNullEthValue } from '.'
 
 // Contract
