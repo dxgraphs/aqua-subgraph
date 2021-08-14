@@ -14,7 +14,7 @@ If you wish to deploy a local explorer, run:
 $ npm run explore-local
 ```
 
-This requires a Docker installed. After starting, a local version of the graph, with a web front-end, is available at http://localhost:8000/subgraphs/name/adamazad/aqua
+This snippet requires Docker. After deployment, a local version of the graph, with a web front-end, is available at http://localhost:8000/subgraphs/name/adamazad/aqua
 
 # Architecture
 
@@ -41,15 +41,15 @@ These contracted deployed from the contracts above
 
 ## GraphQL Entities
 
-These entities are available in the subgraph. Schemas are in [`schema.graphql`](schema.graphql)
+The following entities are available in the subgraph. Rest is available in [`schema.graphql`](schema.graphql)
 
 ### AquaFactory
 
-This is the most basic entity. It stores and tracks information about the `AquaFactory` contract.
+Stores and tracks information about the `AquaFactory` contract.
 
 ### SaleTemplate
 
-Stores all sale templates added to `TemplateLauncher`, including the contract addres, ID and name.
+Stores all sale templates added to `TemplateLauncher`, including the contract address, ID, and name. A template is essentially a sale mechanism.
 
 ### LaunchedSaleTemplate
 
@@ -57,15 +57,15 @@ Every time a new Sale Template is created - cloned - from the list of `SaleTempl
 
 ### ParticipantList
 
-Sales can have a white-labeled list of addresses. This entity tracks the contract, the contract managers and list of participants.
+Sales can have a white-labeled list of addresses. This entity tracks the contract, the contract managers, and the list of participants.
 
 ### FixedPriceSale
 
-Stores all information about the `FixedPriceSale`s. This includes, total commitments, withdrawals, sale status and other sale information.
+Stores all information about the `FixedPriceSale`s. This includes total commitments, withdrawals, sale status, and other sale information.
 
 ### FixedPriceSaleUser
 
-Each address participating in a `FixedPriceSale` has a unique ID. The ID is in ths following format:
+Each address participating in a `FixedPriceSale` has a unique ID. The ID is in the following format:
 
 ```
 <saleAddress>/users/<userAddress>
@@ -73,7 +73,7 @@ Each address participating in a `FixedPriceSale` has a unique ID. The ID is in t
 
 ### FixedPriceSaleCommitment
 
-A commitment is a pledge that the investor wishes to buy a certain amount of tokens in a `FixedPriceSale` should the sale reach the threshold. Each commitment has a status - `SUBMITTED`, `RELEASED` and/or `CLAIMED`. Each commitment. Commitments ID are formatted in
+A commitment is a pledge that the investor wishes to buy a certain amount of tokens in a `FixedPriceSale` should the sale reach the threshold. Each commitment has a status - `SUBMITTED`, `RELEASED`, and/or `CLAIMED`. Commitments ID are formatted in
 
 ```
 <saleAddress>/commitments/<userAddress>/<commitmentIndex>
@@ -81,7 +81,7 @@ A commitment is a pledge that the investor wishes to buy a certain amount of tok
 
 ### FixedPriceSaleWithdrawal
 
-Tracks sale withdrawals. This entity is available when a sale has successfully concluded -- reached the minimum raise threshold. Unlike `FixedPriceSaleCommitment`, `FixedPriceSaleWithdrawal` is aggregated per withdrawal event.
+Tracks sale withdrawals. This entity is available when a sale has successfully concluded — reached the minimum raise threshold. Unlike `FixedPriceSaleCommitment`, `FixedPriceSaleWithdrawal` is aggregated per withdrawal event.
 
 ```
 <saleAddress>/withdrawals/<userAddress>
@@ -89,13 +89,13 @@ Tracks sale withdrawals. This entity is available when a sale has successfully c
 
 ### Token
 
-Stores information about ERC20 tokens that interact with Aqua contracts.
+Stores information about ERC20 tokens that have been used as bidding or auctioning tokens in sales.
 
 # FAQs
 
-**How to get factory information?**
+**How to get the factory information?**
 
-The `AquaFactory` tracks ecosystem information
+The `AquaFactory` tracks all information
 
 ```graphql
 aquaFactory (id: “AquaFactory”) {
@@ -127,7 +127,7 @@ saleTemplates {
 
 **How to get the total number of sales?**
 
-The `AquaFactory` tracks number of sales in `saleCount`
+The `AquaFactory` tracks the number of sales using `saleCount`
 
 ```grapql
 aquaFactory (id: “AquaFactory”) {
