@@ -89,7 +89,7 @@ Tracks sale withdrawals. This entity is available when a sale has successfully c
 
 ### Token
 
-Stores information about ERC20 tokens that have been used as bidding or auctioning tokens in sales.
+Stores information about ERC20 tokens that have been used as bidding or auctioning tokens in sales. These include symbol, decimals name and address.
 
 # FAQs
 
@@ -98,7 +98,7 @@ Stores information about ERC20 tokens that have been used as bidding or auctioni
 The `AquaFactory` tracks all information
 
 ```graphql
-aquaFactory (id: “AquaFactory”) {
+aquaFactory (id: "AquaFactory") {
   id
   saleCount
   address
@@ -129,8 +129,8 @@ saleTemplates {
 
 The `AquaFactory` tracks the number of sales using `saleCount`
 
-```grapql
-aquaFactory (id: “AquaFactory”) {
+```graphql
+aquaFactory (id: "AquaFactory") {
   saleCount
 }
 ```
