@@ -161,7 +161,7 @@ Each network deployment requires setting up a JSON configuration file in `config
 $ npm run prepare-<NetworkName>
 ```
 
-Mainnet and Rinkeby are supported out of the box.
+xDAI and Rinkeby networks are supported.
 
 ## Deploy to The Graph
 
