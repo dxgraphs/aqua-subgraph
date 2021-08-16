@@ -76,6 +76,9 @@ export function handleTemplateLaunched(event: TemplateLaunched): void {
   launchedSaleTemplate.factory = getAquaFactory().address.toHexString()
   launchedSaleTemplate.address = event.params.template
   launchedSaleTemplate.template = saleTemplate.id
+  // Add initial states
+  launchedSaleTemplate.initialized = false
+  launchedSaleTemplate.saleCreated = false
   // Save
   launchedSaleTemplate.save()
 }
