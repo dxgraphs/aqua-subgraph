@@ -47,3 +47,31 @@ export class ParticipantList extends DataSourceTemplate {
     );
   }
 }
+
+export class FixedPriceSaleTemplate extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("FixedPriceSaleTemplate", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "FixedPriceSaleTemplate",
+      [address.toHex()],
+      context
+    );
+  }
+}
+
+export class FairSaleTemplate extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("FairSaleTemplate", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "FairSaleTemplate",
+      [address.toHex()],
+      context
+    );
+  }
+}
