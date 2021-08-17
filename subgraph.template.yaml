@@ -207,3 +207,39 @@ templates:
           handler: handleAmountsUpdated
         - event: ListInitialized(address[])
           handler: handleListInitialized
+  - kind: ethereum/contract
+    name: FixedPriceSaleTemplate
+    network: {{network}}
+    source:
+      abi: FixedPriceSaleTemplate
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/templates/fixedPriceSaleTemplate.ts
+      entities:
+        - LaunchedSaleTemplate
+      abis:
+        - name: FixedPriceSaleTemplate
+          file: ./abis/FixedPriceSaleTemplate.json
+      eventHandlers:
+        - event: TemplateInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)
+          handler: handleTemplateInitialized
+  - kind: ethereum/contract
+    name: FairSaleTemplate
+    network: {{network}}
+    source:
+      abi: FairSaleTemplate
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/templates/fairSaleTemplate.ts
+      entities:
+        - LaunchedSaleTemplate
+      abis:
+        - name: FairSaleTemplate
+          file: ./abis/FairSaleTemplate.json
+      eventHandlers:
+        - event: TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256,uint256,uint256)
+          handler: handleTemplateInitialized
