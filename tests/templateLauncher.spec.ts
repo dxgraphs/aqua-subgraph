@@ -1,9 +1,6 @@
 // Helpers
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { FixedPriceSaleTemplate__factory } from '../utils/typechain-contracts'
-import { addSaleTemplateToLauncher } from '../utils/contracts'
-import { SUBGRAPH_SYNC_SECONDS } from '../utils/constants'
-import { wait } from '../utils/time'
 import { Event } from 'ethers'
 
 // Test block
