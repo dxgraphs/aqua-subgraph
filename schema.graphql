@@ -81,7 +81,6 @@ type FairSaleUser implements EntityMetadata @entity {
   updatedAt: Int!
   deletedAt: Int
   address: Bytes!
-
   "The ownerId in the FairSale contract"
   ownerId: Int!
 }
