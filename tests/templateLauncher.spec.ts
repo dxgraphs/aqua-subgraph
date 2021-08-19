@@ -1,34 +1,41 @@
 // Helpers
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
-import { FixedPriceSaleTemplate__factory } from '../utils/typechain-contracts'
-import { Event } from 'ethers'
+import {
+  FixedPriceSale,
+  FixedPriceSaleTemplate,
+  FixedPriceSaleTemplate__factory,
+  FixedPriceSale__factory
+} from '../utils/typechain-contracts'
+import { ContractTransaction, Event } from 'ethers'
 
 // Test block
 describe('TemplateLauncher', function() {
   let aqua: AquaJestBeforeEachContext
+  let fixedPriceSaleTemplate: FixedPriceSaleTemplate
+  let fixedPriceSale: FixedPriceSale
+  let addSaleTemplateTx: ContractTransaction
+  let addSaleModuleTx: ContractTransaction
 
   beforeAll(async () => {
     await aquaJestBeforeAll()
   })
   beforeEach(async () => {
     aqua = await aquaJestBeforeEach()
+    fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
+    fixedPriceSale = await new FixedPriceSale__factory(aqua.provider.getSigner(0)).deploy()
+    addSaleTemplateTx = await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)
+    addSaleModuleTx = await aqua.saleLauncher.addTemplate(fixedPriceSale.address)
   })
 
   test('Should save new SaleTemplate', async () => {
-    const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
-    const { blockNumber, events } = await (
-      await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)
-    ).wait()
-
+    const { blockNumber, events } = await addSaleTemplateTx.wait()
     // @ts-ignore
     const templatedAddedEvent = events.find(
       event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
     ) as Event
-
     if (!templatedAddedEvent) {
       throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
     }
-
     await aqua.waitForSubgraphSync(blockNumber)
     const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
@@ -45,22 +52,17 @@ describe('TemplateLauncher', function() {
   })
 
   test('Should save update SaleTemplate as verified', async () => {
-    const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
-    const { events } = await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait()
-
+    const { events } = await addSaleTemplateTx.wait()
     // @ts-ignore
     const templatedAddedEvent = events.find(
       event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
     ) as Event
-
     if (!templatedAddedEvent) {
       throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
     }
-
     const { blockNumber } = await (
       await aqua.templateLauncher.verifyTemplate(templatedAddedEvent?.args?.templateId)
-    ).wait(1)
-
+    ).wait()
     await aqua.waitForSubgraphSync(blockNumber)
     const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
@@ -71,20 +73,17 @@ describe('TemplateLauncher', function() {
   })
 
   test('Should save remove SaleTemplate', async () => {
-    const fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
-    const { events } = await (await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)).wait()
+    const { events } = await addSaleTemplateTx.wait()
     // @ts-ignore
     const templatedAddedEvent = events.find(
       event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
     ) as Event
-
     if (!templatedAddedEvent) {
       throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
     }
-
     const { blockNumber } = await (
       await aqua.templateLauncher.removeTemplate(templatedAddedEvent?.args?.templateId)
-    ).wait(1)
+    ).wait()
     await aqua.waitForSubgraphSync(blockNumber)
     const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
