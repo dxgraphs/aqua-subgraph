@@ -291,6 +291,10 @@ type LaunchedSaleTemplate @entity {
   template: SaleTemplate!
   "IPFS content hash"
   metadataContentHash: String
+  "Whether the template is initialized"
+  initialized: Boolean!
+  "Whether the sale contract is deployed"
+  saleCreated: Boolean!
 }
 
 enum SaleTemplateNames {

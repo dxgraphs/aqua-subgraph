@@ -72,7 +72,15 @@ function registerFairSale(event: SaleInitialized): Schemas.FairSale {
   fairSale.name = tokenOut.name || ''
   // Template that launched sale
   fairSale.launchedTemplate = event.params.template.toHexString()
-
+  // Update launchedSaleTemplate.saleCreated
+  {
+    let launchedSaleTemplate = Schemas.LaunchedSaleTemplate.load(event.params.template.toHexString())
+    if (launchedSaleTemplate) {
+      launchedSaleTemplate.saleCreated = true
+      launchedSaleTemplate.save()
+    }
+  }
+  // Create and reference the first Sale user
   {
     let fairSaleUserId = event.address.toHexString() + '/users/1' // The first user is always 1
     // Register the FairSaleUser
@@ -152,6 +160,14 @@ function registerFixedPriceSale(event: SaleInitialized): Schemas.FixedPriceSale 
   fixedPriceSale.name = tokenOut.name || ''
   // Template that launched sale
   fixedPriceSale.launchedTemplate = event.params.template.toHexString()
+  // Update launchedSaleTemplate.saleCreated
+  {
+    let launchedSaleTemplate = Schemas.LaunchedSaleTemplate.load(event.params.template.toHexString())
+    if (launchedSaleTemplate) {
+      launchedSaleTemplate.saleCreated = true
+      launchedSaleTemplate.save()
+    }
+  }
   // Save
   fixedPriceSale.save()
 

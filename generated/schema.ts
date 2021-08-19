@@ -1529,6 +1529,24 @@ export class LaunchedSaleTemplate extends Entity {
       this.set("metadataContentHash", Value.fromString(value as string));
     }
   }
+
+  get initialized(): boolean {
+    let value = this.get("initialized");
+    return value.toBoolean();
+  }
+
+  set initialized(value: boolean) {
+    this.set("initialized", Value.fromBoolean(value));
+  }
+
+  get saleCreated(): boolean {
+    let value = this.get("saleCreated");
+    return value.toBoolean();
+  }
+
+  set saleCreated(value: boolean) {
+    this.set("saleCreated", Value.fromBoolean(value));
+  }
 }
 
 export class AquaLog extends Entity {
