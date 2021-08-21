@@ -2,16 +2,8 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      network:
-        description: 'Target network - xdai or rinkeby'
-        required: true
-        default: 'xdai'
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
+  workflow_dispatch
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
