@@ -1,8 +1,6 @@
-# This workflow checkes if the graph is built
 name: Deploy
 
-on:
-  workflow_dispatch
+on: workflow_dispatch
 
 jobs:
   deploy:
@@ -19,5 +17,5 @@ jobs:
         run: yarn prepare-xdai
       - name: Build and deploy
         run: yarn codegen
-        run: yarn build
-        run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
+      - run: yarn build
+      - run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
