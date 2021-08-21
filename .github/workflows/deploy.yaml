@@ -16,12 +16,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Graph CLI
       - uses: actions/checkout@v2
-      - run: yarn global add @graphprotocol/graph-cli
+      - name: Install The Graph CLI
+        run: yarn global add @graphprotocol/graph-cli
+      - name: Add The Graph access token
       - run: graph auth --node https://api.thegraph.com/deploy ${{ secrets.SECRET_TOKEN }}
+      - name: Install modules
       - run: yarn install
+      - name: Install modules
       - run: yarn prepare-xdai
-      - run: yarn codegen
-      - run: yarn build
-      - run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
+      - name: Build and deploy
+        run: yarn codegen
+        run: yarn build
+        run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
