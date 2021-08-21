@@ -1,0 +1,27 @@
+# This workflow checkes if the graph is built
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: 'Target network - xdai or rinkeby'
+        required: true
+        default: 'xdai'
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Graph CLI
+      - uses: actions/checkout@v2
+      - run: yarn global add @graphprotocol/graph-cli
+      - run: graph auth --node https://api.thegraph.com/deploy ${{ secrets.SECRET_TOKEN }}
+      - run: yarn install
+      - run: yarn prepare-xdai
+      - run: yarn codegen
+      - run: yarn build
+      - run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
