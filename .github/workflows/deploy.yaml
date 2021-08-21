@@ -20,4 +20,4 @@ jobs:
       - name: Build
         run: yarn build
       - name: Deploy
-        run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
+        run: graph deploy --product hosted-service adamazad/aqua-xdai
