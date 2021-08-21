@@ -15,7 +15,9 @@ jobs:
         run: yarn install
       - name: Install modules
         run: yarn prepare-xdai
-      - name: Build and deploy
+      - name: Generate dist
         run: yarn codegen
-      - run: yarn build
-      - run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
+      - name: Build
+        run: yarn build
+      - name: Deploy
+        run: graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ adamazad/aqua-xdai
