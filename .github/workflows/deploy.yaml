@@ -10,12 +10,12 @@ jobs:
       - name: Install The Graph CLI
         run: yarn global add @graphprotocol/graph-cli
       - name: Add The Graph access token
-        run: graph auth --product hosted-service ${{ secrets.SECRET_TOKEN }}
+        run: graph auth --product hosted-service ${{ secrets.THE_GRAPH_ACCESS_TOKEN }}
       - name: Install modules
         run: yarn install
-      - name: Install modules
+      - name: Prepare subgraph.yaml
         run: yarn prepare-xdai
-      - name: Generate dist
+      - name: Generate migrations
         run: yarn codegen
       - name: Build
         run: yarn build
