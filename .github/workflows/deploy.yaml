@@ -20,11 +20,11 @@ jobs:
       - name: Install The Graph CLI
         run: yarn global add @graphprotocol/graph-cli
       - name: Add The Graph access token
-      - run: graph auth --node https://api.thegraph.com/deploy ${{ secrets.SECRET_TOKEN }}
+        run: graph auth --node https://api.thegraph.com/deploy ${{ secrets.SECRET_TOKEN }}
       - name: Install modules
-      - run: yarn install
+        run: yarn install
       - name: Install modules
-      - run: yarn prepare-xdai
+        run: yarn prepare-xdai
       - name: Build and deploy
         run: yarn codegen
         run: yarn build
