@@ -1,6 +1,6 @@
 {
   "network": "rinkeby",
-  "startBlock": 8243429,
+  "startBlock": 9142254,
   "contracts": {
     "factory": {
       "address": "0xF52FBb6353fa29A618E65ebb3F7645224c366Da5"
