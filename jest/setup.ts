@@ -69,7 +69,7 @@ export async function aquaJestBeforeEach() {
     network: 'local',
     startBlock: aquaFactory.deployTransaction.blockNumber as number,
     contracts: {
-      factory: {
+      aquaFactory: {
         address: aquaFactory.address
       },
       saleLauncher: {

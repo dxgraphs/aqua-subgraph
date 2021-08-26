@@ -18,7 +18,7 @@ export interface BuildSubgraphYmlProps {
   network: string | 'mainnet' | 'ropsten' | 'rinkeby' | 'kovan' | 'local'
   startBlock: number
   contracts: {
-    factory: {
+    aquaFactory: {
       address: string
     }
     saleLauncher: {
