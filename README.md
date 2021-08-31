@@ -173,10 +173,10 @@ $ npm run deploy
 
 # Extract ABIs from Artifacts
 
-ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract repo ([cryptonative-ch/mesa-smartcontracts](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
+ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract package [`aqua-sc`](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
 
 ```bash
-$ ./build-abis.sh
+$ npm run build-abis
 ```
 
 Note that it requires [`jq`](https://stedolan.github.io/jq/) tool.
