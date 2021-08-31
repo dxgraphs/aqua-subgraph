@@ -28,7 +28,7 @@ import {
   ERC20Mintable__factory,
   FairSaleTemplate__factory,
   FixedPriceSaleTemplate__factory
-} from './typechain-contracts'
+} from 'aqua-sc'
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'

@@ -5,7 +5,7 @@ import {
   FixedPriceSaleTemplate,
   FixedPriceSaleTemplate__factory,
   FixedPriceSale__factory
-} from '../utils/typechain-contracts'
+} from 'aqua-sc'
 import { ContractTransaction, Event } from 'ethers'
 
 // Test block

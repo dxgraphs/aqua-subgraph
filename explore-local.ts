@@ -15,7 +15,7 @@ import {
   FairSaleTemplate__factory,
   FixedPriceSaleTemplate__factory,
   ParticipantListLauncher__factory
-} from './utils/typechain-contracts'
+} from 'aqua-sc'
 // Utils
 import {
   execAsync,

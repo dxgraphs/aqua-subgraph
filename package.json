@@ -18,7 +18,6 @@
     "remove-local": "graph remove --node http://localhost:8020/ adamazad/aqua",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adamazad/aqua",
     "explore-local": "ts-node explore-local.ts",
-    "typechain": "typechain --target ethers-v5 --out-dir utils/typechain-contracts \"artifacts/*.json\"",
     "build-abis": "build-abis.sh"
   },
   "dependencies": {
