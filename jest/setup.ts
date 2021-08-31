@@ -1,5 +1,15 @@
 import { AxiosResponse } from 'axios'
 import { providers } from 'ethers'
+import {
+  AquaFactory,
+  SaleLauncher,
+  TemplateLauncher,
+  AquaFactory__factory,
+  SaleLauncher__factory,
+  ParticipantList__factory,
+  TemplateLauncher__factory,
+  ParticipantListLauncher__factory
+} from 'aqua-sc'
 // Contract types
 import {
   execAsync,
@@ -13,16 +23,6 @@ import {
   SUBGRAPH_NAME,
   waitForGraphSync
 } from '../utils'
-import {
-  AquaFactory,
-  SaleLauncher,
-  TemplateLauncher,
-  AquaFactory__factory,
-  SaleLauncher__factory,
-  ParticipantList__factory,
-  TemplateLauncher__factory,
-  ParticipantListLauncher__factory
-} from '../utils/typechain-contracts'
 
 const logger = getLogger(Namespace.CONTRACTS)
 logger.level = 'info'
@@ -69,7 +69,7 @@ export async function aquaJestBeforeEach() {
     network: 'local',
     startBlock: aquaFactory.deployTransaction.blockNumber as number,
     contracts: {
-      factory: {
+      aquaFactory: {
         address: aquaFactory.address
       },
       saleLauncher: {

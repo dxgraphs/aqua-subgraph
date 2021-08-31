@@ -1,11 +1,7 @@
 // Externals
 import { utils } from 'ethers'
 // Helpers
-import {
-  FixedPriceSale__factory,
-  ParticipantList__factory,
-  FixedPriceSaleTemplate__factory
-} from '../utils/typechain-contracts'
+import { FixedPriceSale__factory, ParticipantList__factory, FixedPriceSaleTemplate__factory } from 'aqua-sc'
 import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { getSigners } from '../utils/evm'

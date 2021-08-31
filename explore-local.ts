@@ -15,7 +15,7 @@ import {
   FairSaleTemplate__factory,
   FixedPriceSaleTemplate__factory,
   ParticipantListLauncher__factory
-} from './utils/typechain-contracts'
+} from 'aqua-sc'
 // Utils
 import {
   execAsync,
@@ -109,7 +109,7 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     network: 'local',
     startBlock: aquaFactory.deployTransaction.blockNumber as number,
     contracts: {
-      factory: {
+      aquaFactory: {
         address: aquaFactory.address
       },
       saleLauncher: {

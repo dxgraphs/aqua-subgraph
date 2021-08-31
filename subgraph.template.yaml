@@ -6,7 +6,7 @@ dataSources:
     name: AquaFactory
     network: {{network}}
     source:
-      address: '{{contracts.factory.address}}'
+      address: '{{contracts.aquaFactory.address}}'
       abi: AquaFactory
       startBlock: {{startBlock}}
     mapping:

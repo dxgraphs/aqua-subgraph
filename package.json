@@ -7,6 +7,7 @@
     "pretest": "npm run docker-up",
     "prepare-rinkeby": "mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml",
     "prepare-xdai": "mustache config/xdai.json subgraph.template.yaml > subgraph.yaml",
+    "prepare-subgraph": "ts-node bin/prepare.ts",
     "test": "jest --runInBand",
     "codegen": "graph codegen",
     "build": "graph build",
@@ -17,19 +18,20 @@
     "remove-local": "graph remove --node http://localhost:8020/ adamazad/aqua",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adamazad/aqua",
     "explore-local": "ts-node explore-local.ts",
-    "typechain": "typechain --target ethers-v5 --out-dir utils/typechain-contracts \"artifacts/*.json\"",
     "build-abis": "build-abis.sh"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.20.1",
     "@graphprotocol/graph-ts": "^0.20.0",
     "@openzeppelin/contracts": "^3.4.0",
+    "aqua-sc": "^0.1.2",
     "axios": "^0.21.1",
     "dayjs": "^1.10.4",
     "docker-compose": "^0.23.6",
     "ethers": "^5.4.1",
     "log4js": "^6.3.0",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "yargs": "^17.1.1"
   },
   "devDependencies": {
     "@typechain/ethers-v5": "^7.0.1",

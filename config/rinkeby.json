@@ -2,7 +2,7 @@
   "network": "rinkeby",
   "startBlock": 9142254,
   "contracts": {
-    "factory": {
+    "aquaFactory": {
       "address": "0xF52FBb6353fa29A618E65ebb3F7645224c366Da5"
     },
     "saleLauncher": {
