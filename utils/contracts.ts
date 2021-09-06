@@ -22,13 +22,13 @@ import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders
 import {
   AquaFactory,
   SaleLauncher,
-  ERC20Mintable,
   FixedPriceSale,
   TemplateLauncher,
-  ERC20Mintable__factory,
   FairSaleTemplate__factory,
   FixedPriceSaleTemplate__factory
 } from '@dxdao/aqua-sc'
+import { ERC20Mintable, ERC20Mintable__factory } from './typechain-contracts'
+
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
