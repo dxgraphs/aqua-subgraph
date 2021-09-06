@@ -5,11 +5,11 @@ import {
   FixedPriceSaleTemplate,
   FixedPriceSaleTemplate__factory,
   FixedPriceSale__factory
-} from 'aqua-sc'
+} from '@dxdao/aqua-sc'
 import { ContractTransaction, Event } from 'ethers'
 
 // Test block
-describe('TemplateLauncher', function() {
+describe('TemplateLauncher', function () {
   let aqua: AquaJestBeforeEachContext
   let fixedPriceSaleTemplate: FixedPriceSaleTemplate
   let fixedPriceSale: FixedPriceSale

@@ -1,14 +1,14 @@
 // Externals
 import { utils } from 'ethers'
 // Helpers
-import { FixedPriceSale__factory, ParticipantList__factory, FixedPriceSaleTemplate__factory } from 'aqua-sc'
+import { FixedPriceSale__factory, ParticipantList__factory, FixedPriceSaleTemplate__factory } from '@dxdao/aqua-sc'
 import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { getSigners } from '../utils/evm'
 import { wait } from '../utils'
 
 // Test block
-describe('SaleLauncher', function() {
+describe('SaleLauncher', function () {
   let aqua: AquaJestBeforeEachContext
 
   beforeAll(async () => {
