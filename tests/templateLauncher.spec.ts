@@ -36,7 +36,7 @@ describe('TemplateLauncher', function () {
     if (!templatedAddedEvent) {
       throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
     }
-    await aqua.waitForSubgraphSync(blockNumber)
+    await aqua.waitForSubgraphSync()
     const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             address
