@@ -9,7 +9,7 @@ import {
   AuctionCleared,
   NewSellOrder,
   NewUser
-} from '../../../generated/FairSale/FairSale'
+} from '../../../generated/templates/FairSale/FairSale'
 
 // GraphQL Schemas
 import { FairSale, FairSaleBid, FairSaleUser } from '../../../generated/schema'
@@ -122,7 +122,7 @@ export function handleNewUser(event: NewUser): void {
 /**
  * Does the same as `NewUser` handler. See `handleNewUser`
  */
-export function handleUserRegistration(event: UserRegistration): void {}
+export function handleUserRegistration(event: UserRegistration): void { }
 
 /**
  * Checks if the contract that emitted the event belongs to Aqua
