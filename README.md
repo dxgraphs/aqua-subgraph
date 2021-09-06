@@ -2,6 +2,12 @@
 
 Aqua Subgraph is the main provider for Aqua Interface data.
 
+# Install
+
+```bash
+$ npm install
+$ npm run codegen
+```
 # Explore
 
 You can explore Aqua's xDai subgraph at [The Graph Explorer](https://thegraph.com/legacy-explorer/subgraph/adamazad/aqua-xdai-next).
