@@ -28,7 +28,7 @@ export async function prepare(network: string) {
     encoding: 'utf8'
   })
   const subgraphYamlOut = render(subgraphYamlTemplate, {
-    startBLock: 16965430,
+    startBlock: 16965430,
     network,
     contracts: {
       aquaFactory: {
