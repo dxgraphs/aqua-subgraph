@@ -6,13 +6,13 @@ import log4js from 'log4js'
 // Contract types
 import {
   ParticipantList,
-  FairSale__factory,
+  // FairSale__factory,
   AquaFactory__factory,
   SaleLauncher__factory,
   FixedPriceSale__factory,
   ParticipantList__factory,
   TemplateLauncher__factory,
-  FairSaleTemplate__factory,
+  // FairSaleTemplate__factory,
   FixedPriceSaleTemplate__factory,
   ParticipantListLauncher__factory
 } from '@dxdao/aqua-sc'
@@ -134,7 +134,7 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     await startGraph(provider)
 
     const templates = {
-      fairSaleTemplate: await new FairSaleTemplate__factory(deployer).deploy(),
+      // fairSaleTemplate: await new FairSaleTemplate__factory(deployer).deploy(),
       fixedPriceSaleTemplate: await new FixedPriceSaleTemplate__factory(deployer).deploy()
     }
 
@@ -142,11 +142,11 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     // Deploy base templates
 
     // Register FairSale and FixedPriceSale in SaleLauncher
-    {
-      const fairSale = await new FairSale__factory(deployer).deploy()
-      const addSaleTxReceipt = await (await saleLauncher.addTemplate(fairSale.address)).wait(1)
-      logger.info(`Registered FairSale in SaleLauncher at ${addSaleTxReceipt.blockNumber}`)
-    }
+    // {
+    //   const fairSale = await new FairSale__factory(deployer).deploy()
+    //   const addSaleTxReceipt = await (await saleLauncher.addTemplate(fairSale.address)).wait(1)
+    //   logger.info(`Registered FairSale in SaleLauncher at ${addSaleTxReceipt.blockNumber}`)
+    // }
     {
       const fixedPriceSale = await new FixedPriceSale__factory(deployer).deploy()
       const addSaleTxReceipt = await (await saleLauncher.addTemplate(fixedPriceSale.address)).wait(1)
@@ -154,11 +154,11 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
     }
 
     // Register FairSaleTemplate and FixedPriceTemplate on TemplateLauncher
-    const { templateId: fairSaleTemplateId } = await addSaleTemplateToLauncher({
-      launcher: templateLauncher,
-      saleTemplateAddress: templates.fairSaleTemplate.address
-    })
-    logger.info(`Registered FairSaleTemplate in TemplateLauncher. TemplateId = `, fairSaleTemplateId.toNumber())
+    // const { templateId: fairSaleTemplateId } = await addSaleTemplateToLauncher({
+    //   launcher: templateLauncher,
+    //   saleTemplateAddress: templates.fairSaleTemplate.address
+    // })
+    // logger.info(`Registered FairSaleTemplate in TemplateLauncher. TemplateId = `, fairSaleTemplateId.toNumber())
 
     const { templateId: fixedPriceSaleTemplateId } = await addSaleTemplateToLauncher({
       launcher: templateLauncher,
@@ -187,14 +187,14 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
 
     // Deploy, mint and approve Auctioning Token
     const tokens = {
-      fairSaleToken: await createTokenAndMintAndApprove({
-        name: 'Fair Sale Token',
-        symbol: 'FST',
-        addressToApprove: saleLauncher.address,
-        numberOfTokens: utils.parseUnits('1000'),
-        users: [saleCreator],
-        signer: saleCreator
-      }),
+      // fairSaleToken: await createTokenAndMintAndApprove({
+      //   name: 'Fair Sale Token',
+      //   symbol: 'FST',
+      //   addressToApprove: saleLauncher.address,
+      //   numberOfTokens: utils.parseUnits('1000'),
+      //   users: [saleCreator],
+      //   signer: saleCreator
+      // }),
       // Deploy, mint and approve Auctioning Token
       fixedPriceSaleToken: await createTokenAndMintAndApprove({
         name: 'Fixed Price Sale Token',
@@ -272,10 +272,10 @@ const SUBGRAPH_NAME = 'adamazad/aqua'
       .approve(newFixedPriceSaleWithListAddress, ethers.constants.MaxUint256)
 
     const sales = {
-      fairSale: {
-        // saleInvestorA: FairSale__factory.connect(newFairSaleAddress, saleInvestorA),
-        // saleInvestorB: FairSale__factory.connect(newFairSaleAddress, saleInvestorB)
-      },
+      // fairSale: {
+      //   saleInvestorA: FairSale__factory.connect(newFairSaleAddress, saleInvestorA),
+      //   saleInvestorB: FairSale__factory.connect(newFairSaleAddress, saleInvestorB)
+      // },
       fixedPriceSale: {
         saleInvestorA: FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleInvestorA),
         saleInvestorB: FixedPriceSale__factory.connect(newFixedPriceSaleAddress, saleInvestorB)

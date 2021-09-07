@@ -124,39 +124,39 @@ dataSources:
         - event: ListLaunched(indexed address)
           handler: handleListLaunched
 templates:
-  - kind: ethereum/contract
-    name: FairSale
-    network: {{network}}
-    source:
-      abi: FairSale
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/sales/fairSale.ts
-      entities:
-        - FairSale
-        - SaleTemplate
-      abis:
-        - name: FairSale
-          file: ./abis/FairSale.json
-      eventHandlers:
-        - event: AuctionCleared(uint96,uint96,bytes32)
-          handler: handleAuctionCleared
-        - event: AuctionInitialized(indexed address,indexed address,uint256,uint256,uint64,uint96,uint96,uint256,uint256)
-          handler: handleAuctionInitialized
-        - event: CancellationSellOrder(indexed uint64,uint96,uint96)
-          handler: handleCancellationSellOrder
-        - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
-          handler: handleClaimedFromOrder
-        - event: NewSellOrder(indexed uint64,uint96,uint96)
-          handler: handleNewSellOrder
-        - event: NewUser(indexed uint64,indexed address)
-          handler: handleNewUser
-        - event: UserRegistration(indexed address,uint64)
-          handler: handleUserRegistration
-      blockHandlers:
-        - handler: handleBlock
+  # - kind: ethereum/contract
+  #   name: FairSale
+  #   network: {{network}}
+  #   source:
+  #     abi: FairSale
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.4
+  #     language: wasm/assemblyscript
+  #     file: ./src/mappings/sales/fairSale.ts
+  #     entities:
+  #       - FairSale
+  #       - SaleTemplate
+  #     abis:
+  #       - name: FairSale
+  #         file: ./abis/FairSale.json
+  #     eventHandlers:
+  #       - event: AuctionCleared(uint96,uint96,bytes32)
+  #         handler: handleAuctionCleared
+  #       - event: AuctionInitialized(indexed address,indexed address,uint256,uint256,uint64,uint96,uint96,uint256,uint256)
+  #         handler: handleAuctionInitialized
+  #       - event: CancellationSellOrder(indexed uint64,uint96,uint96)
+  #         handler: handleCancellationSellOrder
+  #       - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
+  #         handler: handleClaimedFromOrder
+  #       - event: NewSellOrder(indexed uint64,uint96,uint96)
+  #         handler: handleNewSellOrder
+  #       - event: NewUser(indexed uint64,indexed address)
+  #         handler: handleNewUser
+  #       - event: UserRegistration(indexed address,uint64)
+  #         handler: handleUserRegistration
+  #     blockHandlers:
+  #       - handler: handleBlock
   - kind: ethereum/contract
     name: FixedPriceSale
     network: {{network}}
@@ -225,21 +225,21 @@ templates:
       eventHandlers:
         - event: TemplateInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)
           handler: handleTemplateInitialized
-  - kind: ethereum/contract
-    name: FairSaleTemplate
-    network: {{network}}
-    source:
-      abi: FairSaleTemplate
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      file: ./src/mappings/templates/fairSaleTemplate.ts
-      entities:
-        - LaunchedSaleTemplate
-      abis:
-        - name: FairSaleTemplate
-          file: ./abis/FairSaleTemplate.json
-      eventHandlers:
-        - event: TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256,uint256,uint256)
-          handler: handleTemplateInitialized
+  # - kind: ethereum/contract
+  #   name: FairSaleTemplate
+  #   network: {{network}}
+  #   source:
+  #     abi: FairSaleTemplate
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.4
+  #     language: wasm/assemblyscript
+  #     file: ./src/mappings/templates/fairSaleTemplate.ts
+  #     entities:
+  #       - LaunchedSaleTemplate
+  #     abis:
+  #       - name: FairSaleTemplate
+  #         file: ./abis/FairSaleTemplate.json
+  #     eventHandlers:
+  #       - event: TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256,uint256,uint256)
+  #         handler: handleTemplateInitialized

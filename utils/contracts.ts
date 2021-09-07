@@ -22,9 +22,9 @@ import {
   SaleLauncher,
   FixedPriceSale,
   TemplateLauncher,
-  FairSaleTemplate__factory,
+  // FairSaleTemplate__factory,
   FixedPriceSaleTemplate__factory,
-  encodeInitDataFairSale,
+  // encodeInitDataFairSale,
   encodeInitDataFixedPriceSale
 } from '@dxdao/aqua-sc'
 import { ERC20Mintable, ERC20Mintable__factory } from './typechain-contracts'
@@ -95,54 +95,54 @@ export function getEvent<T>(event: Event): T {
 /**
  * Creates a FairSale
  */
-export async function createFairSale({
-  templateId,
-  aquaFactory,
-  saleLauncher,
-  biddingToken,
-  saleToken,
-  saleCreator
-}: CreateSaleOptions) {
-  const launchSaleTemplateTxReceipt = await aquaFactory
-    .launchTemplate(
-      templateId,
-      encodeInitDataFairSale({
-        duration: ONE_HOUR, // auction lasts for one hour
-        minBuyAmount: utils.parseUnits('10'), // Each order's bid must be at least 10
-        minPrice: utils.parseUnits('1'), // Minimum price per token
-        minRaise: utils.parseUnits('100000'), // 100k DAI
-        saleLauncher: saleLauncher.address,
-        saleTemplateId: templateId,
-        tokenIn: biddingToken.address,
-        tokenOut: saleToken.address,
-        minimumBiddingAmountPerOrder: utils.parseUnits('10'),
-        orderCancelationPeriodDuration: ONE_HOUR,
-        tokenSupplier: await saleCreator.getAddress(),
-        tokensForSale: await saleToken.totalSupply(),
+// export async function createFairSale({
+//   templateId,
+//   aquaFactory,
+//   saleLauncher,
+//   biddingToken,
+//   saleToken,
+//   saleCreator
+// }: CreateSaleOptions) {
+//   const launchSaleTemplateTxReceipt = await aquaFactory
+//     .launchTemplate(
+//       templateId,
+//       encodeInitDataFairSale({
+//         duration: ONE_HOUR, // auction lasts for one hour
+//         minBuyAmount: utils.parseUnits('10'), // Each order's bid must be at least 10
+//         minPrice: utils.parseUnits('1'), // Minimum price per token
+//         minRaise: utils.parseUnits('100000'), // 100k DAI
+//         saleLauncher: saleLauncher.address,
+//         saleTemplateId: templateId,
+//         tokenIn: biddingToken.address,
+//         tokenOut: saleToken.address,
+//         minimumBiddingAmountPerOrder: utils.parseUnits('10'),
+//         orderCancelationPeriodDuration: ONE_HOUR,
+//         tokenSupplier: await saleCreator.getAddress(),
+//         tokensForSale: await saleToken.totalSupply(),
 
-      }),
-      'explore-metahash'
-    )
-    .then(tx => tx.wait(1))
+//       }),
+//       'explore-metahash'
+//     )
+//     .then(tx => tx.wait(1))
 
-  const launchedTemplateAddress = getTemplateAddressFromTransactionReceipt(launchSaleTemplateTxReceipt)
+//   const launchedTemplateAddress = getTemplateAddressFromTransactionReceipt(launchSaleTemplateTxReceipt)
 
-  if (!launchedTemplateAddress) {
-    throw new Error('Could not find launched FixedPriceSaleTemplate address')
-  }
-  console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
+//   if (!launchedTemplateAddress) {
+//     throw new Error('Could not find launched FixedPriceSaleTemplate address')
+//   }
+//   console.log(`Launched a new FairSaleTemplate at ${launchedTemplateAddress}`)
 
-  // Connect to the Template and create the sale
-  const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
+//   // Connect to the Template and create the sale
+//   const saleTemplate = FairSaleTemplate__factory.connect(launchedTemplateAddress, saleCreator)
 
-  const createSaleTx = await saleTemplate.createSale({
-    value: await aquaFactory.saleFee()
-  })
-  const createSaleTxReceipt = await createSaleTx.wait(1)
+//   const createSaleTx = await saleTemplate.createSale({
+//     value: await aquaFactory.saleFee()
+//   })
+//   const createSaleTxReceipt = await createSaleTx.wait(1)
 
-  const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
-  return newSaleAddress
-}
+//   const newSaleAddress = `0x${createSaleTxReceipt.logs[0].topics[1].substring(26)}`
+//   return newSaleAddress
+// }
 
 /**
  * Deploys a new FixedPriceSale and returns the address
