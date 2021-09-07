@@ -14,5 +14,9 @@ jobs:
         run: yarn install
       - name: Build Docker containers
         run: docker-compose up -d
+      - name: Build subgraph manifest
+        run: yarn prepare-rinkeby
+      - name: Generate graph typings
+        run: yarn codegen
       - name: Run tests
         run: yarn test
