@@ -39,8 +39,8 @@ The subgraph listens for events from three fixed contracts; they are deployed on
 
 These contracted deployed from the contracts above
 
-1. `FairSale` from `SaleLauncher`
-2. `FairSaleTemplate` from `TemplateLauncher`
+1. ~~`FairSale` from `SaleLauncher`~~
+2. ~~`FairSaleTemplate` from `TemplateLauncher`~~
 3. `FixedPriceSale` from `SaleLauncher`
 4. `FixedPriceSaleTemplate` from `TemplateLauncher`
 5. `ParticipantList` from `ParticipantListLauncher`
