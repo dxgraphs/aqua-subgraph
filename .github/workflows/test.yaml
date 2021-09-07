@@ -1,15 +1,10 @@
-# This workflow publishes a the new subgraph to The Graph
-name: Test The Subgraph
+# This workflow run integration tests
+name: Integration Tests
 
-# Listen for pushes on the main branch
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     env:
       MNEMONIC: ${{ secrets.GANACHE_MNEMONIC }}
@@ -19,5 +14,9 @@ jobs:
         run: yarn install
       - name: Build Docker containers
         run: docker-compose up -d
+      - name: Build subgraph manifest
+        run: yarn prepare-rinkeby
+      - name: Generate graph typings
+        run: yarn codegen
       - name: Run tests
         run: yarn test

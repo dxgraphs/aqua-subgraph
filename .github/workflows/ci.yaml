@@ -1,0 +1,14 @@
+# This workflow checkes if the graph is built
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install
+      - run: yarn prepare-xdai
+      - run: yarn codegen
+      - run: yarn build

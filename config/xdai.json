@@ -1,15 +1,18 @@
 {
   "network": "xdai",
-  "startBlock": 15656492,
+  "startBlock": 16965430,
   "contracts": {
-    "factory": {
-      "address": "0xefb5490683bE4AE8de4bFB05a84Ef0F79d9DC2db"
+    "aquaFactory": {
+      "address": "0x0f1997E82cd484a54551b54009DdcE39deaE973f"
     },
     "saleLauncher": {
-      "address": "0x646219EaE83eD7dff641332B36402350FA9a0CdA"
+      "address": "0xC28c613f0f0b85C745AC58BA78071816Cb52B43A"
     },
     "templateLauncher": {
-      "address": "0x1C55a988E025492dDcf872CA68a8562dfEBAe5C9"
+      "address": "0x58c67b46c47f69d63aa09d5f822ede377c479d5f"
+    },
+    "participantListLauncher": {
+      "address": "0x50f0F32c7E3A5Fe68124086436af3fA73AA69030"
     }
   }
 }

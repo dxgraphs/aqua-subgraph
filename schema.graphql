@@ -13,83 +13,108 @@ interface EntityMetadata {
 
 #################################################
 
-# MesaFactory
-# Stores critical information the MesaFactory.
-# Allows subgraph function to access the MesaFactory without knowing its address
-type MesaFactory @entity {
-  # ID: should be a unique easy-to-reference
+# AquaFactory
+# Stores critical information the AquaFactory.
+# Allows subgraph function to access the AquaFactory without knowing its address
+type AquaFactory @entity {
+  "ID: should be a unique easy-to-reference from the subgraph"
   id: ID!
-  # Auction
+  "Number of sales created via the factory"
   saleCount: Int!
-  # Factory address
+  "AquaFactory contract address"
   address: Bytes!
-  # Fee manager: CFO
+  "Fee manager; CFO"
   feeManager: Bytes!
-  # Fee Collector: Treasury
+  "Fee Collector address: DAO/EOA/multisig"
   feeTo: Bytes!
-  # Template manager:
+  "Template manager address"
   templateManager: Bytes!
-  # Address of TemplateLauncher contract
-  templateLauncher: Bytes!
-  # Fees
+  "TemplateLauncher contract address"
+  templateLauncher: Bytes
+  "Fee for launching a new sale"
   saleFee: BigInt!
   feeNumerator: BigInt!
+  "Fee for launching a new template"
   templateFee: BigInt!
 }
 
 #################################################
 
 # FairSale entity
-type FairSale implements EntityMetadata @entity {
-  id: ID!
-  createdAt: Int!
-  updatedAt: Int!
-  deletedAt: Int
-  # Specific to the EasyAuction
-  # The auction name
-  name: String
-  # open/ended/settled/upcoming
-  status: String!
-  # Date of the sale start
-  startDate: Int!
-  # Date of the sale end
-  endDate: Int!
-  # Total amount of tokens available for sale
-  tokensForSale: BigInt!
-  # Minimum amount per bid
-  minimumBidAmount: BigInt!
-  # Bidding token (ie: DAI, USDC)
-  tokenIn: Token!
-  # Auctioning token
-  tokenOut: Token!
-  # List of bids
-  # The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment
-  minFundingThreshold: Int
-  bids: [FairSaleBid!] @derivedFrom(field: "sale")
-}
+# type FairSale implements EntityMetadata @entity {
+#   "The sale contract address"
+#   id: ID!
+#   createdAt: Int!
+#   updatedAt: Int!
+#   deletedAt: Int
+#   # Specific to the EasyAuction
+#   "The sale name"
+#   name: String
+#   "Sale status: open/ended/settled/upcoming"
+#   status: SaleStatus!
+#   "Date of the sale start"
+#   startDate: Int!
+#   "Date of the sale end"
+#   endDate: Int!
+#   "Total amount of tokens available for sale"
+#   tokensForSale: BigInt!
+#   "Minimum amount per bid"
+#   minBidAmount: BigInt!
+#   "Accepted bidding token (ie: DAI, USDC)"
+#   tokenIn: Token!
+#   "Auctioning token"
+#   tokenOut: Token!
+#   "The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment"
+#   minFundingThreshold: Int
+#   "List of bids"
+#   bids: [FairSaleBid!] @derivedFrom(field: "sale")
+#   launchedTemplate: LaunchedSaleTemplate
+# }
 
-# AuctionBid
-type FairSaleBid implements EntityMetadata @entity {
-  id: ID!
-  # Address of sale this bid is associated with
-  sale: FairSale!
-  # submitted/settled/cancelled/claimed
-  status: String!
-  # The UTC timestamp at which the bid was placed
-  createdAt: Int!
-  # The UTC timestamp at which the bid was updated
-  updatedAt: Int!
-  # The UTC timestamp at which the bid was deleted
-  deletedAt: Int
-  # Int of tokens the investor wants to buy
-  tokenInAmount: BigInt!
-  # Int of tokens the investor wants to buy
-  tokenOutAmount: BigInt!
-  # The bidder's Ethereum address
-  address: Bytes!
-}
+# FairSaleUser
+# type FairSaleUser implements EntityMetadata @entity {
+#   "Time at which the User was registered is the ID"
+#   id: ID!
+#   "The FairSale this user is associated with"
+#   sale: FairSale!
+#   createdAt: Int!
+#   updatedAt: Int!
+#   deletedAt: Int
+#   address: Bytes!
+#   "The ownerId in the FairSale contract"
+#   ownerId: Int!
+# }
+
+# # FairSaleBid
+# type FairSaleBid implements EntityMetadata @entity {
+#   id: ID!
+#   "The FairSale the bid is associated with"
+#   sale: FairSale!
+#   # submitted/settled/cancelled/claimed
+#   status: String!
+#   "The UTC timestamp at which the Bid was placed"
+#   createdAt: Int!
+#   "The UTC timestamp at which the Bid was updated"
+#   updatedAt: Int!
+#   "The UTC timestamp at which the Bid was deleted"
+#   deletedAt: Int
+#   "Number of tokens the investor wants to invest"
+#   tokenInAmount: BigInt!
+#   "Number of tokens the investor wants to buy"
+#   tokenOutAmount: BigInt!
+#   "The owner of the Bid"
+#   owner: FairSaleUser!
+# }
 
 #################################################
+
+enum SaleStatus {
+  UPCOMING
+  FAILED
+  SETTLED
+  CLOSED
+  OPEN
+}
 
 # FixedPriceSale
 type FixedPriceSale implements EntityMetadata @entity {
@@ -97,10 +122,10 @@ type FixedPriceSale implements EntityMetadata @entity {
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  "The name of the same, default is the tokenIn's name"
+  "The name of the sale, default is the tokenIn's name"
   name: String!
   "Sale status: open/ended/settled/upcoming/cancelled/failed"
-  status: String!
+  status: SaleStatus!
   "The UTC timestamp at which the sale starts"
   startDate: Int! # Open timestamp
   "The UTC timestamp at which the sale closes"
@@ -111,31 +136,109 @@ type FixedPriceSale implements EntityMetadata @entity {
   sellAmount: BigInt!
   "Amount of tokens sold so far"
   soldAmount: BigInt!
-  # Minimum amount per bid
-  minimumRaise: BigInt!
-  "Minimum token amount per purchase"
-  allocationMin: BigInt!
-  "Maximum token amount per purchase"
-  allocationMax: BigInt!
+  "Minimum raise threshold"
+  minRaise: BigInt!
+  "Minimum token amount per commitment"
+  minCommitment: BigInt!
+  "Maximum token amount per commitment"
+  maxCommitment: BigInt!
   "Token investors can use to bid"
   tokenIn: Token!
   "Token investor get"
   tokenOut: Token!
-  "List of sale purchases"
-  purchases: [FixedPriceSalePurchase!] @derivedFrom(field: "sale")
+  "List of sale commitments"
+  commitments: [FixedPriceSaleCommitment!] @derivedFrom(field: "sale")
+  "List of users"
+  users: [FixedPriceSaleUser!] @derivedFrom(field: "sale")
+  "List of withdrawals"
+  withdrawals: [FixedPriceSaleWithdrawal!] @derivedFrom(field: "sale")
+  "If true, sale was initialized with participant list"
+  hasParticipantList: Boolean!
+  "Reference to ParticipantList contract/entity."
+  participantList: ParticipantList
+  launchedTemplate: LaunchedSaleTemplate
 }
 
-type FixedPriceSalePurchase implements EntityMetadata @entity {
-  # Meta
+enum FixedPriceSaleCommitmentStatus {
+  SUBMITTED
+  RELEASED
+  CLAIMED
+  PROCESSED
+  WITHDRAWN
+}
+
+type FixedPriceSaleCommitment implements EntityMetadata @entity {
+  "The commitment ID"
   id: ID!
   createdAt: Int!
   updatedAt: Int!
   deletedAt: Int
-  # Address of sale this bid is associated with
+  "FixedPriceSale this commitment is associated with"
   sale: FixedPriceSale!
-  # Address of buyer
-  buyer: Bytes!
-  # Amount this purchase took
+  "Address of buyer"
+  user: FixedPriceSaleUser!
+  "Amount of tokens"
+  amount: BigInt!
+  status: FixedPriceSaleCommitmentStatus!
+}
+
+# Withdrawal track the tokens that have been withdrawn
+type FixedPriceSaleWithdrawal implements EntityMetadata @entity {
+  "The withdrawal ID"
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "FixedPriceSale this withdrawal is associated with"
+  sale: FixedPriceSale!
+  "Address of buyer"
+  user: FixedPriceSaleUser!
+  "Amount of tokens"
+  amount: BigInt!
+  status: FixedPriceSaleCommitmentStatus!
+}
+
+type FixedPriceSaleUser implements EntityMetadata @entity {
+  "The user's ID <saleAddress>/users/<saleUserAddress>"
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Total commitments submitted in the sale"
+  totalCommitment: Int!
+  "Total volume for this user"
+  totalVolume: BigInt!
+  "FixedPriceSale reference"
+  sale: FixedPriceSale!
+  "Address of buyer"
+  address: Bytes!
+}
+
+# Entity used to map listed participants
+type ParticipantList implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Address of sale; and not a ref"
+  sale: Bytes
+  "Contract address"
+  address: Bytes!
+  "List of addresses that can add or remove participants"
+  managers: [Bytes!]
+  "List of participants allowed to partake in the sale"
+  participants: [Participant!] @derivedFrom(field: "participantList")
+}
+
+# Entity used to map listed participants
+type Participant implements EntityMetadata @entity {
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Reference to ParticipantList"
+  participantList: ParticipantList!
+  address: Bytes!
   amount: BigInt!
 }
 
@@ -143,23 +246,14 @@ type FixedPriceSalePurchase implements EntityMetadata @entity {
 
 # Token
 type Token @entity {
-  # Token address
+  "Token address"
   id: ID!
-  # Token name, from the smart contract ERC20.name()
+  "Token name, from the smart contract ERC20.name()"
   name: String
-  # Symbol, from ERC20.symbol()
+  "The token symbol from ERC20.symbol()"
   symbol: String
-  # Decimal, from ERC.decimals()
+  "The token decimals, from ERC.decimals()"
   decimals: BigInt!
-}
-
-#################################################
-
-type SaleUser @entity {
-  # User id
-  id: ID!
-  # The bidder's Ethereum address
-  address: Bytes
 }
 
 #################################################
@@ -174,20 +268,42 @@ type SaleTemplate @entity {
   deletedAt: Int
   # Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale
   address: Bytes!
-  # Address of the MesaFactory
+  # Address of the AquaFactory
   factory: Bytes!
   # Template name
   name: SaleTemplateNames!
   verified: Boolean!
 }
 
+# Sale Templates
+# Each Sale contract implements a template
+type LaunchedSaleTemplate @entity {
+  "Address of the template"
+  id: ID!
+  createdAt: Int!
+  updatedAt: Int!
+  deletedAt: Int
+  "Address of the SaleTemplate contract: either EasyAuction or FixedPriceSale"
+  address: Bytes!
+  "Factory"
+  factory: AquaFactory!
+  "The original Sale Template this was created from"
+  template: SaleTemplate!
+  "IPFS content hash"
+  metadataContentHash: String
+  "Whether the template is initialized"
+  initialized: Boolean!
+  "Whether the sale contract is deployed"
+  saleCreated: Boolean!
+}
+
 enum SaleTemplateNames {
-  FairSaleTemplate
+  # FairSaleTemplate
   FixedPriceSaleTemplate
 }
 
-# MesaLog beacuses The Graph internal logging does not work
-type MesaLog @entity {
+# AquaLog beacuses The Graph internal logging does not work
+type AquaLog @entity {
   id: ID!
   content: String!
 }
