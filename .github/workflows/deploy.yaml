@@ -14,7 +14,7 @@ jobs:
       - name: Install modules
         run: yarn install
       - name: Prepare subgraph.yaml
-        run: yarn prepare-xdai
+        run: yarn prepare-subgraph
       - name: Generate migrations
         run: yarn codegen
       - name: Build
