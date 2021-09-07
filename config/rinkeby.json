@@ -1,15 +1,18 @@
 {
   "network": "rinkeby",
-  "startBlock": 8243429,
+  "startBlock": 9142254,
   "contracts": {
-    "factory": {
-      "address": "0xc9c6cf237975b882bbef757faa3226b2c3178439"
+    "aquaFactory": {
+      "address": "0xF52FBb6353fa29A618E65ebb3F7645224c366Da5"
     },
     "saleLauncher": {
-      "address": "0x031053f28bf9273b96f7d0dcd20e970ee3bbb54f"
+      "address": "0x1Db80de1c5B1e4722bF55256488af77a13939C23"
     },
     "templateLauncher": {
-      "address": "0xb89a4ed67a280ed9755758607d75a39e2b7dda68"
+      "address": "0xBc1509396E06f04Af2EF4a2d3d370e7013eD1304"
+    },
+    "participantListLauncher": {
+      "address": "0xa9f6c07126325D18e396Fb9d28afEAAef6AE4D91"
     }
   }
 }

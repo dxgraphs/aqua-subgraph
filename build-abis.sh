@@ -4,7 +4,7 @@ Cyan='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Find all artifacts
-ARTIFACT_PATHS=($(ls -1 artifacts/*.json))
+ARTIFACT_PATHS=($(ls -1 node_modules/@dxdao/aqua-sc/artifacts/*.json))
 
 # Create abis directory if missing
 mkdir -p abis

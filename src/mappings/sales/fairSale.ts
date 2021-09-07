@@ -1,33 +1,33 @@
 // Externals
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, dataSource, ethereum } from '@graphprotocol/graph-ts'
 
 // Contract ABIs and Events
 import {
-  FairSale as FairSaleContract,
-  CancellationOrder,
+  CancellationSellOrder,
   UserRegistration,
   ClaimedFromOrder,
-  SaleCleared,
-  NewOrder,
+  AuctionCleared,
+  NewSellOrder,
   NewUser
-} from '../../../generated/FairSale/FairSale'
+} from '../../../generated/templates/FairSale/FairSale'
 
 // GraphQL Schemas
-import * as Schemas from '../../../generated/schema'
+import { FairSale, FairSaleBid, FairSaleUser } from '../../../generated/schema'
 
 // Helpers
-import { SALE_STATUS, BID_STATUS } from '../../helpers/sales'
+import { BID_STATUS } from '../../helpers/fairSale'
+import { SALE_STATUS } from '../../helpers/sales'
 
 /**
  * Handles any Auction that has cleared
  * @param event
  */
-export function handleSaleCleared(event: SaleCleared): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+export function handleSaleCleared(event: AuctionCleared): void {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
-  let sale = Schemas.FairSaleBid.load(event.address.toHexString()) // event.address is the contract that emits the event
+  let sale = FairSaleBid.load(event.address.toHexString()) // event.address is the contract that emits the event
 
   if (!sale) {
     return
@@ -38,13 +38,13 @@ export function handleSaleCleared(event: SaleCleared): void {
   sale.save()
 }
 
-export function handleCancellationOrder(event: CancellationOrder): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+export function handleCancellationOrder(event: CancellationSellOrder): void {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
   // ToDo: concatenate unique id
-  let bid = Schemas.FairSaleBid.load(event.transaction.hash.toHexString())
+  let bid = FairSaleBid.load(event.transaction.hash.toHexString())
 
   if (!bid) {
     return
@@ -57,12 +57,12 @@ export function handleCancellationOrder(event: CancellationOrder): void {
 }
 
 export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
   // ToDo: concatenate unique id
-  let bid = Schemas.FairSaleBid.load(event.transaction.hash.toHexString())
+  let bid = FairSaleBid.load(event.transaction.hash.toHexString())
   if (!bid) {
     return
   }
@@ -75,20 +75,26 @@ export function handleClaimedFromOrder(event: ClaimedFromOrder): void {
  * Handles new Order (Bid) placement on the Auction
  * @param event
  */
-export function handleNewOrder(event: NewOrder): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+export function handleNewOrder(event: NewSellOrder): void {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
-
-  let orderId = encodeOrderData(event.params.ownerId, event.params.orderTokenOut, event.params.orderTokenIn)
-  let bid = new Schemas.FairSaleBid(orderId)
-  // bid.auction = event.address.toHexString()
+  // Construct entity ID from the parameters
+  // A bid is <saleAddress>/bids/<ownerId>/<block.timestamp>
+  let bid = new FairSaleBid(
+    event.address.toHexString() + '/bids/' + event.params.userId.toString() + '/' + event.block.timestamp.toString()
+  )
+  bid.sale = event.address.toString()
   bid.createdAt = event.block.timestamp.toI32()
   bid.updatedAt = event.block.timestamp.toI32()
-  bid.tokenInAmount = event.params.orderTokenIn
-  bid.tokenOutAmount = event.params.orderTokenOut
-  bid.address = event.transaction.from
+  bid.tokenInAmount = event.params.sellAmount
+  bid.tokenOutAmount = event.params.buyAmount
+  // Update FairSaleUser ref
+  bid.owner = event.transaction.from.toHexString()
+  // Update FairSale ref
+  bid.sale = event.address.toHexString()
   bid.status = BID_STATUS.SUBMITTED
+  // Save
   bid.save()
 }
 
@@ -97,51 +103,61 @@ export function handleNewOrder(event: NewOrder): void {
  * @param event
  */
 export function handleNewUser(event: NewUser): void {
-  if (!isFairSaleBelongsToMesa(event.address)) {
+  if (!isFairSaleBelongsToAqua(event.address)) {
     return
   }
 
-  let saleUser = new Schemas.SaleUser(event.params.ownerId.toHexString())
+  // Use their address as unique id
+  // A sale user id is <saleAddress>/users/<ownerId>
+  let saleUser = new FairSaleUser(event.address.toHexString() + '/users/' + event.params.userId.toString())
+  // Update ref to FairSale
+  saleUser.sale = event.address.toString()
+  saleUser.ownerId = event.params.userId.toI32()
+  saleUser.createdAt = event.block.timestamp.toI32()
+  saleUser.updatedAt = event.block.timestamp.toI32()
   saleUser.address = event.params.userAddress
   saleUser.save()
 }
 
-export function handleUserRegistration(event: UserRegistration): void {}
-
 /**
- * Encodes a Order into a Bytes string
- * @param param0
- * @returns
+ * Does the same as `NewUser` handler. See `handleNewUser`
  */
-export function encodeOrderData(ownerId: BigInt, orderTokenOut: BigInt, orderTokenIn: BigInt): string {
-  return (
-    '0x' +
-    ownerId
-      .toString()
-      .slice(2)
-      .padStart(16, '0') +
-    orderTokenOut
-      .toString()
-      .slice(2)
-      .padStart(24, '0') +
-    orderTokenIn
-      .toString()
-      .slice(2)
-      .padStart(24, '0')
-  )
-}
+export function handleUserRegistration(event: UserRegistration): void { }
 
 /**
- * Checks if the contract that emitted the event belongs to Mesa
+ * Checks if the contract that emitted the event belongs to Aqua
  * @param auctionAddress
  */
-function isFairSaleBelongsToMesa(fairSaleContractAddress: Address): boolean {
+function isFairSaleBelongsToAqua(fairSaleContractAddress: Address): boolean {
   // Find the from
-  let fairSale = Schemas.FairSale.load(fairSaleContractAddress.toHexString())
+  let fairSale = FairSale.load(fairSaleContractAddress.toHexString())
 
   if (fairSale != null) {
     return true
   }
 
   return false
+}
+
+/**
+ * Block handler for sale status
+ */
+
+/**
+ * Block handler to open sale
+ * Other status are deteremined from events as they should be
+ */
+export function handleBlock(block: ethereum.Block): void {
+  // fetch the FairSale
+  let fairSale = FairSale.load(dataSource.address().toHexString())
+  if (!fairSale) {
+    return
+  }
+  // Go backward
+  // Sale is upcoming, open it
+  else if (block.timestamp.toI32() >= fairSale.startDate && block.timestamp.toI32() < fairSale.endDate) {
+    fairSale.status = SALE_STATUS.OPEN
+  }
+
+  fairSale.save()
 }

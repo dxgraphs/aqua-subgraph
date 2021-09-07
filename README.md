@@ -1,10 +1,16 @@
-# Mesa Subgraph
+# Aqua Subgraph
 
-Mesa Subgraph is the main provider for Mesa Interface data.
+Aqua Subgraph is the main provider for Aqua Interface data.
 
+# Install
+
+```bash
+$ npm install
+$ npm run codegen
+```
 # Explore
 
-You can explore Mesa's xDai subgraph at [The Graph Explorer](https://thegraph.com/explorer/subgraph/adamazad/mesa-xdai).
+You can explore Aqua's xDai subgraph at [The Graph Explorer](https://thegraph.com/legacy-explorer/subgraph/adamazad/aqua-xdai-next).
 
 ## Local
 
@@ -14,398 +20,138 @@ If you wish to deploy a local explorer, run:
 $ npm run explore-local
 ```
 
-After starting, a local version of the graph, with a web front-end,shows up:
-
-http://localhost:8000/subgraphs/name/adamazad/mesa
-
-Now make a query:
-
-```
-{
- mesaFactory (id: "MesaFactory") {
-   id
-   address
-   feeManager
-   feeTo
-   templateManager
-   saleCount
-   templateManager
-   templateLauncher
-   feeNumerator
-   templateFee
-   saleFee
- },
- fixedPriceSales {
-   id
-   createdAt
-   status
-   sellAmount
-   startDate
-   endDate
-   minimumRaise
-   allocationMin
-   allocationMax
-   tokenIn {
-     id
-     name
-     symbol
-     decimals
-   }
-   tokenOut {
-     id
-     name
-     symbol
-     decimals
-   }
-   purchases {
-     id
-     amount
-     buyer
-   }
- },
- fairSales {
-   id
-   createdAt
-   status
-   tokensForSale
-   startDate
-   endDate
-   minimumBidAmount
-   minFundingThreshold
-   tokenIn {
-     id
-     name
-     symbol
-     decimals
-   }
-   tokenOut {
-     id
-     name
-     symbol
-     decimals
-   }
- }
-}
-```
-
-Result should look like this:
-
-```{
-  "data": {
-      "fairSales": [
-      {
-        "createdAt": 1620926356,
-        "endDate": 1620937156,
-        "id": "0xfa9869c0dad91919a06ce360808ddd07d3188a31",
-        "minFundingThreshold": null,
-        "minimumBidAmount": "100",
-        "startDate": 1620926356,
-        "status": "upcoming",
-        "tokensForSale": "0",
-        "tokenIn": {
-          "decimals": "18",
-          "id": "0x0f4363145af88fe75267d1b5f2bff196f92dd7ad",
-          "name": "Bidding Token",
-          "symbol": "BT"
-        },
-        "tokenOut": {
-          "decimals": "18",
-          "id": "0xc9e07e658f9a3dd0cc3a69ea8f222f6952a4bafa",
-          "name": "Fair Sale Token",
-          "symbol": "FST"
-        }
-      }
-    ],
-    "fixedPriceSales": [
-      {
-        "allocationMax": "10",
-        "allocationMin": "1",
-        "createdAt": 1619086303,
-        "endDate": 1619093502,
-        "id": "0x32a82316dd98887f016b8b95a52ac5886a15d28c",
-        "minimumRaise": "100",
-        "purchases": [
-          {
-            "amount": "4",
-            "buyer": "0xc61650fc0960e267b28d530b50e41fd07c9b1b11",
-            "id": "1619086303"
-          },
-          {
-            "amount": "5",
-            "buyer": "0xc61650fc0960e267b28d530b50e41fd07c9b1b11",
-            "id": "1619086304"
-          }
-        ],
-        "sellAmount": "1000000000000000000000",
-        "startDate": 1619089902,
-        "status": "upcoming",
-        "tokenIn": {
-          "decimals": "18",
-          "id": "0x7e47024ed41ba3b526755c45257cfcc359888da1",
-          "name": "Bidding Token",
-          "symbol": "BT"
-        },
-        "tokenOut": {
-          "decimals": "18",
-          "id": "0x840ac1dbbc658f39c055895b07f796a1f9395a99",
-          "name": "Fixed Price Sale Token",
-          "symbol": "FPST"
-        }
-      }
-    ],
-    "mesaFactory": {
-      "address": "0x8a529455833c9cd31aa1be9f44e4761f6a588745",
-      "feeManager": "0x1ba9e7349fe36032fd07809aca800125cddb296f",
-      "feeNumerator": "0",
-      "feeTo": "0x1ba9e7349fe36032fd07809aca800125cddb296f",
-      "id": "MesaFactory",
-      "saleCount": 0,
-      "saleFee": "0",
-      "templateFee": "0",
-      "templateLauncher": "0x4da2ffa0cfc8689a12069ab871f01f7a0262da64",
-      "templateManager": "0x1ba9e7349fe36032fd07809aca800125cddb296f"
-    }
-  }
-}
-```
-
-As screenshot:
-
-![FE](https://user-images.githubusercontent.com/918180/115698704-35870e80-a365-11eb-9002-80637dfa84cd.png)
-
-# Installation
-
-Install dependencies using `yarn`
-
-```bash
-$ yarn install
-```
+This snippet requires Docker. After deployment, a local version of the graph, with a web front-end, is available at http://localhost:8000/subgraphs/name/adamazad/aqua
 
 # Architecture
 
-**Fixed Contracts**
+## Data Sources
+
+### Fixed Contracts
 
 The subgraph listens for events from three fixed contracts; they are deployed once:
 
-1. `MesaFactory`
+1. `AquaFactory`
 2. `SaleLauncher`
 3. `TemplateLauncher`
+4. `ParticipantListLauncher`
 
-**Dynamic Contracts**
+### Dynamic Contracts (Templates)
 
-These contracts are deployed from the factory for every new sale. Their address is resolved from `Event.address` and compared against `MesaFactory.allSales` array. If the address does not belong to Mesa's sale, the handler exits:
+These contracted deployed from the contracts above
 
-1. `FairSale`
-2. `FixedPriceSale`
-
-## Contracts
-
-### `MesaFactory`
-
-<sub>[`src/mappings/factory.ts`](src/mappings/factory.ts)</sub>
-
-#### 1. `FactoryInitialized` from `MesaFactory.initialize`
-
-```typescript
-interface FactoryInitialized {
-  feeManager: Address // Address of the fee manager
-  feeTo: Address // Address of fees collector
-  templateManager: Address // Address of template manager
-  templateLauncher: Address // Address of TemplateLauncher  contract
-  templateFee: number // Template fee
-  feeNumerator: number // Fee numerator; because Solidity
-  saleFee: number // A fixed sale fee paid to Mesa
-}
-```
-
-#### 2. `SetFeeManager` from `MesaFactory.setFeeManager`
-
-```typescript
-interface SetFeeManager {
-  feeManager: Address
-}
-```
-
-#### 3. `SetFeeNumerator` from `MesaFactory.setFeeNumerator`
-
-```typescript
-interface SetFeeNumerator {
-  feeNumerator: Address
-}
-```
-
-#### 4. `SetFeeTo` from `MesaFactory.setFeeTo`
-
-```typescript
-interface SetFeeTo {
-  feeTo: Address
-}
-```
-
-#### 5. `SetSaleFee` from `MesaFactory.setSaleFee`
-
-```typescript
-interface SetSaleFee {
-  saleFee: number
-}
-```
-
-#### 6. `SetTemplateFee` from `MesaFactory.setTemplateFee`
-
-```typescript
-interface SetTemplateFee {
-  templateFee: number
-}
-```
-
-#### 7. `SetTemplateLauncher` from `MesaFactory.setTemplateLauncher`
-
-```typescript
-interface SetTemplateLauncher {
-  templateLauncher: Address
-}
-```
-
-#### 8. `SetTemplateManager` from `MesaFactory.setTemplateManager`
-
-```typescript
-interface SetTemplateManager {
-  templateManager: Address
-}
-```
-
-### `SaleLauncher`
-
-<sub>[`src/mappings/saleLauncher.ts`](src/mappings/saleLauncher.ts)</sub>
-
-#### 1. `SaleInitialized` from `SaleLauncher.createSale`
-
-```typescript
-interface SaleInitialized {
-  sale: Address // Address of new Sale contract
-  templateId: number // The template used to create the sale
-  data: Bytes // Details of the sale as Bytes.
-}
-```
-
-`templateId` is used to determine GraphQL schema -- either `FairSale` or `FixedPriceSale` -- to create. `sale` address is the address of the newly deploed sale contract.
-
-### `TemplateLauncher`
-
-<sub>[`src/mappings/templateLauncher.ts`](src/mappings/templateLauncher.ts)</sub>
-
-#### 1.`TemplateLaunched` from `TemplateLauncher.launchTemplate`
-
-```typescript
-interface TemplateLaunched {
-  sale: Address // Address of the new *-Sale contract
-  templateId: number // Index of the template
-}
-```
-
-#### 2.`TemplateAdded` from `TemplateLauncher.addTemplate`
-
-```typescript
-interface TemplateAdded {
-  template: Address // Address of new Template contract
-  templateId: number // Index of the template
-}
-```
-
-#### 3.`TemplateRemoved` from `TemplateLauncher.removeTemplate`
-
-```typescript
-interface TemplateRemoved {
-  template: Address // Address of new Template contract
-  templateId: number // Index of the template
-}
-```
-
-#### 4.`TemplateVerified` from `TemplateLauncher.verifyTemplate`
-
-Handles verifying templates - `TemplateVerified`
-
-```typescript
-interface TemplateVerified {
-  template: Address // Address of new Template contract
-  templateId: number // Index of the template
-}
-```
-
-### `FairSale`
-
-<sub>[`src/mappings/sales/easySale.ts`](src/mappings/sales/fairSale.ts)
-
-#### 1. `SaleCleared` from `FairSale.clearSale`
-
-```typescript
-interface SaleCleared {
-  // No params
-}
-```
-
-#### 2. `NewOrder` from `FairSale.placeOrders`
-
-```typescript
-interface NewOrder {
-  ownerId: number
-  orderTokenOut: number
-  orderTokenIn: number
-}
-```
-
-### `FixedPriceSale`
-
-<sub>[`src/mappings/sales/fixedPriceSale.ts`](src/mappings/sales/fixedPriceSale.ts)</sub>
-
-#### 1. `SaleClosed` from `FixedPriceSale.closeSale`
-
-```typescript
-interface SaleClosed {
-  // No params
-}
-```
-
-#### 2. `NewPurchase` from `FixedPriceSale.buyTokens`
-
-```typescript
-interface NewPurchase {
-  amount: number // Amount purchased
-  buyer: Address // EOA
-}
-```
+1. `FairSale` from `SaleLauncher`
+2. `FairSaleTemplate` from `TemplateLauncher`
+3. `FixedPriceSale` from `SaleLauncher`
+4. `FixedPriceSaleTemplate` from `TemplateLauncher`
+5. `ParticipantList` from `ParticipantListLauncher`
 
 ## GraphQL Entities
 
-These entities are available in the subgraph. Schemas are in [`schema.graphql`](schema.graphql)
+The following entities are available in the subgraph. Rest is available in [`schema.graphql`](schema.graphql)
 
-### MesFactory
+### AquaFactory
 
-One entity to retrieve information about the factory
-
-### FairSale
-
-All sales of type `FairSale`.
-
-### FairSaleBid
-
-All bids on `FairSale` sales.
-
-### FixedPriceSale
-
-All sales of type `FixedPriceSale`
-
-### FixedPriceSalePurchase
-
-All sales of type `FixedPriceSale`
+Stores and tracks information about the `AquaFactory` contract.
 
 ### SaleTemplate
 
-Registered sale mechanisms in `TemplateLauncher` contract.
+Stores all sale templates added to `TemplateLauncher`, including the contract address, ID, and name. A template is essentially a sale mechanism.
+
+### LaunchedSaleTemplate
+
+Every time a new Sale Template is created - cloned - from the list of `SaleTemplate`s, the launched version with additional data is also stored. The launched sale template also stores IPFS metadata hash for sale.
+
+### ParticipantList
+
+Sales can have a white-labeled list of addresses. This entity tracks the contract, the contract managers, and the list of participants.
+
+### FixedPriceSale
+
+Stores all information about the `FixedPriceSale`s. This includes total commitments, withdrawals, sale status, and other sale information.
+
+### FixedPriceSaleUser
+
+Each address participating in a `FixedPriceSale` has a unique ID. The ID is in the following format:
+
+```
+<saleAddress>/users/<userAddress>
+```
+
+### FixedPriceSaleCommitment
+
+A commitment is a pledge that the investor wishes to buy a certain amount of tokens in a `FixedPriceSale` should the sale reach the threshold. Each commitment has a status - `SUBMITTED`, `RELEASED`, and/or `CLAIMED`. Commitments ID are formatted in
+
+```
+<saleAddress>/commitments/<userAddress>/<commitmentIndex>
+```
+
+### FixedPriceSaleWithdrawal
+
+Tracks sale withdrawals. This entity is available when a sale has successfully concluded — reached the minimum raise threshold. Unlike `FixedPriceSaleCommitment`, `FixedPriceSaleWithdrawal` is aggregated per withdrawal event.
+
+```
+<saleAddress>/withdrawals/<userAddress>
+```
 
 ### Token
 
-Stores information about ERC20 tokens that interact with Mesa contracts.
+Stores information about ERC20 tokens that have been used as bidding or auctioning tokens in sales. These include symbol, decimals name and address.
+
+# FAQs
+
+**How to get the factory information?**
+
+The `AquaFactory` tracks all information
+
+```graphql
+aquaFactory (id: "AquaFactory") {
+  id
+  saleCount
+  address
+  feeManager
+  feeTo
+  templateManager
+  templateLauncher
+  saleFee
+  feeNumerator
+  templateFee
+}
+```
+
+**How to get list of registered sale templates (mechanisms)?**
+
+The `SaleTemplate` stores such information
+
+```graphql
+saleTemplates {
+  id
+  address
+  name
+  verified
+}
+```
+
+**How to get the total number of sales?**
+
+The `AquaFactory` tracks the number of sales using `saleCount`
+
+```graphql
+aquaFactory (id: "AquaFactory") {
+  saleCount
+}
+```
+
+**How to access the IPFS hash from a sale?**
+
+The IPFS hash is stored on the `LaunchedSaleTemplate` entity. Reference it in your sales query
+
+```graphql
+fixedPriceSales {
+  launchedSaleTemplate {
+    metadataContentHash
+  }
+}
+```
 
 # Deployment
 
@@ -421,7 +167,7 @@ Each network deployment requires setting up a JSON configuration file in `config
 $ npm run prepare-<NetworkName>
 ```
 
-Mainnet and Rinkeby are supported out of the box.
+xDAI and Rinkeby networks are supported.
 
 ## Deploy to The Graph
 
@@ -433,10 +179,10 @@ $ npm run deploy
 
 # Extract ABIs from Artifacts
 
-ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract repo ([cryptonative-ch/mesa-smartcontracts](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
+ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract package [`@dxdao/aqua-sc`](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
 
 ```bash
-$ ./build-abis.sh
+$ npm run build-abis
 ```
 
 Note that it requires [`jq`](https://stedolan.github.io/jq/) tool.
@@ -453,21 +199,21 @@ $ yarn tests
 
 This projects comes with a set of predefined scripts in `package.json`
 
-| Script            | Description                                                                     |
-| ----------------- | ------------------------------------------------------------------------------- |
-| `test`            | Runs Jest tests.                                                                |
-| `docker-up`       | Runs Docker services defined in `docker-compose.yaml`.                          |
-| `docker-clean`    | reset docker kill & rm. Use if subgraph is not working with `explore-local`     |
-| `prepare-mainnet` | Builds `subgraph.yaml` for the mainnet.                                         |
-| `prepare-rinkeby` | Builds `subgraph.yaml` for the Rinkeby testnet.                                 |
-| `prepare-xdai`    | Builds `subgraph.yaml` for the xDai network.                                    |
-| `codegen`         | Generates AssemblyScript types for smart contract ABIs and the subgraph schema. |
-| `build`           | Runs `graph build` to compile a subgraph to WebAssembly.                        |
-| `deploy-xdai`     | Deploys the subgraph build to The Graph on the xDai network.                    |
-| `deploy-rinkeby`  | Deploys the subgraph build to The Graph on the Rinkeby testnet.                 |
-| `typechain`       | Creates typed-contracts classes.                                                |
-| `build-abis`      | Extracts contract ABIs from artifacts in `artifacts` directory.                 |
-| `deploy-local`    | Deploys the graph build to local graph-node.                                    |
-| `create-local`    | Creates the graph build in local graph-node.                                    |
-| `remove-local`    | Removes the graph build from local graph-node.                                  |
-| `explore-local`   | Starts local graph explorer.                                                    |
+| Script             | Description                                                                     |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `test`             | Runs Jest tests.                                                                |
+| `docker-up`        | Runs Docker services defined in `docker-compose.yaml`.                          |
+| `docker-clean`     | reset docker kill & rm. Use if subgraph is not working with `explore-local`.    |
+| `prepare-subgraph` | Builds `subgraph.yaml` for either mainnet or rinkeby.                           |
+| `prepare-rinkeby`  | Builds `subgraph.yaml` for the Rinkeby testnet (deprecated).                    |
+| `prepare-xdai`     | Builds `subgraph.yaml` for the xDai network (deprecated).                       |
+| `codegen`          | Generates AssemblyScript types for smart contract ABIs and the subgraph schema. |
+| `build`            | Runs `graph build` to compile a subgraph to WebAssembly.                        |
+| `deploy-xdai`      | Deploys the subgraph build to The Graph on the xDai network.                    |
+| `deploy-rinkeby`   | Deploys the subgraph build to The Graph on the Rinkeby testnet.                 |
+| `typechain`        | Creates typed-contracts classes.                                                |
+| `build-abis`       | Extracts contract ABIs from artifacts in `artifacts` directory.                 |
+| `deploy-local`     | Deploys the graph build to local graph-node.                                    |
+| `create-local`     | Creates the graph build in local graph-node.                                    |
+| `remove-local`     | Removes the graph build from local graph-node.                                  |
+| `explore-local`    | Starts local graph explorer.                                                    |

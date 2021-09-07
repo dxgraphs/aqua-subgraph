@@ -3,11 +3,11 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: MesaFactory
+    name: AquaFactory
     network: {{network}}
     source:
-      address: '{{contracts.factory.address}}'
-      abi: MesaFactory
+      address: '{{contracts.aquaFactory.address}}'
+      abi: AquaFactory
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
@@ -15,8 +15,8 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/factory.ts
       abis:
-        - name: MesaFactory
-          file: ./abis/MesaFactory.json
+        - name: AquaFactory
+          file: ./abis/AquaFactory.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: ERC20NameBytes
@@ -24,24 +24,26 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       entities:
-        - MesaFactory
+        - AquaFactory
       eventHandlers:
-        - event: FactoryInitialized(address,address,address,address,uint256,uint256,uint256)
+        - event: FactoryInitialized(address,address,address,uint256,uint256,uint256)
           handler: handleFactoryInitialized
-        - event: SetFeeManager(indexed address)
-          handler: handleSetFeeManager
-        - event: SetFeeNumerator(indexed uint256)
-          handler: handleSetFeeNumerator
-        - event: SetFeeTo(indexed address)
-          handler: handleSetFeeTo
-        - event: SetSaleFee(indexed uint256)
-          handler: handleSetSaleFee
-        - event: SetTemplateFee(indexed uint256)
-          handler: handleSetTemplateFee
-        - event: SetTemplateLauncher(indexed address)
-          handler: handleSetTemplateLauncher
-        - event: SetTemplateManager(indexed address)
-          handler: handleSetTemplateManager
+        - event: FeeManagerUpdated(indexed address)
+          handler: handleFeeManagerUpdated
+        - event: FeeNumeratorUpdated(indexed uint256)
+          handler: handleFeeNumeratorUpdated
+        - event: FeeToUpdated(indexed address)
+          handler: handleFeeToUpdated
+        - event: SaleFeeUpdated(indexed uint256)
+          handler: handleSaleFeeUpdated
+        - event: TemplateFeeUpdated(indexed uint256)
+          handler: handleTemplateFeeUpdated
+        - event: TemplateLaunched(indexed address,uint256)
+          handler: handleTemplateLaunched
+        - event: TemplateLauncherUpdated(indexed address)
+          handler: handleTemplateLauncherUpdated
+        - event: TemplateManagerUpdated(indexed address)
+          handler: handleTemplateManagerUpdated
   - kind: ethereum/contract
     name: SaleLauncher
     network: {{network}}
@@ -71,7 +73,7 @@ dataSources:
         - name: ERC20SymbolBytes
           file: ./abis/ERC20SymbolBytes.json
       eventHandlers:
-        - event: SaleInitialized(indexed address,uint256,bytes)
+        - event: SaleInitialized(indexed address,uint256,indexed address,bytes)
           handler: handleSaleInitialized
   - kind: ethereum/contract
     name: TemplateLauncher
@@ -99,12 +101,34 @@ dataSources:
           handler: handleTemplateRemoved
         - event: TemplateVerified(indexed address,uint256)
           handler: handleTemplateVerified
+        - event: TemplateLaunched(indexed address,uint256,address,string)
+          handler: handleTemplateLaunched
+  - kind: ethereum/contract
+    name: ParticipantListLauncher
+    network: {{network}}
+    source:
+      address: '{{contracts.participantListLauncher.address}}'
+      abi: ParticipantListLauncher
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/participantListLauncher.ts
+      entities:
+        - ParticipantList
+      abis:
+        - name: ParticipantListLauncher
+          file: ./abis/ParticipantListLauncher.json
+      eventHandlers:
+        - event: ListLaunched(indexed address)
+          handler: handleListLaunched
+templates:
   - kind: ethereum/contract
     name: FairSale
     network: {{network}}
     source:
       abi: FairSale
-      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -117,24 +141,27 @@ dataSources:
         - name: FairSale
           file: ./abis/FairSale.json
       eventHandlers:
-        - event: SaleCleared(uint96,uint96,bytes32)
-          handler: handleSaleCleared
-        - event: CancellationOrder(indexed uint64,uint96,uint96)
-          handler: handleCancellationOrder
+        - event: AuctionCleared(uint96,uint96,bytes32)
+          handler: handleAuctionCleared
+        - event: AuctionInitialized(indexed address,indexed address,uint256,uint256,uint64,uint96,uint96,uint256,uint256)
+          handler: handleAuctionInitialized
+        - event: CancellationSellOrder(indexed uint64,uint96,uint96)
+          handler: handleCancellationSellOrder
         - event: ClaimedFromOrder(indexed uint64,uint96,uint96)
           handler: handleClaimedFromOrder
-        - event: NewOrder(indexed uint64,uint96,uint96)
-          handler: handleNewOrder
+        - event: NewSellOrder(indexed uint64,uint96,uint96)
+          handler: handleNewSellOrder
         - event: NewUser(indexed uint64,indexed address)
           handler: handleNewUser
         - event: UserRegistration(indexed address,uint64)
           handler: handleUserRegistration
+      blockHandlers:
+        - handler: handleBlock
   - kind: ethereum/contract
     name: FixedPriceSale
     network: {{network}}
     source:
       abi: FixedPriceSale
-      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -143,15 +170,76 @@ dataSources:
       entities:
         - FixedPriceSale
         - SaleTemplate
+        - FixedPriceSaleParticipantList
       abis:
         - name: FixedPriceSale
           file: ./abis/FixedPriceSale.json
       eventHandlers:
-        - event: SaleClosed()
-          handler: handleSaleClosed
-        - event: NewPurchase(indexed address,indexed uint256)
-          handler: handleNewPurchase
-        - event: NewTokenClaim(indexed address,indexed uint256)
-          handler: handleNewTokenClaim
+        - event: NewCommitment(indexed address,indexed uint256)
+          handler: handleNewCommitment
         - event: NewTokenRelease(indexed address,indexed uint256)
           handler: handleNewTokenRelease
+        - event: NewTokenWithdraw(indexed address,indexed uint256)
+          handler: handleNewTokenWithdraw
+        - event: SaleClosed()
+          handler: handleSaleClosed
+        - event: SaleInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,address)
+          handler: handleSaleInitialized
+      blockHandlers:
+        - handler: handleBlock
+  - kind: ethereum/contract
+    name: ParticipantList
+    network: {{network}}
+    source:
+      abi: ParticipantList
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/participantList.ts
+      entities:
+        - FixedPriceSaleParticipant
+      abis:
+        - name: ParticipantList
+          file: ./abis/ParticipantList.json
+      eventHandlers:
+        - event: AmountsUpdated(indexed address,uint256)
+          handler: handleAmountsUpdated
+        - event: ListInitialized(address[])
+          handler: handleListInitialized
+  - kind: ethereum/contract
+    name: FixedPriceSaleTemplate
+    network: {{network}}
+    source:
+      abi: FixedPriceSaleTemplate
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/templates/fixedPriceSaleTemplate.ts
+      entities:
+        - LaunchedSaleTemplate
+      abis:
+        - name: FixedPriceSaleTemplate
+          file: ./abis/FixedPriceSaleTemplate.json
+      eventHandlers:
+        - event: TemplateInitialized(address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool)
+          handler: handleTemplateInitialized
+  - kind: ethereum/contract
+    name: FairSaleTemplate
+    network: {{network}}
+    source:
+      abi: FairSaleTemplate
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/mappings/templates/fairSaleTemplate.ts
+      entities:
+        - LaunchedSaleTemplate
+      abis:
+        - name: FairSaleTemplate
+          file: ./abis/FairSaleTemplate.json
+      eventHandlers:
+        - event: TemplateInitialized(address,address,uint256,uint256,uint96,uint96,uint256,uint256,uint256)
+          handler: handleTemplateInitialized

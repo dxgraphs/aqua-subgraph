@@ -1,0 +1,23 @@
+name: Deploy
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install The Graph CLI
+        run: yarn global add @graphprotocol/graph-cli
+      - name: Add The Graph access token
+        run: graph auth --product hosted-service ${{ secrets.THE_GRAPH_ACCESS_TOKEN }}
+      - name: Install modules
+        run: yarn install
+      - name: Prepare subgraph.yaml
+        run: yarn prepare-xdai
+      - name: Generate migrations
+        run: yarn codegen
+      - name: Build
+        run: yarn build
+      - name: Deploy
+        run: graph deploy --product hosted-service adamazad/aqua-xdai

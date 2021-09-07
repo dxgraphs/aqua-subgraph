@@ -1,95 +1,95 @@
 // Helpers
-import { mesaJestAfterEach, mesaJestBeforeEach, MesaJestBeforeEachContext } from '../jest/setup'
-import { getContractFactory, SUBGRAPH_SYNC_SECONDS, wait } from './helpers'
-import { addSaleTemplateToLauncher } from '../scripts/helpers'
-import { FixedPriceSale } from './helpers/contracts'
+import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
+import {
+  FixedPriceSale,
+  FixedPriceSaleTemplate,
+  FixedPriceSaleTemplate__factory,
+  FixedPriceSale__factory
+} from '@dxdao/aqua-sc'
+import { ContractTransaction, Event } from 'ethers'
 
 // Test block
-describe('TemplateLauncher', function() {
-  let mesa: MesaJestBeforeEachContext
+describe('TemplateLauncher', function () {
+  let aqua: AquaJestBeforeEachContext
+  let fixedPriceSaleTemplate: FixedPriceSaleTemplate
+  let fixedPriceSale: FixedPriceSale
+  let addSaleTemplateTx: ContractTransaction
+  let addSaleModuleTx: ContractTransaction
 
+  beforeAll(async () => {
+    await aquaJestBeforeAll()
+  })
   beforeEach(async () => {
-    mesa = await mesaJestBeforeEach()
+    aqua = await aquaJestBeforeEach()
+    fixedPriceSaleTemplate = await new FixedPriceSaleTemplate__factory(aqua.provider.getSigner(0)).deploy()
+    fixedPriceSale = await new FixedPriceSale__factory(aqua.provider.getSigner(0)).deploy()
+    addSaleTemplateTx = await aqua.templateLauncher.addTemplate(fixedPriceSaleTemplate.address)
+    addSaleModuleTx = await aqua.saleLauncher.addTemplate(fixedPriceSale.address)
   })
 
-  afterEach(async () => {
-    await mesaJestAfterEach()
-  })
   test('Should save new SaleTemplate', async () => {
-    const fixedPriceSaleTemplate = (await getContractFactory(
-      'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
-    ).deploy()) as FixedPriceSale
-    const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
-    await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          saleTemplate (id: "${event.template}") {
+    const { blockNumber, events } = await addSaleTemplateTx.wait()
+    // @ts-ignore
+    const templatedAddedEvent = events.find(
+      event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
+    ) as Event
+    if (!templatedAddedEvent) {
+      throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
+    }
+    await aqua.waitForSubgraphSync()
+    const { data } = await aqua.querySubgraph(`{
+          saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             address
             factory
             name
             verified
           }
         }`)
-    expect(data.data.saleTemplate.address.toLowerCase()).toMatch(fixedPriceSaleTemplate.address)
-    expect(data.data.saleTemplate.factory.toLowerCase()).toMatch(mesa.mesaFactory.address)
-    expect(data.data.saleTemplate.name.toLowerCase()).toMatch('FixedPriceSaleTemplate')
-    expect(data.data.saleTemplate.verified).toBeFalsy()
+    expect(data.saleTemplate.address.toLowerCase()).toMatch(fixedPriceSaleTemplate.address.toLowerCase())
+    expect(data.saleTemplate.factory.toLowerCase()).toMatch(aqua.aquaFactory.address.toLowerCase())
+    expect(data.saleTemplate.name.toLowerCase()).toMatch('FixedPriceSaleTemplate'.toLowerCase())
+    expect(data.saleTemplate.verified).toBeFalsy()
   })
+
   test('Should save update SaleTemplate as verified', async () => {
-    const fixedPriceSaleTemplate = (await getContractFactory(
-      'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
-    ).deploy()) as FixedPriceSale
-    const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
-    await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          saleTemplate (id: "${event.templateId}") {
+    const { events } = await addSaleTemplateTx.wait()
+    // @ts-ignore
+    const templatedAddedEvent = events.find(
+      event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
+    ) as Event
+    if (!templatedAddedEvent) {
+      throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
+    }
+    const { blockNumber } = await (
+      await aqua.templateLauncher.verifyTemplate(templatedAddedEvent?.args?.templateId)
+    ).wait()
+    await aqua.waitForSubgraphSync(blockNumber)
+    const { data } = await aqua.querySubgraph(`{
+          saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             verified
           }
         }`)
-    expect(data.data.saleTemplate.verified).toBeTruthy()
+    expect(data.saleTemplate.verified).toBeTruthy()
   })
-  test('Should save update SaleTemplate as verified', async () => {
-    const fixedPriceSaleTemplate = (await getContractFactory(
-      'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
-    ).deploy()) as FixedPriceSale
-    const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
-    await (await mesa.templateLauncher.verifyTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          saleTemplate (id: "${event.templateId}") {
-            verified
+
+  test('Should save remove SaleTemplate', async () => {
+    const { events } = await addSaleTemplateTx.wait()
+    // @ts-ignore
+    const templatedAddedEvent = events.find(
+      event => event.event === aqua.templateLauncher.interface.getEvent('TemplateAdded').name
+    ) as Event
+    if (!templatedAddedEvent) {
+      throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
+    }
+    const { blockNumber } = await (
+      await aqua.templateLauncher.removeTemplate(templatedAddedEvent?.args?.templateId)
+    ).wait()
+    await aqua.waitForSubgraphSync(blockNumber)
+    const { data } = await aqua.querySubgraph(`{
+          saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
+            deletedAt
           }
         }`)
-    expect(data.data.saleTemplate.verified).toBeTruthy()
-  })
-  test('Should save update SaleTemplate as verified', async () => {
-    const fixedPriceSaleTemplate = (await getContractFactory(
-      'FixedPriceSaleTemplate',
-      mesa.provider.getSigner(0)
-    ).deploy()) as FixedPriceSale
-    const event = await addSaleTemplateToLauncher({
-      launcher: mesa.templateLauncher,
-      saleTemplateAddress: fixedPriceSaleTemplate.address
-    })
-    await (await mesa.templateLauncher.removeTemplate(event.templateId)).wait(1)
-    await wait(SUBGRAPH_SYNC_SECONDS)
-    const { data } = await mesa.fetchFromTheGraph(`{
-          saleTemplate (id: "${event.templateId}") {
-            deleted
-          }
-        }`)
-    expect(data.data.saleTemplate.deleted).not.toBeNull()
+    expect(data.saleTemplate.deletedAt).not.toBeNull()
   })
 })

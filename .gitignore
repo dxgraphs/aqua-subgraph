@@ -37,8 +37,9 @@ package-lock.json
 
 # Contract artifacts
 
-# Mesa smart contracts
+# Aqua smart contracts
 /mesa-smartcontracts
 /mesa-smart-contracts
 
 subgraph.yaml
+/generated
