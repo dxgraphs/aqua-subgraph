@@ -57,13 +57,13 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/saleLauncher.ts
       entities:
-        - FairSale
+        # - FairSale
         - FixedPriceSale
       abis:
         - name: SaleLauncher
           file: ./abis/SaleLauncher.json
-        - name: FairSale
-          file: ./abis/FairSale.json
+        # - name: FairSale
+        #   file: ./abis/FairSale.json
         - name: FixedPriceSale
           file: ./abis/FixedPriceSale.json
         - name: ERC20
