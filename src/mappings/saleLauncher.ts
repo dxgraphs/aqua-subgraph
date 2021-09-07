@@ -1,8 +1,8 @@
 // Externals
 import { BigInt } from '@graphprotocol/graph-ts'
 // Contract Types and ABIs
-import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/FixedPriceSale/FixedPriceSale'
-import { FairSale as FairSaleContract } from '../../generated/FairSale/FairSale'
+import { FixedPriceSale as FixedPriceSaleContract } from '../../generated/templates/FixedPriceSale/FixedPriceSale'
+import { FairSale as FairSaleContract } from '../../generated/templates/FairSale/FairSale'
 import { SaleInitialized } from '../../generated/SaleLauncher/SaleLauncher'
 import { FairSale, FixedPriceSale } from '../../generated/templates'
 

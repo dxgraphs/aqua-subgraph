@@ -1,7 +1,8 @@
 // Externals
 import { constants, providers, utils } from 'ethers'
 // Helpers
-import { FixedPriceSaleTemplate__factory, FixedPriceSale__factory, FixedPriceSale, ERC20Mintable } from 'aqua-sc'
+import { FixedPriceSaleTemplate__factory, FixedPriceSale__factory, FixedPriceSale } from '@dxdao/aqua-sc'
+import { ERC20Mintable } from '../utils/typechain-contracts'
 import { aquaJestBeforeAll, aquaJestBeforeEach, AquaJestBeforeEachContext } from '../jest/setup'
 import { createFixedPriceSale, createTokenAndMintAndApprove } from '../utils/contracts'
 import { getSigners, mineBlock } from '../utils/evm'

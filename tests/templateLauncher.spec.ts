@@ -5,11 +5,11 @@ import {
   FixedPriceSaleTemplate,
   FixedPriceSaleTemplate__factory,
   FixedPriceSale__factory
-} from 'aqua-sc'
+} from '@dxdao/aqua-sc'
 import { ContractTransaction, Event } from 'ethers'
 
 // Test block
-describe('TemplateLauncher', function() {
+describe('TemplateLauncher', function () {
   let aqua: AquaJestBeforeEachContext
   let fixedPriceSaleTemplate: FixedPriceSaleTemplate
   let fixedPriceSale: FixedPriceSale
@@ -36,7 +36,7 @@ describe('TemplateLauncher', function() {
     if (!templatedAddedEvent) {
       throw new Error('TemplateLauncher.addTemplate did not return "TemplateAdded" event.')
     }
-    await aqua.waitForSubgraphSync(blockNumber)
+    await aqua.waitForSubgraphSync()
     const { data } = await aqua.querySubgraph(`{
           saleTemplate (id: "${templatedAddedEvent?.args?.templateId}") {
             address

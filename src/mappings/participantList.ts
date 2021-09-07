@@ -1,5 +1,5 @@
 import { Bytes, log } from '@graphprotocol/graph-ts'
-import { ListInitialized, AmountsUpdated } from '../../generated/ParticipantList/ParticipantList'
+import { ListInitialized, AmountsUpdated } from '../../generated/templates/ParticipantList/ParticipantList'
 import { ParticipantList, Participant } from '../../generated/schema'
 
 /**

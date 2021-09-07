@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { FixedPriceSale__saleInfoResult } from '../../generated/FixedPriceSale/FixedPriceSale'
+import { FixedPriceSale__saleInfoResult } from '../../generated/templates/FixedPriceSale/FixedPriceSale'
 // Schema
 import { FixedPriceSaleUser } from '../../generated/schema'
 

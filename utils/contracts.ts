@@ -16,19 +16,19 @@ import dayjs from 'dayjs'
 import { exec as execBase } from 'child_process'
 
 // Contract interfaces and classes
-// Encoders
-import { encodeInitDataFixedPriceSale, encodeInitDataFairSale } from './encoders'
 // Typechained
 import {
   AquaFactory,
   SaleLauncher,
-  ERC20Mintable,
   FixedPriceSale,
   TemplateLauncher,
-  ERC20Mintable__factory,
   FairSaleTemplate__factory,
-  FixedPriceSaleTemplate__factory
-} from 'aqua-sc'
+  FixedPriceSaleTemplate__factory,
+  encodeInitDataFairSale,
+  encodeInitDataFixedPriceSale
+} from '@dxdao/aqua-sc'
+import { ERC20Mintable, ERC20Mintable__factory } from './typechain-contracts'
+
 
 // Interfaces
 import { NewPurchase, TemplateAdded } from './types'
@@ -107,7 +107,7 @@ export async function createFairSale({
     .launchTemplate(
       templateId,
       encodeInitDataFairSale({
-        duration: BigNumber.from(ONE_HOUR), // auction lasts for one hour
+        duration: ONE_HOUR, // auction lasts for one hour
         minBuyAmount: utils.parseUnits('10'), // Each order's bid must be at least 10
         minPrice: utils.parseUnits('1'), // Minimum price per token
         minRaise: utils.parseUnits('100000'), // 100k DAI
@@ -115,8 +115,11 @@ export async function createFairSale({
         saleTemplateId: templateId,
         tokenIn: biddingToken.address,
         tokenOut: saleToken.address,
-        tokenOutSupply: await saleToken.totalSupply(),
-        tokenSupplier: await saleCreator.getAddress()
+        minimumBiddingAmountPerOrder: utils.parseUnits('10'),
+        orderCancelationPeriodDuration: ONE_HOUR,
+        tokenSupplier: await saleCreator.getAddress(),
+        tokensForSale: await saleToken.totalSupply(),
+
       }),
       'explore-metahash'
     )

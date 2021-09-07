@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import addresses from 'aqua-sc/addresses.json'
+import addresses from '@dxdao/aqua-sc/dist/addresses.json'
 import { writeFile, readFile } from 'fs/promises'
 const { hideBin } = require('yargs/helpers')
 import { getLogger } from 'log4js'

@@ -9,7 +9,7 @@ import {
   ParticipantList__factory,
   TemplateLauncher__factory,
   ParticipantListLauncher__factory
-} from 'aqua-sc'
+} from '@dxdao/aqua-sc'
 // Contract types
 import {
   execAsync,

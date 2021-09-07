@@ -16,7 +16,7 @@ import {
   NewCommitment,
   SaleClosed,
   SaleInitialized
-} from '../../../generated/FixedPriceSale/FixedPriceSale'
+} from '../../../generated/templates/FixedPriceSale/FixedPriceSale'
 
 // GraphQL Schemas
 import { FixedPriceSale, FixedPriceSaleCommitment, FixedPriceSaleWithdrawal } from '../../../generated/schema'
@@ -118,7 +118,7 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
   fixedPriceSale.save()
 }
 
-export function handleSaleInitialized(event: SaleInitialized): void {}
+export function handleSaleInitialized(event: SaleInitialized): void { }
 
 /**
  * Block handler to open sale

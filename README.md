@@ -2,6 +2,12 @@
 
 Aqua Subgraph is the main provider for Aqua Interface data.
 
+# Install
+
+```bash
+$ npm install
+$ npm run codegen
+```
 # Explore
 
 You can explore Aqua's xDai subgraph at [The Graph Explorer](https://thegraph.com/legacy-explorer/subgraph/adamazad/aqua-xdai-next).
@@ -173,7 +179,7 @@ $ npm run deploy
 
 # Extract ABIs from Artifacts
 
-ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract package [`aqua-sc`](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
+ABIs for main contracts are not included in the repo. Instead, they are extracted from the smart contract package [`@dxdao/aqua-sc`](https://github.com/cryptonative-ch/mesa-smartcontracts)). To build the ABIs, run:
 
 ```bash
 $ npm run build-abis
