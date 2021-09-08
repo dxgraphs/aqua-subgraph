@@ -8,6 +8,7 @@ Aqua Subgraph is the main provider for Aqua Interface data.
 $ npm install
 $ npm run codegen
 ```
+
 # Explore
 
 You can explore Aqua's xDai subgraph at [The Graph Explorer](https://thegraph.com/legacy-explorer/subgraph/adamazad/aqua-xdai-next).
@@ -39,11 +40,9 @@ The subgraph listens for events from three fixed contracts; they are deployed on
 
 These contracted deployed from the contracts above
 
-1. ~~`FairSale` from `SaleLauncher`~~
-2. ~~`FairSaleTemplate` from `TemplateLauncher`~~
-3. `FixedPriceSale` from `SaleLauncher`
-4. `FixedPriceSaleTemplate` from `TemplateLauncher`
-5. `ParticipantList` from `ParticipantListLauncher`
+1. `FixedPriceSale` from `SaleLauncher`
+2. `FixedPriceSaleTemplate` from `TemplateLauncher`
+3. `ParticipantList` from `ParticipantListLauncher`
 
 ## GraphQL Entities
 

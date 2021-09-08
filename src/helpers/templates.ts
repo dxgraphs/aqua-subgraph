@@ -9,7 +9,6 @@ import { SaleTemplate } from '../../generated/schema'
 
 // Available Auction types/templates/mechanisms
 export abstract class SALE_TEMPLATES {
-  // static FAIR_SALE: string = 'FairSaleTemplate'
   static FIXED_PRICE_SALE: string = 'FixedPriceSaleTemplate'
 }
 

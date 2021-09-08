@@ -38,76 +38,6 @@ type AquaFactory @entity {
   templateFee: BigInt!
 }
 
-#################################################
-
-# FairSale entity
-# type FairSale implements EntityMetadata @entity {
-#   "The sale contract address"
-#   id: ID!
-#   createdAt: Int!
-#   updatedAt: Int!
-#   deletedAt: Int
-#   # Specific to the EasyAuction
-#   "The sale name"
-#   name: String
-#   "Sale status: open/ended/settled/upcoming"
-#   status: SaleStatus!
-#   "Date of the sale start"
-#   startDate: Int!
-#   "Date of the sale end"
-#   endDate: Int!
-#   "Total amount of tokens available for sale"
-#   tokensForSale: BigInt!
-#   "Minimum amount per bid"
-#   minBidAmount: BigInt!
-#   "Accepted bidding token (ie: DAI, USDC)"
-#   tokenIn: Token!
-#   "Auctioning token"
-#   tokenOut: Token!
-#   "The minimal funding threshold for executing the settlement. If funding is not reached, everyone will get back their investment"
-#   minFundingThreshold: Int
-#   "List of bids"
-#   bids: [FairSaleBid!] @derivedFrom(field: "sale")
-#   launchedTemplate: LaunchedSaleTemplate
-# }
-
-# FairSaleUser
-# type FairSaleUser implements EntityMetadata @entity {
-#   "Time at which the User was registered is the ID"
-#   id: ID!
-#   "The FairSale this user is associated with"
-#   sale: FairSale!
-#   createdAt: Int!
-#   updatedAt: Int!
-#   deletedAt: Int
-#   address: Bytes!
-#   "The ownerId in the FairSale contract"
-#   ownerId: Int!
-# }
-
-# # FairSaleBid
-# type FairSaleBid implements EntityMetadata @entity {
-#   id: ID!
-#   "The FairSale the bid is associated with"
-#   sale: FairSale!
-#   # submitted/settled/cancelled/claimed
-#   status: String!
-#   "The UTC timestamp at which the Bid was placed"
-#   createdAt: Int!
-#   "The UTC timestamp at which the Bid was updated"
-#   updatedAt: Int!
-#   "The UTC timestamp at which the Bid was deleted"
-#   deletedAt: Int
-#   "Number of tokens the investor wants to invest"
-#   tokenInAmount: BigInt!
-#   "Number of tokens the investor wants to buy"
-#   tokenOutAmount: BigInt!
-#   "The owner of the Bid"
-#   owner: FairSaleUser!
-# }
-
-#################################################
-
 enum SaleStatus {
   UPCOMING
   FAILED
@@ -271,7 +201,7 @@ type SaleTemplate @entity {
   # Address of the AquaFactory
   factory: Bytes!
   # Template name
-  name: SaleTemplateNames!
+  name: String! # Name can be anything
   verified: Boolean!
 }
 
@@ -295,11 +225,6 @@ type LaunchedSaleTemplate @entity {
   initialized: Boolean!
   "Whether the sale contract is deployed"
   saleCreated: Boolean!
-}
-
-enum SaleTemplateNames {
-  # FairSaleTemplate
-  FixedPriceSaleTemplate
 }
 
 # AquaLog beacuses The Graph internal logging does not work
