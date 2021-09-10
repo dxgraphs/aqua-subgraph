@@ -107,8 +107,8 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
       commitment.save()
     }
   }
-
-  fixedPriceSale.status = SALE_STATUS.FAILED
+  // Set sale status as settled
+  fixedPriceSale.status = SALE_STATUS.SETTLED
   fixedPriceSale.save()
 }
 
