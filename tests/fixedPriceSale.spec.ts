@@ -100,7 +100,7 @@ describe('FixedPriceSale', () => {
     }`)
     expect(data.fixedPriceSale.soldAmount).toMatch(expectedSoldAmount.toString())
   })
-  test('FixedPriceSaleCommitment.status should be PROCESSED after claiming tokens', async () => {
+  test('FixedPriceSaleCommitment.status should be PROCESSED after claiming tokens successful sale', async () => {
     // Approve
     await (
       await biddingToken.connect(saleInvestorB).approve(launchedfixedPriceSale.address, constants.MaxUint256)
@@ -155,5 +155,39 @@ describe('FixedPriceSale', () => {
       }
     }`)
     expect(data.fixedPriceSale.status).toMatch('OPEN')
+  })
+  test('FixedPriceSaleCommitment.status should be RELEASED after releasing invested tokens in a unsuccessful sale', async () => {
+    // Approve
+    await (
+      await biddingToken.connect(saleInvestorB).approve(launchedfixedPriceSale.address, constants.MaxUint256)
+    ).wait()
+    // Connect to sale from SaleInvestorB
+    const launchedfixedPriceSaleSaleInvestorB = launchedfixedPriceSale.connect(saleInvestorB)
+    const saleInfo = await launchedfixedPriceSale.saleInfo()
+    // Open sale
+    await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
+    // Insure threshold is met
+    const commitTokensAmount = saleInfo.minRaise.sub(utils.formatEther(1))
+    // Commit tokens
+    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(commitTokensAmount)).wait()
+    // End sale
+    await mineBlock(aqua.provider, saleInfo.endDate.toNumber() + 180)
+    // Close sale
+    await (await launchedfixedPriceSale.closeSale()).wait()
+    // withdraw tokens
+    // Sale is closed and threshold is met
+    const withdrawTokensTxReciept = await (
+      await launchedfixedPriceSaleSaleInvestorB.withdrawTokens(await saleInvestorB.getAddress())
+    ).wait()
+    await aqua.waitForSubgraphSync(withdrawTokensTxReciept.blockNumber)
+    const { data } = await aqua.querySubgraph(`{
+      fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
+        commitments {
+          id
+          status
+        }
+      }
+    }`)
+    expect(data.fixedPriceSale.commitments[0].status).toMatch('RELEASED')
   })
 })
