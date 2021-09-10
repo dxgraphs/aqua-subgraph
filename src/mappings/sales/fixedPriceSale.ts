@@ -97,7 +97,7 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
   let totalCommitments = getFixedPriceSaleUserTotalCommitment(
     createFixedPriceSaleUserId(event.address, event.params.user)
   )
-  // Loop through the commitments and update their status for the buyer
+  // Loop through the commitments and update status for the buyer
   for (let commitmentIndex = 1; commitmentIndex <= totalCommitments; commitmentIndex++) {
     let commitment = FixedPriceSaleCommitment.load(
       createFixedPriceSaleCommitmentId(event.address, event.params.user, commitmentIndex)
@@ -113,16 +113,29 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
 }
 
 /**
- * WIP
+ * Handles cases when investors release their `tokenIn`. This happens due sales not reaching minimum threshold
  */
 export function handleNewTokenRelease(event: NewTokenRelease): void {
-  // tokens are swapped; sent to investors
   let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
   if (!fixedPriceSale) {
     return
   }
-
-  fixedPriceSale.status = SALE_STATUS.SETTLED
+  // Get total commitments by the investor/buyer
+  let totalCommitments = getFixedPriceSaleUserTotalCommitment(
+    createFixedPriceSaleUserId(event.address, event.params.user)
+  )
+  // Loop through the commitments and update status for the buyer
+  for (let commitmentIndex = 1; commitmentIndex <= totalCommitments; commitmentIndex++) {
+    let commitment = FixedPriceSaleCommitment.load(
+      createFixedPriceSaleCommitmentId(event.address, event.params.user, commitmentIndex)
+    )
+    if (commitment) {
+      commitment.status = COMITMENT_STATUS.RELEASED
+      commitment.save()
+    }
+  }
+  // Set sale status as failed
+  fixedPriceSale.status = SALE_STATUS.FAILED
   fixedPriceSale.save()
 }
 
