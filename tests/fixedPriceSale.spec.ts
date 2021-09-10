@@ -111,10 +111,8 @@ describe('FixedPriceSale', () => {
     const saleInfo = await launchedfixedPriceSale.saleInfo()
     // Open sale
     await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
-    // Insure threshold is met
-    const commitTokensAmount = saleInfo.minRaise
-    // Commit tokens
-    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(commitTokensAmount)).wait()
+    // Insure threshold is met by committing the minimum raise
+    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(saleInfo.minRaise)).wait()
     // End sale
     await mineBlock(aqua.provider, saleInfo.endDate.toNumber() + 180)
     // Close sale
@@ -166,10 +164,8 @@ describe('FixedPriceSale', () => {
     const saleInfo = await launchedfixedPriceSale.saleInfo()
     // Open sale
     await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
-    // Insure threshold is met
-    const commitTokensAmount = saleInfo.minRaise.sub(utils.formatEther(1))
-    // Commit tokens
-    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(commitTokensAmount)).wait()
+    // Commit tokens Insure threshold is not met by commit
+    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(saleInfo.minCommitment)).wait()
     // End sale
     await mineBlock(aqua.provider, saleInfo.endDate.toNumber() + 180)
     // Close sale
