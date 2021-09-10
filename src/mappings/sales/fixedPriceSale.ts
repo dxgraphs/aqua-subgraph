@@ -72,9 +72,15 @@ export function handleNewCommitment(event: NewCommitment): void {
 }
 
 /**
- * WIP
+ * Handles cases when investors release their `tokenOut` after the sale has
+ * reached the minimum threshold and closed
  */
 export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
+  let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
+  if (!fixedPriceSale) {
+    return
+  }
+
   // Get the user
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.user, event.block.timestamp)
   // Register the withdrawal
@@ -91,34 +97,52 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
   let totalCommitments = getFixedPriceSaleUserTotalCommitment(
     createFixedPriceSaleUserId(event.address, event.params.user)
   )
-  // Loop through the commitments and update their status for the buyer
+  // Loop through the commitments and update status for the buyer
   for (let commitmentIndex = 1; commitmentIndex <= totalCommitments; commitmentIndex++) {
     let commitment = FixedPriceSaleCommitment.load(
       createFixedPriceSaleCommitmentId(event.address, event.params.user, commitmentIndex)
     )
-
     if (commitment) {
       commitment.status = COMITMENT_STATUS.PROCESSED
       commitment.save()
     }
   }
-}
-
-/**
- * WIP
- */
-export function handleNewTokenRelease(event: NewTokenRelease): void {
-  // tokens are swapped; sent to investors
-  let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
-  if (!fixedPriceSale) {
-    return
-  }
-
+  // Set sale status as settled
   fixedPriceSale.status = SALE_STATUS.SETTLED
   fixedPriceSale.save()
 }
 
-export function handleSaleInitialized(event: SaleInitialized): void { }
+/**
+ * Handles cases when investors release their `tokenIn`. This happens due sales not reaching minimum threshold
+ */
+export function handleNewTokenRelease(event: NewTokenRelease): void {
+  let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
+  if (!fixedPriceSale) {
+    return
+  }
+  // Get total commitments by the investor/buyer
+  let totalCommitments = getFixedPriceSaleUserTotalCommitment(
+    createFixedPriceSaleUserId(event.address, event.params.user)
+  )
+  // Loop through the commitments and update status for the buyer
+  for (let commitmentIndex = 1; commitmentIndex <= totalCommitments; commitmentIndex++) {
+    let commitment = FixedPriceSaleCommitment.load(
+      createFixedPriceSaleCommitmentId(event.address, event.params.user, commitmentIndex)
+    )
+    if (commitment) {
+      commitment.status = COMITMENT_STATUS.RELEASED
+      commitment.save()
+    }
+  }
+  // Set sale status as failed
+  fixedPriceSale.status = SALE_STATUS.FAILED
+  fixedPriceSale.save()
+}
+
+/**
+ * Ignored, see `registerFixedPriceSale` in `saleLauncher.ts`
+ */
+export function handleSaleInitialized(event: SaleInitialized): void {}
 
 /**
  * Block handler to open sale

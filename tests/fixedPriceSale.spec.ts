@@ -100,7 +100,7 @@ describe('FixedPriceSale', () => {
     }`)
     expect(data.fixedPriceSale.soldAmount).toMatch(expectedSoldAmount.toString())
   })
-  test('FixedPriceSaleCommitment.status should be PROCESSED after claiming tokens', async () => {
+  test('FixedPriceSaleCommitment.status should be PROCESSED after claiming tokens successful sale', async () => {
     // Approve
     await (
       await biddingToken.connect(saleInvestorB).approve(launchedfixedPriceSale.address, constants.MaxUint256)
@@ -111,10 +111,8 @@ describe('FixedPriceSale', () => {
     const saleInfo = await launchedfixedPriceSale.saleInfo()
     // Open sale
     await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
-    // Insure threshold is met
-    const commitTokensAmount = saleInfo.minRaise
-    // Commit tokens
-    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(commitTokensAmount)).wait()
+    // Insure threshold is met by committing the minimum raise
+    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(saleInfo.minRaise)).wait()
     // End sale
     await mineBlock(aqua.provider, saleInfo.endDate.toNumber() + 180)
     // Close sale
@@ -155,5 +153,37 @@ describe('FixedPriceSale', () => {
       }
     }`)
     expect(data.fixedPriceSale.status).toMatch('OPEN')
+  })
+  test('FixedPriceSaleCommitment.status should be RELEASED after releasing invested tokens in a unsuccessful sale', async () => {
+    // Approve
+    await (
+      await biddingToken.connect(saleInvestorB).approve(launchedfixedPriceSale.address, constants.MaxUint256)
+    ).wait()
+    // Connect to sale from SaleInvestorB
+    const launchedfixedPriceSaleSaleInvestorB = launchedfixedPriceSale.connect(saleInvestorB)
+    const saleInfo = await launchedfixedPriceSale.saleInfo()
+    // Open sale
+    await mineBlock(aqua.provider, saleInfo.startDate.toNumber() + 180)
+    // Commit tokens Insure threshold is not met by commit
+    await (await launchedfixedPriceSaleSaleInvestorB.commitTokens(saleInfo.minCommitment)).wait()
+    // End sale
+    await mineBlock(aqua.provider, saleInfo.endDate.toNumber() + 180)
+    // Close sale
+    await (await launchedfixedPriceSale.closeSale()).wait()
+    // withdraw tokens
+    // Sale is closed and threshold is met
+    const withdrawTokensTxReciept = await (
+      await launchedfixedPriceSaleSaleInvestorB.withdrawTokens(await saleInvestorB.getAddress())
+    ).wait()
+    await aqua.waitForSubgraphSync(withdrawTokensTxReciept.blockNumber)
+    const { data } = await aqua.querySubgraph(`{
+      fixedPriceSale (id: "${launchedfixedPriceSale.address}") {
+        commitments {
+          id
+          status
+        }
+      }
+    }`)
+    expect(data.fixedPriceSale.commitments[0].status).toMatch('RELEASED')
   })
 })
