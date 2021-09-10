@@ -72,9 +72,15 @@ export function handleNewCommitment(event: NewCommitment): void {
 }
 
 /**
- * WIP
+ * Handles cases when investors release their `tokenOut` after the sale has
+ * reached the minimum threshold and closed
  */
 export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
+  let fixedPriceSale = FixedPriceSale.load(event.address.toHexString())
+  if (!fixedPriceSale) {
+    return
+  }
+
   // Get the user
   let fixedPriceSaleUser = createOrGetFixedPriceSaleUser(event.address, event.params.user, event.block.timestamp)
   // Register the withdrawal
@@ -96,12 +102,14 @@ export function handleNewTokenWithdraw(event: NewTokenWithdraw): void {
     let commitment = FixedPriceSaleCommitment.load(
       createFixedPriceSaleCommitmentId(event.address, event.params.user, commitmentIndex)
     )
-
     if (commitment) {
       commitment.status = COMITMENT_STATUS.PROCESSED
       commitment.save()
     }
   }
+
+  fixedPriceSale.status = SALE_STATUS.FAILED
+  fixedPriceSale.save()
 }
 
 /**
