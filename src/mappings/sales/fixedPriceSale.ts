@@ -126,7 +126,10 @@ export function handleNewTokenRelease(event: NewTokenRelease): void {
   fixedPriceSale.save()
 }
 
-export function handleSaleInitialized(event: SaleInitialized): void { }
+/**
+ * Ignored, see `registerFixedPriceSale` in `saleLauncher.ts`
+ */
+export function handleSaleInitialized(event: SaleInitialized): void {}
 
 /**
  * Block handler to open sale
